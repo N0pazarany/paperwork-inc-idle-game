@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Paperwork Inc.</title>
+<!-- Единственная внешняя зависимость: SDK Telegram Mini Apps -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+/* ============================================================
+   ЦВЕТА: берём из темы Telegram (--tg-theme-*), с запасными
+   значениями «бумажной» палитры для обычного браузера
+   ============================================================ */
+:root{
+  --bg: var(--tg-theme-secondary-bg-color, #ebe5d3);
+  --card: var(--tg-theme-section-bg-color, var(--tg-theme-bg-color, #fbf8ee));
+  --text: var(--tg-theme-text-color, #23211c);
+  --hint: var(--tg-theme-hint-color, #80796a);
+  --accent: var(--tg-theme-button-color, #2f5d8a);
+  --accent-text: var(--tg-theme-button-text-color, #ffffff);
+  --link: var(--tg-theme-link-color, #2f5d8a);
+  --ink: var(--tg-theme-destructive-text-color, #b3261e);
+  --line: rgba(127,127,127,.25);
+  --line-strong: rgba(127,127,127,.45);
+  --rule: rgba(90,130,190,.10);
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, "Courier New", monospace;
+}
+/* Вне Telegram — собственная палитра (светлая и тёмная) */
+html.no-tg{
+  --bg:#ebe5d3; --card:#fbf8ee; --text:#23211c; --hint:#80796a;
+  --accent:#2f5d8a; --accent-text:#fff; --link:#2f5d8a; --ink:#b3261e;
+}
+@media (prefers-color-scheme: dark){
+  html.no-tg{
+    --bg:#16181c; --card:#212429; --text:#e9e6dd; --hint:#8d8a82;
+    --accent:#5b8fc7; --accent-text:#fff; --link:#7fb0e6; --ink:#e5534b;
+    --rule: rgba(120,160,220,.07);
+  }
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--text);
+  font:15px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  min-height:100vh; -webkit-user-select:none; user-select:none; overscroll-behavior:none;
+}
+button{font:inherit;color:inherit;cursor:pointer}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.hint{color:var(--hint)}
+.wrap{max-width:520px;margin:0 auto;padding:10px 12px calc(28px + env(safe-area-inset-bottom))}
+
+/* ---------- Шапка-бланк ---------- */
+.hdr{
+  background:var(--card); border:1px solid var(--line); border-radius:6px;
+  padding:12px 14px 12px; position:relative; overflow:hidden;
+  background-image:repeating-linear-gradient(to bottom, transparent 0 23px, var(--rule) 23px 24px);
+}
+.hdr::after{ /* красная «линия полей» как на бланке */
+  content:""; position:absolute; top:0; bottom:0; left:8px; width:1px; background:var(--ink); opacity:.35;
+}
+.hdr-top{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--hint)}
+.brand{font-weight:800;color:var(--text);letter-spacing:.16em}
+.docs{font-size:40px;font-weight:700;margin-top:6px;line-height:1.1;letter-spacing:-.01em}
+.docs-label{font-size:11px;color:var(--hint);text-transform:uppercase;letter-spacing:.1em}
+.rate{font-size:15px;color:var(--link);margin-top:4px}
+.subres{display:flex;gap:6px 14px;flex-wrap:wrap;margin-top:6px;font-size:13px}
+.subres:empty{display:none}
+.seal{
+  position:absolute; right:12px; top:30px; transform:rotate(-14deg);
+  border:3px double var(--ink); color:var(--ink); border-radius:50%;
+  width:78px; height:78px; display:flex; align-items:center; justify-content:center; text-align:center;
+  font:800 10px/1.15 var(--mono); letter-spacing:.08em; opacity:.33; pointer-events:none;
+}
+.sign{
+  display:block; width:100%; margin-top:12px; padding:13px; border-radius:6px;
+  border:0; background:var(--accent); color:var(--accent-text); font-weight:700; font-size:16px;
+  position:relative;
+}
+.sign:active{transform:scale(.98)}
+.sign.minor{
+  width:auto; margin:8px 0 0 auto; padding:4px 10px; font-size:12px; font-weight:500;
+  background:transparent; color:var(--hint); border:1px dashed var(--line-strong);
+}
+.float-num{
+  position:absolute; left:50%; top:0; transform:translateX(-50%);
+  font:700 14px var(--mono); color:var(--ink); pointer-events:none; animation:floatUp .8s ease-out forwards;
+}
+@keyframes floatUp{from{opacity:1;transform:translate(-50%,0)}to{opacity:0;transform:translate(-50%,-34px)}}
+
+/* ---------- Строка служебной записки ---------- */
+.memo{
+  margin:8px 2px 0; font:12px/1.35 var(--mono); color:var(--hint);
+  min-height:32px; transition:opacity .4s;
+}
+.memo.fade{opacity:0}
+
+/* ---------- Вкладки-папки ---------- */
+.tabs{
+  position:sticky; top:0; z-index:5; display:flex; gap:4px; padding:8px 0 0;
+  background:var(--bg); border-bottom:1px solid var(--line-strong); margin-top:4px;
+}
+.tab{
+  flex:1; border:1px solid var(--line-strong); border-bottom:0; border-radius:8px 8px 0 0;
+  background:transparent; padding:9px 4px 8px; font-size:13px; font-weight:600; color:var(--hint);
+  position:relative; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.tab.active{background:var(--card);color:var(--text);margin-bottom:-1px}
+.tab:disabled{opacity:.45;cursor:default}
+.badge{
+  display:inline-block; min-width:16px; height:16px; padding:0 4px; margin-left:4px; border-radius:8px;
+  background:var(--ink); color:#fff; font:700 10px/16px var(--mono); vertical-align:1px;
+}
+.panel{display:none;padding-top:10px}
+.panel.active{display:block}
+
+/* ---------- Карточки ---------- */
+.card{
+  background:var(--card); border:1px solid var(--line); border-radius:6px;
+  padding:11px 12px 12px 18px; margin-bottom:9px; position:relative; overflow:hidden;
+}
+.card::before{content:"";position:absolute;top:0;bottom:0;left:9px;width:1px;background:var(--ink);opacity:.3}
+.c-head{display:flex;align-items:center;gap:10px}
+.c-emoji{font-size:26px;width:34px;text-align:center;flex:none}
+.c-title{flex:1;min-width:0}
+.c-name{font-weight:700;font-size:15px;line-height:1.2}
+.c-form{font-size:10.5px;color:var(--hint);letter-spacing:.08em;text-transform:uppercase;margin-top:1px}
+.c-owned{font-size:20px;font-weight:700}
+.c-desc{font-size:13px;color:var(--hint);margin:6px 0 6px;font-style:italic}
+.c-stats{font-size:12px;margin-bottom:6px}
+.effect{font-size:12px;color:var(--link);margin-bottom:8px}
+.ms{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--hint);margin-bottom:8px}
+.ms-bar{flex:1;height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+.ms-bar i{display:block;height:100%;width:0;background:var(--link);transition:width .25s}
+
+.btn{
+  display:flex; justify-content:space-between; align-items:center; gap:8px; width:100%;
+  border:1px solid transparent; border-radius:6px; padding:10px 12px;
+  background:var(--accent); color:var(--accent-text); font-weight:600; font-size:14px; text-align:left;
+}
+.btn .sub{font-size:13px;font-weight:600;white-space:nowrap}
+.btn:active:not(:disabled){transform:scale(.985)}
+.btn:disabled{background:transparent;color:var(--hint);border:1px dashed var(--line-strong);cursor:default}
+.btn.danger{background:transparent;color:var(--ink);border:1px solid var(--ink)}
+
+.redacted .c-name .rbar{background:var(--text);color:transparent;border-radius:2px;padding:0 4px}
+.redacted{opacity:.75}
+
+/* Анимация печати «APPROVED» при покупке */
+.stamp-anim{
+  position:absolute; right:14px; top:12px; border:3px solid var(--ink); color:var(--ink);
+  font:800 13px var(--mono); padding:2px 8px; border-radius:4px; letter-spacing:.12em;
+  pointer-events:none; animation:stampIn 1s ease-out forwards;
+}
+@keyframes stampIn{
+  0%{transform:rotate(-12deg) scale(2.3);opacity:0}
+  18%{transform:rotate(-12deg) scale(1);opacity:.95}
+  70%{opacity:.85}
+  100%{transform:rotate(-12deg) scale(1);opacity:0}
+}
+
+/* Переключатель количества покупки */
+.po{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--hint);letter-spacing:.08em;text-transform:uppercase;margin:0 2px 9px}
+.po .sp{flex:1}
+.po button{
+  border:1px solid var(--line-strong); background:transparent; border-radius:4px;
+  padding:4px 9px; font:600 12px var(--mono); color:var(--hint);
+}
+.po button.on{background:var(--text);color:var(--card);border-color:var(--text)}
+
+.empty{text-align:center;color:var(--hint);font-size:13px;padding:24px 10px;font-style:italic}
+details.filed{margin-top:6px}
+details.filed summary{font-size:12px;color:var(--hint);text-transform:uppercase;letter-spacing:.08em;padding:8px 2px;cursor:pointer}
+.filed-row{font-size:13px;padding:6px 2px;border-bottom:1px dashed var(--line)}
+.filed-row .mono{font-size:11.5px;color:var(--link)}
+
+/* Реструктуризация */
+.kv{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.kv b{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.big-gain{font:700 28px var(--mono);color:var(--ink);text-align:center;margin:10px 0 2px}
+.progress{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin:6px 0 4px}
+.progress i{display:block;height:100%;background:var(--ink);width:0}
+.section-title{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--hint);margin:16px 2px 8px}
+
+/* ---------- Модальное окно ---------- */
+.overlay{
+  position:fixed; inset:0; z-index:20; background:rgba(0,0,0,.5);
+  display:none; align-items:flex-end; justify-content:center; padding:12px;
+}
+.overlay.show{display:flex;animation:fadeIn .2s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.sheet{
+  width:100%; max-width:480px; max-height:88vh; overflow:auto; background:var(--card); color:var(--text);
+  border-radius:10px; padding:18px 18px calc(16px + env(safe-area-inset-bottom)); position:relative;
+  background-image:repeating-linear-gradient(to bottom, transparent 0 23px, var(--rule) 23px 24px);
+  animation:slideUp .25s ease-out;
+}
+@keyframes slideUp{from{transform:translateY(30px)}to{transform:none}}
+.sheet .m-form{font:11px var(--mono);color:var(--hint);letter-spacing:.1em;text-transform:uppercase}
+.sheet h2{margin:4px 0 10px;font-size:20px}
+.sheet .m-body{font-size:14.5px}
+.sheet .m-body p{margin:0 0 10px}
+.sheet .m-joke{font-style:italic;color:var(--hint);border-left:2px solid var(--ink);padding:2px 0 2px 10px;margin:12px 0}
+.sheet .m-stamp{
+  position:absolute; right:16px; top:16px; transform:rotate(10deg);
+  border:3px solid var(--ink); color:var(--ink); padding:3px 9px; border-radius:4px;
+  font:800 13px var(--mono); letter-spacing:.12em; opacity:.8;
+}
+.m-btns{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.m-btns .btn{justify-content:center}
+.m-btns .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line-strong)}
+
+/* ---------- Тост ---------- */
+.toast{
+  position:fixed; left:50%; bottom:calc(18px + env(safe-area-inset-bottom)); z-index:30;
+  transform:translateX(-50%) translateY(20px); opacity:0; transition:all .3s;
+  background:var(--text); color:var(--card); padding:10px 14px; border-radius:8px;
+  font-size:13px; max-width:92vw; width:max-content; box-shadow:0 6px 20px rgba(0,0,0,.25); pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Шапка: главные цифры -->
+  <header class="hdr">
+    <div class="seal">PAPER<br>WORK<br>INC.</div>
+    <div class="hdr-top"><span class="brand">Paperwork Inc.</span><span class="mono">Form 0-0 · Ledger</span></div>
+    <div class="docs mono" id="docs">0</div>
+    <div class="docs-label">documents approved</div>
+    <div class="rate mono" id="rate">+0 / sec</div>
+    <div class="subres">
+      <span id="stampsLine" hidden>🔏 <b class="mono" id="stamps">0</b> stamps <span class="mono hint" id="stampRate"></span></span>
+      <span id="senLine" hidden>🎖️ Seniority <b class="mono" id="sen">0</b> <span class="mono hint" id="senBonus"></span></span>
+    </div>
+    <button class="sign" id="signBtn" data-act="sign">✍️ Sign manually <span class="mono">(+1)</span></button>
+  </header>
+
+  <div class="memo" id="memo"></div>
+
+  <!-- Вкладки -->
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-act="tab" data-id="depts"><span class="t-ico">🗄️</span> Departments</button>
+    <button class="tab" data-act="tab" data-id="upgs"><span class="t-ico">📎</span> Upgrades<span class="badge" id="upgBadge" hidden></span></button>
+    <button class="tab" data-act="tab" data-id="restr"><span class="t-ico">🔄</span> Restructuring</button>
+  </nav>
+
+  <!-- Отделы -->
+  <section class="panel active" id="p-depts">
+    <div class="po">Purchase order · qty<span class="sp"></span>
+      <button data-act="mode" data-id="1">×1</button>
+      <button data-act="mode" data-id="10">×10</button>
+      <button data-act="mode" data-id="max">MAX</button>
+    </div>
+    <div id="deptList"></div>
+  </section>
+
+  <!-- Апгрейды -->
+  <section class="panel" id="p-upgs">
+    <div id="upgList"></div>
+    <div id="upgFiled"></div>
+  </section>
+
+  <!-- Реструктуризация -->
+  <section class="panel" id="p-restr">
+    <div class="card">
+      <div class="c-head"><span class="c-emoji">🔄</span><div class="c-title">
+        <div class="c-name">Voluntary Corporate Restructuring</div>
+        <div class="c-form mono">Form 99-R · Board approval required</div></div></div>
+      <div class="c-desc" id="rDesc"></div>
+      <div class="kv"><span>Current Seniority</span><b id="rSen">0</b></div>
+      <div class="kv"><span>Income bonus</span><b id="rBonus">+0%</b></div>
+      <div class="kv"><span>Approved this fiscal period</span><b id="rRun">0</b></div>
+      <div class="kv"><span>Approved, all time</span><b id="rAll">0</b></div>
+      <div class="kv"><span>Next Seniority point at (all time)</span><b id="rNext">0</b></div>
+      <div class="big-gain" id="rGain">+0</div>
+      <div class="hint" style="text-align:center;font-size:12px">Seniority awarded upon restructuring</div>
+      <div class="section-title">Minimum fiscal output</div>
+      <div class="progress"><i id="rProg"></i></div>
+      <div class="mono hint" style="font-size:12px;margin-bottom:12px" id="rProgText"></div>
+      <button class="btn" id="rBtn" data-act="restructure"><span>File Form 99-R</span><span class="sub">🔄</span></button>
+    </div>
+    <div class="section-title">Corporate records</div>
+    <div class="card">
+      <div class="kv"><span>Restructurings filed</span><b id="rCount">0</b></div>
+      <div class="kv"><span>Offline records cap</span><b id="rCap">8h</b></div>
+      <div class="kv"><span>Offline efficiency</span><b id="rEff">50%</b></div>
+      <div class="kv"><span>Departments owned</span><b id="rOwned">0</b></div>
+      <div style="margin-top:12px"><button class="btn danger" data-act="reset"><span>Shred all records (hard reset)</span><span class="sub">🗑️</span></button></div>
+    </div>
+  </section>
+</div>
+
+<div class="overlay" id="overlay"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+/* =====================================================================
+   PAPERWORK INC. — idle-игра для Telegram Mini App
+   Всё, что касается баланса и текстов, лежит в начале скрипта
+   (CONFIG, DEPARTMENTS, UPGRADES, TEXTS). Правьте там.
+   Блок между маркерами ENGINE — чистая логика без DOM
+   (её же можно прогнать в Node для проверки баланса).
+   ===================================================================== */
+
+// ===== ENGINE START =====
+
+/* ---------- Основные настройки баланса ---------- */
+const CONFIG = {
+  costGrowth: 1.15,            // рост цены отдела: база × 1.15^количество
+  manualSignAmount: 1,         // сколько даёт кнопка «Sign manually»
+  tickMs: 250,                 // частота обновления экрана
+  saveIntervalMs: 10000,       // автосохранение каждые 10 секунд
+  offline: {
+    baseCapHours: 8,           // лимит офлайна на старте
+    baseEfficiency: 0.5,       // доля дохода, начисляемая офлайн (апгрейды поднимают до 100%)
+    minAwaySec: 60,            // после какого отсутствия показывать окно «пока вас не было»
+  },
+  stamps: {
+    perDepartmentPerSec: 0.003, // каждый купленный отдел ставит 0.003 печати в секунду
+  },
+  milestones: { every: 25, mult: 2 },     // каждые 25 штук отдела — выход ×2
+  reveal: {
+    deptAtFraction: 0.25,      // отдел показывается, когда заработано 25% его цены
+    upgradeAtFraction: 0.3,    // апгрейд показывается, когда заработано 30% его цены
+  },
+  unlocks: {
+    upgradesTabEarned: 500,     // заработано за период → открывается вкладка Upgrades
+    restructureTabEarned: 1e5,  // → открывается вкладка Restructuring (превью)
+  },
+  prestige: {
+    minRunEarned: 3e11,        // минимум заработанного за период для реструктуризации
+    divisor: 5e9,              // Seniority = floor(sqrt(всего_заработано / divisor))
+    bonusPerPoint: 0.10,       // +10% к доходу за каждую единицу Seniority
+  },
+};
+
+/* ---------- Отделы (генераторы) ---------- */
+const DEPARTMENTS = [
+  { id:'intern', emoji:'🪑', name:"Intern's Desk", form:'Form 10-A', baseCost:10, baseProd:0.2,
+    desc:"One desk, one intern, one pen on a chain. Signs anything placed in front of it." },
+  { id:'filing', emoji:'🗄️', name:'Filing Room', form:'Form 11-F', baseCost:130, baseProd:1.1,
+    desc:"Files documents alphabetically, then chronologically, then by mood." },
+  { id:'archive', emoji:'📦', name:'Archive', form:'Form 12-R', baseCost:1700, baseProd:6,
+    desc:"Where documents go to be approved posthumously. Smells faintly of toner and regret." },
+  { id:'approvals', emoji:'✅', name:'Approvals Office', form:'Form 14-B', baseCost:22000, baseProd:31,
+    desc:"Approves requests to submit requests for approval. Closed Fridays, and most Thursdays." },
+  { id:'committee', emoji:'👔', name:'Committee of Committees', form:'Form 21-C', baseCost:2.9e5, baseProd:156,
+    desc:"Meets weekly to decide when to meet. Minutes are taken, approved and filed in triplicate." },
+  { id:'taskforce', emoji:'🗃️', name:'Interdepartmental Task Force', form:'Form 33-T', baseCost:3.8e6, baseProd:780,
+    desc:"Formed to reduce paperwork. Has produced four thousand pages on the subject so far." },
+  { id:'reporting', emoji:'📊', name:'Department of Departmental Reporting', form:'Form 40-D', baseCost:5e7, baseProd:3900,
+    desc:"Reports on what every department did, including itself, including this report." },
+  { id:'synergy', emoji:'🔁', name:'Office of Strategic Synergy', form:'Form 52-S', baseCost:6.5e8, baseProd:19500,
+    desc:"Aligns the verticals with the horizontals. Nobody has asked which ones." },
+  { id:'review', emoji:'🔍', name:'Board of Perpetual Review', form:'Form 77-P', baseCost:8.5e9, baseProd:97500,
+    desc:"Nothing leaves this board unreviewed. Nothing has ever left this board." },
+  { id:'headoffice', emoji:'🏢', name:'Head Office of Head Offices', form:'Form 00-A', baseCost:1.1e11, baseProd:4.9e5,
+    desc:"Located on a floor that does not appear in the elevator. Issues memos to itself." },
+];
+
+/* ---------- Апгрейды ----------
+   currency: 'docs' или 'stamps'
+   req: условия появления (dept+count, upgrade, earned, restructures)
+   effect.type: dept | global | cost | offlineCap | offlineEff | unlockStamps | stampMult | seniority */
+const UPGRADES = [
+  { id:'coffee', emoji:'☕', name:'Complimentary Lukewarm Coffee', cost:80, currency:'docs',
+    req:{dept:'intern',count:5}, effect:{type:'dept',dept:'intern',mult:2},
+    desc:"Brewed at 7:00, served at 11:00. Interns are now technically awake." },
+  { id:'paperclips', emoji:'📎', name:'Premium Paperclips', cost:700, currency:'docs',
+    req:{dept:'filing',count:5}, effect:{type:'dept',dept:'filing',mult:2},
+    desc:"Gold-tone, rust-resistant, approved by the Paperclip Standards Subcommittee." },
+  { id:'poster', emoji:'🐈', name:'Motivational Poster: "Hang In There"', cost:1500, currency:'docs',
+    req:{earned:1000}, effect:{type:'global',mult:1.25},
+    desc:"A cat clings to a branch. Morale clings to the cat." },
+  { id:'overtime', emoji:'🕰️', name:'Unpaid Overtime Initiative', cost:4000, currency:'docs',
+    req:{dept:'intern',count:25}, effect:{type:'dept',dept:'intern',mult:3},
+    desc:"Framed as a learning opportunity. The interns have learned a great deal." },
+  { id:'answering', emoji:'📠', name:'After-Hours Answering Machine', cost:8000, currency:'docs',
+    req:{earned:5000}, effect:{type:'offlineCap',hours:4},
+    desc:"Your call is important to us. It will be approved in the order it was received." },
+  { id:'alphabet', emoji:'🔤', name:'Alphabetical Order (Pilot Program)', cost:10000, currency:'docs',
+    req:{dept:'archive',count:5}, effect:{type:'dept',dept:'archive',mult:2},
+    desc:"A bold experiment. Early findings suggest A precedes B, pending peer review." },
+  { id:'rubberstamp', emoji:'🔏', name:'Official Rubber Stamp', cost:8000, currency:'docs',
+    req:{dept:'archive',count:3}, effect:{type:'unlockStamps'},
+    desc:"Requisitioned via Form 31-S, which required a stamp. We borrowed one." },
+  { id:'toner', emoji:'🖨️', name:'Bulk Toner Contract', cost:40000, currency:'docs',
+    req:{earned:30000}, effect:{type:'cost',mult:0.9},
+    desc:"Three hundred cartridges, all of the wrong model. Procurement calls it a win." },
+  { id:'indextabs', emoji:'🗂️', name:'Color-Coded Index Tabs', cost:60000, currency:'docs',
+    req:{dept:'filing',count:25}, effect:{type:'dept',dept:'filing',mult:3},
+    desc:"Red means urgent. Blue also means urgent. Green is under review." },
+  { id:'carbon', emoji:'📑', name:'Carbon Paper, Triplicate Grade', cost:1.3e5, currency:'docs',
+    req:{dept:'approvals',count:5}, effect:{type:'dept',dept:'approvals',mult:2},
+    desc:"Every approval now yields two more approvals, which also require approval." },
+  { id:'nightshift', emoji:'🌙', name:'Night Shift Clerk', cost:2e6, currency:'docs',
+    req:{earned:150000}, effect:{type:'offlineEff',add:0.25},
+    desc:"Nobody has seen him. His signature, however, is on everything." },
+  { id:'quorum', emoji:'🗳️', name:'Quorum Reduction Act', cost:1.7e6, currency:'docs',
+    req:{dept:'committee',count:5}, effect:{type:'dept',dept:'committee',mult:2},
+    desc:"A quorum is now defined as whoever showed up, plus the chairs." },
+  { id:'retreat', emoji:'🏕️', name:'Mandatory Team-Building Retreat', cost:2.3e7, currency:'docs',
+    req:{dept:'taskforce',count:5}, effect:{type:'dept',dept:'taskforce',mult:2},
+    desc:"Trust falls were replaced with trust forms. Everyone signed. Nobody fell." },
+  { id:'meta', emoji:'📈', name:'Report on Reports on Reports', cost:3e8, currency:'docs',
+    req:{dept:'reporting',count:5}, effect:{type:'dept',dept:'reporting',mult:2},
+    desc:"Concludes that more reports are needed. A report on this conclusion is pending." },
+  { id:'whitepaper', emoji:'📃', name:'Synergy Whitepaper, 2nd Draft', cost:3.9e9, currency:'docs',
+    req:{dept:'synergy',count:5}, effect:{type:'dept',dept:'synergy',mult:2},
+    desc:"The first draft was too clear. This one has been professionally obscured." },
+  { id:'minutes', emoji:'📝', name:'Minutes of the Minutes', cost:5e10, currency:'docs',
+    req:{dept:'review',count:5}, effect:{type:'dept',dept:'review',mult:2},
+    desc:"Records what was recorded. Approved unanimously by people who were not listening." },
+  { id:'letterhead', emoji:'✉️', name:'Embossed Head Office Letterhead', cost:6.6e11, currency:'docs',
+    req:{dept:'headoffice',count:5}, effect:{type:'dept',dept:'headoffice',mult:2},
+    desc:"Heavy enough to stop a door, and occasionally a decision." },
+  // --- за печати ---
+  { id:'selfinking', emoji:'🖋️', name:'Self-Inking Pads', cost:40, currency:'stamps',
+    req:{upgrade:'rubberstamp'}, effect:{type:'stampMult',mult:2},
+    desc:"Eliminates the ink pad, the ink pad cabinet and the Ink Pad Liaison." },
+  { id:'standing', emoji:'🧍', name:'Standing Desks', cost:150, currency:'stamps',
+    req:{upgrade:'rubberstamp'}, effect:{type:'global',mult:1.5},
+    desc:"Sitting has been reclassified as an unapproved posture." },
+  { id:'ooo', emoji:'🏖️', name:'Out-of-Office Autoreply', cost:300, currency:'stamps',
+    req:{upgrade:'answering'}, effect:{type:'offlineCap',hours:8},
+    desc:"\"I am currently out of the office. Your document has been approved anyway.\"" },
+  { id:'procurement', emoji:'🧾', name:'Streamlined Form 88-Q', cost:800, currency:'stamps',
+    req:{upgrade:'toner'}, effect:{type:'cost',mult:0.9},
+    desc:"Procurement now requires only eleven signatures, down from twelve." },
+  { id:'viscous', emoji:'🫙', name:'Ink of Unusual Viscosity', cost:1500, currency:'stamps',
+    req:{upgrade:'selfinking'}, effect:{type:'stampMult',mult:2},
+    desc:"Dries instantly and permanently. Please do not stamp your colleagues." },
+  { id:'sleepwalk', emoji:'😴', name:'Sleepwalking Compliance Policy', cost:3000, currency:'stamps',
+    req:{upgrade:'nightshift'}, effect:{type:'offlineEff',add:0.25},
+    desc:"Staff may now approve documents in their sleep, provided Form 0-Z is filed first." },
+  { id:'pneumatic', emoji:'📮', name:'Interoffice Pneumatic Tubes', cost:5000, currency:'stamps',
+    req:{upgrade:'standing'}, effect:{type:'global',mult:2},
+    desc:"Documents now travel between floors at forty kilometres an hour. Some arrive approved." },
+  { id:'lapelpin', emoji:'🎖️', name:'Seniority Lapel Pin', cost:2500, currency:'stamps',
+    req:{restructures:1}, effect:{type:'seniority',add:0.05},
+    desc:"Signifies years of service, or at least years of attendance." },
+];
+
+/* ---------- Тексты интерфейса и шутки ---------- */
+const TEXTS = {
+  introTitle: 'Letter of Appointment',
+  introForm: 'Form 0-1 · Human Resources',
+  introBody: [
+    'Congratulations. Following a thorough review of no candidates, you have been appointed <b>Director of Paperwork Inc.</b>',
+    'Your mandate: approve documents, so we can open departments, which approve more documents.',
+    'There are no departments yet. Kindly begin by signing something yourself.',
+  ],
+  introBtn: 'Accept appointment',
+  awayTitle: 'Welcome back, Director',
+  awayForm: 'Form 8-H · Absence Report',
+  awayBtn: 'Acknowledge receipt',
+  awayStamp: 'RECEIVED',
+  quietOffice: 'The office was very quiet. Mostly because there is no office yet.',
+  restructureDesc: 'Dissolve every department, shred every upgrade and stamp, then re-incorporate with more Seniority. Each Seniority point permanently adds {bonus}% to all income.',
+  restructureConfirmTitle: 'File for Restructuring?',
+  restructureConfirmForm: 'Form 99-R · Final Notice',
+  restructureBtn: 'Restructure the company',
+  cancelBtn: 'Defer to next quarter',
+  resetTitle: 'Shred all records?',
+  resetForm: 'Form 404 · Irreversible',
+  resetBody: 'Everything goes into the shredder, including Seniority. There is no appeals process. There is not even an appeals form.',
+  resetBtn: 'Shred everything',
+  noUpgrades: 'No pending requisitions. Keep approving; procurement will be in touch.',
+  jokes: [
+    'Accounting spent the morning reconciling the stapler inventory. It is off by one stapler.',
+    'The Committee of Committees formed a subcommittee to review the coffee machine\'s performance review.',
+    'Someone replied-all to the memo about not replying-all. Forty-two people replied-all to apologize.',
+    'Three interns were promoted to Senior Intern. Duties unchanged; badges now laminated.',
+    'The printer jammed. A task force has been convened.',
+    'Legal reviewed the lunch menu and approved it, subject to Appendix C.',
+    'The Archive found a document approving the Archive. It has been archived.',
+    'A meeting was held to discuss why meetings run long. It ran long.',
+    'Facilities replaced the "Out of Order" sign with a newer "Out of Order" sign.',
+    'The quarterly report was submitted in triplicate, then in quadruplicate, pending review.',
+    'An employee asked a question. It has been forwarded for clarification by end of fiscal year.',
+    'Per last week\'s memo, all memos must now reference last week\'s memo.',
+    'The suggestion box was emptied. All suggestions were approved, filed and ignored in order of receipt.',
+    'Two departments merged, then demerged, producing a record number of forms.',
+    'Someone found a pen that works. It has been placed in a secure location.',
+    'The vending machine was granted signing authority on an interim basis.',
+    'The fire drill was postponed pending approval of the Fire Drill Request Form.',
+    'A clerk took a personal day. The paperwork for it is still being processed.',
+    'The Head of Filing was misfiled. He has since been located under "H".',
+    'Staff observed a moment of silence for the fax machine. Then it rang.',
+  ],
+  memos: [
+    'MEMO: Please stop approving memos before reading them. Or after.',
+    'REMINDER: Form 27-B must be filed before Form 27-A, which authorizes Form 27-B.',
+    'NOTICE: The 4th floor is now the 3rd floor. The 3rd floor is pending review.',
+    'PER MY LAST MEMO: see my last memo.',
+    'FACILITIES: The elevator is undergoing scheduled unscheduled maintenance.',
+    'HR: Casual Friday has been moved to Monday and renamed Formal Monday.',
+    'IT: Your password must now contain a stamp, a staple and a sincere apology.',
+    'BULLETIN: Productivity is up 0.4%. A committee has been formed to find out why.',
+    'POLICY: Sticky notes are now classified as Formal Adhesive Correspondence.',
+    'KITCHEN: Whoever labeled the milk "Confidential" — thank you.',
+    'ACCOUNTING: Please submit receipts for your receipts.',
+    'NOTICE: The quiet room is closed due to noise complaints.',
+    'REMINDER: Deadlines are approaching. Deadlines are always approaching.',
+  ],
+};
+
+/* ---------- Справочники ---------- */
+const DEPT_BY_ID = Object.fromEntries(DEPARTMENTS.map(d => [d.id, d]));
+const UPG_BY_ID = Object.fromEntries(UPGRADES.map(u => [u.id, u]));
+
+/* ---------- Состояние игры ---------- */
+// prev — предыдущее состояние, если делаем реструктуризацию (сохраняем престиж)
+function freshState(prev) {
+  const now = Date.now();
+  return {
+    v: 1,
+    docs: 0, stamps: 0,
+    runEarned: 0,            // заработано за текущий «финансовый период» (до реструктуризации)
+    stampsEarnedRun: 0,
+    allTimeEarned: prev ? prev.allTimeEarned : 0,
+    seniority: prev ? prev.seniority : 0,
+    restructures: prev ? prev.restructures : 0,
+    depts: {}, upgrades: [],
+    flags: prev ? Object.assign({}, prev.flags) : {},
+    buyMode: prev ? prev.buyMode : 1,
+    created: prev ? prev.created : now,
+    runStarted: now,
+    lastSeen: now,
+  };
+}
+const owned = (s, id) => s.depts[id] || 0;
+const hasUpg = (s, id) => s.upgrades.indexOf(id) !== -1;
+function totalOwned(s) { let t = 0; for (const k in s.depts) t += s.depts[k]; return t; }
+
+// Собираем все модификаторы от купленных апгрейдов и престижа
+function getMods(s) {
+  const m = {
+    dept: {}, global: 1, cost: 1,
+    capHours: CONFIG.offline.baseCapHours, eff: CONFIG.offline.baseEfficiency,
+    stampsOn: false, stampMult: 1, senPer: CONFIG.prestige.bonusPerPoint,
+  };
+  for (const d of DEPARTMENTS) m.dept[d.id] = 1;
+  for (const id of s.upgrades) {
+    const u = UPG_BY_ID[id]; if (!u) continue;
+    const e = u.effect;
+    if (e.type === 'dept') m.dept[e.dept] *= e.mult;
+    else if (e.type === 'global') m.global *= e.mult;
+    else if (e.type === 'cost') m.cost *= e.mult;
+    else if (e.type === 'offlineCap') m.capHours += e.hours;
+    else if (e.type === 'offlineEff') m.eff += e.add;
+    else if (e.type === 'unlockStamps') m.stampsOn = true;
+    else if (e.type === 'stampMult') m.stampMult *= e.mult;
+    else if (e.type === 'seniority') m.senPer += e.add;
+  }
+  m.eff = Math.min(1, m.eff);
+  m.senMult = 1 + s.seniority * m.senPer;
+  return m;
+}
+
+// Множитель за «вехи»: каждые 25 штук — ×2
+function milestoneMult(c) { return Math.pow(CONFIG.milestones.mult, Math.floor(c / CONFIG.milestones.every)); }
+function deptRateAt(d, c, m) { return d.baseProd * c * m.dept[d.id] * milestoneMult(c) * m.global * m.senMult; }
+function deptRate(s, d, m) { return deptRateAt(d, owned(s, d.id), m); }
+function totalRate(s, m) { m = m || getMods(s); let r = 0; for (const d of DEPARTMENTS) r += deptRate(s, d, m); return r; }
+function stampRate(s, m) {
+  m = m || getMods(s);
+  return m.stampsOn ? CONFIG.stamps.perDepartmentPerSec * totalOwned(s) * m.stampMult : 0;
+}
+
+// Цена n штук отдела (сумма геометрической прогрессии)
+function deptCost(s, d, n, m) {
+  const g = CONFIG.costGrowth, c = owned(s, d.id);
+  return d.baseCost * m.cost * Math.pow(g, c) * (Math.pow(g, n) - 1) / (g - 1);
+}
+// Сколько штук можно купить прямо сейчас
+function maxBuy(s, d, m) {
+  const g = CONFIG.costGrowth;
+  const first = d.baseCost * m.cost * Math.pow(g, owned(s, d.id));
+  if (s.docs < first) return 0;
+  let k = Math.max(1, Math.floor(Math.log(s.docs * (g - 1) / first + 1) / Math.log(g)));
+  while (k > 1 && deptCost(s, d, k, m) > s.docs) k--; // защита от погрешности
+  return k;
+}
+
+function upgradesUnlocked(s) { return !!s.flags.upgradesTab || s.runEarned >= CONFIG.unlocks.upgradesTabEarned || s.restructures > 0; }
+function restructureUnlocked(s) { return !!s.flags.restructureTab || s.runEarned >= CONFIG.unlocks.restructureTabEarned || s.restructures > 0; }
+function deptVisible(s, d, i) { return i === 0 || owned(s, d.id) > 0 || s.runEarned >= d.baseCost * CONFIG.reveal.deptAtFraction; }
+
+function reqMet(s, u) {
+  const r = u.req || {};
+  if (r.dept && owned(s, r.dept) < r.count) return false;
+  if (r.upgrade && !hasUpg(s, r.upgrade)) return false;
+  if (r.earned && s.runEarned < r.earned) return false;
+  if (r.restructures && s.restructures < r.restructures) return false;
+  return true;
+}
+// Показываем только купленные или «почти доступные» апгрейды
+function upgVisible(s, u, m) {
+  if (hasUpg(s, u.id)) return true;
+  if (!upgradesUnlocked(s) || !reqMet(s, u)) return false;
+  if (u.currency === 'stamps') return m.stampsOn && s.stampsEarnedRun >= u.cost * CONFIG.reveal.upgradeAtFraction;
+  return s.runEarned >= u.cost * CONFIG.reveal.upgradeAtFraction;
+}
+function canAfford(s, u) { return u.currency === 'stamps' ? s.stamps >= u.cost : s.docs >= u.cost; }
+
+function buyDept(s, id, n) {
+  const d = DEPT_BY_ID[id], m = getMods(s);
+  if (!d || n < 1) return false;
+  const c = deptCost(s, d, n, m);
+  if (c > s.docs * (1 + 1e-12)) return false;
+  s.docs = Math.max(0, s.docs - c);
+  s.depts[id] = owned(s, id) + n;
+  return true;
+}
+function buyUpgrade(s, id) {
+  const u = UPG_BY_ID[id], m = getMods(s);
+  if (!u || hasUpg(s, id) || !upgVisible(s, u, m) || !canAfford(s, u)) return false;
+  if (u.currency === 'stamps') s.stamps = Math.max(0, s.stamps - u.cost);
+  else s.docs = Math.max(0, s.docs - u.cost);
+  s.upgrades.push(id);
+  return true;
+}
+
+// Начисление дохода за sec секунд с эффективностью eff (1 = онлайн)
+function advance(s, sec, eff) {
+  if (eff == null) eff = 1;
+  const m = getMods(s);
+  const d = totalRate(s, m) * sec * eff;
+  const st = stampRate(s, m) * sec * eff;
+  s.docs += d; s.runEarned += d; s.allTimeEarned += d;
+  s.stamps += st; s.stampsEarnedRun += st;
+  return { docs: d, stamps: st };
+}
+
+/* ---------- Престиж ---------- */
+function seniorityTotalFor(allTime) { return Math.floor(Math.sqrt(allTime / CONFIG.prestige.divisor)); }
+function seniorityGain(s) { return Math.max(0, seniorityTotalFor(s.allTimeEarned) - s.seniority); }
+function canRestructure(s) { return s.runEarned >= CONFIG.prestige.minRunEarned && seniorityGain(s) >= 1; }
+function nextSeniorityAt(s) {
+  const t = Math.max(seniorityTotalFor(s.allTimeEarned), s.seniority) + 1;
+  return CONFIG.prestige.divisor * t * t;
+}
+function restructure(s) {
+  const g = seniorityGain(s);
+  const n = freshState(s);
+  n.seniority = s.seniority + g;
+  n.restructures = s.restructures + 1;
+  return n;
+}
+// ===== ENGINE END =====
+
+
+/* =====================================================================
+   TELEGRAM: инициализация, хаптика, облачное сохранение
+   ===================================================================== */
+const tg = window.Telegram && window.Telegram.WebApp;
+const IN_TG = !!(tg && tg.initData);           // в обычном браузере initData пустой
+if (!IN_TG) document.documentElement.classList.add('no-tg');
+function tgv(v) { try { return IN_TG && tg.isVersionAtLeast(v); } catch (e) { return false; } }
+if (IN_TG) {
+  try { tg.ready(); tg.expand(); } catch (e) {}
+  if (tgv('7.7')) { try { tg.disableVerticalSwipes(); } catch (e) {} } // чтобы скролл не сворачивал приложение
+}
+
+const haptic = {
+  light() { if (tgv('6.1')) try { tg.HapticFeedback.impactOccurred('light'); } catch (e) {} },
+  success() { if (tgv('6.1')) try { tg.HapticFeedback.notificationOccurred('success'); } catch (e) {} },
+};
+
+const SAVE_KEY = 'paperwork_inc_save_v1';
+const Store = {
+  cloud: IN_TG && tgv('6.9') && !!tg.CloudStorage,
+  // Загружаем и из облака, и из localStorage — берём более свежее
+  load() {
+    return new Promise(resolve => {
+      let local = null;
+      try { local = JSON.parse(localStorage.getItem(SAVE_KEY)); } catch (e) {}
+      if (!this.cloud) return resolve(local);
+      let done = false;
+      const timer = setTimeout(() => { if (!done) { done = true; resolve(local); } }, 2500);
+      try {
+        tg.CloudStorage.getItem(SAVE_KEY, (err, val) => {
+          if (done) return; done = true; clearTimeout(timer);
+          let cloud = null;
+          if (!err && val) { try { cloud = JSON.parse(val); } catch (e) {} }
+          if (cloud && local) resolve((cloud.lastSeen || 0) >= (local.lastSeen || 0) ? cloud : local);
+          else resolve(cloud || local);
+        });
+      } catch (e) { done = true; clearTimeout(timer); resolve(local); }
+    });
+  },
+  save(state) {
+    const str = JSON.stringify(state);
+    try { localStorage.setItem(SAVE_KEY, str); } catch (e) {}
+    if (this.cloud) { try { tg.CloudStorage.setItem(SAVE_KEY, str, () => {}); } catch (e) {} }
+  },
+  wipe() {
+    try { localStorage.removeItem(SAVE_KEY); } catch (e) {}
+    if (this.cloud) { try { tg.CloudStorage.removeItem(SAVE_KEY, () => {}); } catch (e) {} }
+  },
+};
+
+// Дополняем старое сохранение недостающими полями
+function migrate(raw) {
+  if (!raw || typeof raw !== 'object') return null;
+  const s = Object.assign(freshState(), raw);
+  s.depts = Object.assign({}, raw.depts || {});
+  s.upgrades = Array.isArray(raw.upgrades) ? raw.upgrades.filter(id => UPG_BY_ID[id]) : [];
+  s.flags = Object.assign({}, raw.flags || {});
+  for (const k of ['docs','stamps','runEarned','stampsEarnedRun','allTimeEarned','seniority','restructures'])
+    if (!isFinite(s[k]) || s[k] < 0) s[k] = 0;
+  return s;
+}
+
+/* =====================================================================
+   ФОРМАТИРОВАНИЕ
+   ===================================================================== */
+function fmt(n) {
+  if (!isFinite(n)) return '∞';
+  if (n < 0) return '-' + fmt(-n);
+  if (n < 10) return (Math.floor(n * 10) / 10).toFixed(n % 1 === 0 ? 0 : 1);
+  if (n < 1000) return String(Math.floor(n));
+  const units = ['K', 'M', 'B', 'T'];
+  const e = Math.floor(Math.log10(n) / 3);
+  if (e > units.length) return n.toExponential(2).replace('e+', 'e');
+  const v = n / Math.pow(1000, e);
+  return (v < 100 ? (Math.floor(v * 10) / 10).toFixed(1) : String(Math.floor(v))) + units[e - 1];
+}
+function fmtRate(n) { return n > 0 && n < 10 ? (Math.round(n * 100) / 100).toString() : fmt(n); }
+function fmtTime(sec) {
+  if (!isFinite(sec)) return '∞';
+  sec = Math.max(0, Math.ceil(sec));
+  const pad = x => String(x).padStart(2, '0');
+  if (sec < 60) return sec + 's';
+  const m = Math.floor(sec / 60);
+  if (m < 60) return m + 'm ' + pad(sec % 60) + 's';
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + 'h ' + pad(m % 60) + 'm';
+  return Math.floor(h / 24) + 'd ' + (h % 24) + 'h';
+}
+const pct = x => Math.round(x * 100) + '%';
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const esc = str => String(str).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+
+// Номер формы для апгрейда генерируется из его позиции
+function upgForm(u) { const i = UPGRADES.indexOf(u); return 'Form ' + (60 + i) + '-' + 'ABCDEFGHJKLMNPRSTUVWXYZ'[i % 23]; }
+// Человекочитаемый эффект апгрейда
+function effectText(u) {
+  const e = u.effect;
+  const pctMult = mult => '+' + Math.round((mult - 1) * 100) + '%';
+  switch (e.type) {
+    case 'dept': return DEPT_BY_ID[e.dept].name + ' output ' + pctMult(e.mult);
+    case 'global': return 'All department output ' + pctMult(e.mult);
+    case 'cost': return 'All department prices −' + Math.round((1 - e.mult) * 100) + '%';
+    case 'offlineCap': return 'Offline records cap +' + e.hours + 'h';
+    case 'offlineEff': return 'Offline efficiency +' + Math.round(e.add * 100) + '%';
+    case 'unlockStamps': return 'Unlocks Stamps: every department presses ' + CONFIG.stamps.perDepartmentPerSec + ' stamps/sec';
+    case 'stampMult': return 'Stamp output ' + pctMult(e.mult);
+    case 'seniority': return 'Each Seniority point +' + Math.round(e.add * 100) + '% more income';
+  }
+  return '';
+}
+const curIcon = u => u.currency === 'stamps' ? '🔏' : '📄';
+
+/* =====================================================================
+   ИНТЕРФЕЙС
+   ===================================================================== */
+const $ = id => document.getElementById(id);
+let S = null;                 // текущее состояние
+let activeTab = 'depts';
+let lastTick = Date.now();
+let deptKey = '', upgKey = '', filedKey = '', filedOpen = false;
+let modalOpen = false;
+
+/* ---------- Тосты (очередь) ---------- */
+const toastQ = []; let toastBusy = false;
+function toast(msg) { toastQ.push(msg); if (!toastBusy) nextToast(); }
+function nextToast() {
+  const el = $('toast');
+  if (!toastQ.length) { toastBusy = false; return; }
+  toastBusy = true; el.textContent = toastQ.shift(); el.classList.add('show');
+  setTimeout(() => { el.classList.remove('show'); setTimeout(nextToast, 350); }, 2600);
+}
+
+/* ---------- Модальное окно ---------- */
+function showModal({ form, title, stamp, body, buttons }) {
+  const sheet = $('sheet');
+  sheet.innerHTML =
+    (stamp ? `<div class="m-stamp">${stamp}</div>` : '') +
+    `<div class="m-form">${form || ''}</div><h2>${title}</h2><div class="m-body">${body}</div>` +
+    `<div class="m-btns">${buttons.map((b, i) => `<button class="btn ${b.ghost ? 'ghost' : ''} ${b.danger ? 'danger' : ''}" data-mb="${i}">${b.label}</button>`).join('')}</div>`;
+  sheet.querySelectorAll('[data-mb]').forEach(btn => {
+    btn.onclick = () => { const b = buttons[+btn.dataset.mb]; closeModal(); if (b.onClick) b.onClick(); };
+  });
+  $('overlay').classList.add('show'); modalOpen = true;
+}
+function closeModal() { $('overlay').classList.remove('show'); modalOpen = false; }
+
+/* ---------- Окно «пока вас не было» ---------- */
+function showAway(awaySec, countedSec, gained, m) {
+  const capped = awaySec > countedSec + 1;
+  let body = '';
+  if (gained.docs <= 0) {
+    body = `<p>You were away for <b class="mono">${fmtTime(awaySec)}</b>.</p><div class="m-joke">${TEXTS.quietOffice}</div>`;
+  } else {
+    body = `<p>While you were away for <b class="mono">${fmtTime(awaySec)}</b>, the company approved <b class="mono">${fmt(gained.docs)}</b> documents` +
+      (gained.stamps > 0 ? ` and pressed <b class="mono">${fmt(gained.stamps)}</b> stamps` : '') + `.</p>` +
+      `<p class="hint mono" style="font-size:12px">Offline efficiency ${pct(m.eff)} · records cover up to ${m.capHours}h</p>` +
+      (capped ? `<p style="font-size:13px">⚠️ Records only cover the first <b>${m.capHours}h</b> of your absence. Upgrades can expand the filing cabinet.</p>` : '') +
+      `<div class="m-joke">📎 Meanwhile: ${pick(TEXTS.jokes)}</div>`;
+  }
+  showModal({ form: TEXTS.awayForm, title: '📬 ' + TEXTS.awayTitle, stamp: TEXTS.awayStamp, body,
+    buttons: [{ label: TEXTS.awayBtn }] });
+  if (gained.docs > 0) haptic.success();
+}
+
+// Начисляем офлайн-доход с учётом лимита и эффективности
+function applyAway(sec) {
+  const m = getMods(S);
+  const counted = Math.min(sec, m.capHours * 3600);
+  const gained = advance(S, counted, m.eff);
+  checkUnlocks(true);
+  showAway(sec, counted, gained, m);
+}
+
+/* ---------- Проверка открытия механик ---------- */
+function checkUnlocks(silent) {
+  const m = getMods(S);
+  if (!S.flags.upgradesTab && upgradesUnlocked(S)) {
+    S.flags.upgradesTab = true;
+    if (!silent) { toast('📎 Procurement has opened. Upgrades tab unlocked.'); haptic.success(); }
+  }
+  if (!S.flags.restructureTab && restructureUnlocked(S)) {
+    S.flags.restructureTab = true;
+    if (!silent) { toast('🔄 The Board mentions "restructuring". Tab unlocked.'); haptic.success(); }
+  }
+  DEPARTMENTS.forEach((d, i) => {
+    const f = 'seen_' + d.id;
+    if (i > 0 && !S.flags[f] && deptVisible(S, d, i)) {
+      S.flags[f] = true;
+      if (!silent) { toast(d.emoji + ' New department cleared for acquisition: ' + d.name); haptic.success(); }
+    }
+  });
+  if (canRestructure(S) && !S.flags['canR_' + S.restructures]) {
+    S.flags['canR_' + S.restructures] = true;
+    if (!silent) { toast('🎖️ Restructuring is now available. Form 99-R awaits.'); haptic.success(); }
+  }
+}
+
+/* ---------- Сборка карточек отделов ---------- */
+function buildDepts() {
+  const vis = []; let teaser = null;
+  DEPARTMENTS.forEach((d, i) => { if (deptVisible(S, d, i)) vis.push(d); else if (!teaser) teaser = d; });
+  const key = vis.map(d => d.id).join(',') + '|' + (teaser ? teaser.id : '');
+  if (key === deptKey) return;
+  deptKey = key;
+  let html = vis.map(d => `
+    <div class="card dept" id="d-${d.id}">
+      <div class="c-head"><span class="c-emoji">${d.emoji}</span>
+        <div class="c-title"><div class="c-name">${esc(d.name)}</div><div class="c-form mono">${d.form}</div></div>
+        <div class="c-owned mono" data-f="owned"></div></div>
+      <div class="c-desc">${esc(d.desc)}</div>
+      <div class="c-stats mono" data-f="stats"></div>
+      <div class="ms"><div class="ms-bar"><i data-f="bar"></i></div><span class="mono" data-f="ms"></span></div>
+      <button class="btn" data-act="buyDept" data-id="${d.id}"><span data-f="bl"></span><span class="sub mono" data-f="bs"></span></button>
+    </div>`).join('');
+  if (teaser) html += `
+    <div class="card redacted" id="d-teaser">
+      <div class="c-head"><span class="c-emoji">🔒</span>
+        <div class="c-title"><div class="c-name"><span class="rbar">${'X'.repeat(Math.min(24, teaser.name.length))}</span></div>
+        <div class="c-form mono">Classified · pending clearance</div></div></div>
+      <div class="c-desc">Clearance granted once <b class="mono">${fmt(teaser.baseCost * CONFIG.reveal.deptAtFraction)}</b> documents are approved this fiscal period.</div>
+    </div>`;
+  $('deptList').innerHTML = html;
+}
+
+function renderDepts(m, rate) {
+  buildDepts();
+  const every = CONFIG.milestones.every;
+  for (const d of DEPARTMENTS) {
+    const card = $('d-' + d.id); if (!card) continue;
+    const c = owned(S, d.id);
+    const f = name => card.querySelector('[data-f="' + name + '"]');
+    f('owned').textContent = '×' + c;
+    const total = deptRate(S, d, m);
+    const each = c > 0 ? total / c : deptRateAt(d, 1, m);
+    f('stats').textContent = c > 0
+      ? `${fmtRate(each)}/s each · ${fmtRate(total)}/s total` + (rate > 0 ? ` · ${Math.round(total / rate * 100)}%` : '')
+      : `${fmtRate(deptRateAt(d, 1, m))}/s each`;
+    const nextMs = (Math.floor(c / every) + 1) * every;
+    f('bar').style.width = ((c % every) / every * 100) + '%';
+    f('ms').textContent = `${c}/${nextMs} → output ×${CONFIG.milestones.mult}`;
+    // кнопка покупки
+    let n = S.buyMode === 'max' ? maxBuy(S, d, m) : S.buyMode;
+    if (n < 1) n = 1;
+    const cost = deptCost(S, d, n, m);
+    const btn = card.querySelector('[data-act="buyDept"]');
+    const ok = S.docs >= cost;
+    btn.disabled = !ok;
+    f('bl').textContent = ok ? `Acquire ×${n}` : (rate > 0 ? `⏳ Pending funds · ${fmtTime((cost - S.docs) / rate)}` : '⏳ Pending funds');
+    f('bs').textContent = '📄 ' + fmt(cost);
+  }
+  document.querySelectorAll('.po button').forEach(b => b.classList.toggle('on', String(S.buyMode) === b.dataset.id));
+}
+
+/* ---------- Апгрейды ---------- */
+function renderUpgrades(m, rate, sRate) {
+  const avail = UPGRADES.filter(u => !hasUpg(S, u.id) && upgVisible(S, u, m))
+    .sort((a, b) => (a.currency === b.currency ? a.cost - b.cost : a.currency === 'docs' ? -1 : 1));
+  const key = avail.map(u => u.id).join(',');
+  if (key !== upgKey) {
+    upgKey = key;
+    $('upgList').innerHTML = avail.length ? avail.map(u => `
+      <div class="card upg" id="u-${u.id}">
+        <div class="c-head"><span class="c-emoji">${u.emoji}</span>
+          <div class="c-title"><div class="c-name">${esc(u.name)}</div><div class="c-form mono">${upgForm(u)}</div></div></div>
+        <div class="c-desc">${esc(u.desc)}</div>
+        <div class="effect mono">▸ ${esc(effectText(u))}</div>
+        <button class="btn" data-act="buyUpg" data-id="${u.id}"><span data-f="bl"></span><span class="sub mono" data-f="bs"></span></button>
+      </div>`).join('') : `<div class="empty">${TEXTS.noUpgrades}</div>`;
+  }
+  let affordable = 0;
+  for (const u of avail) {
+    const card = $('u-' + u.id); if (!card) continue;
+    const have = u.currency === 'stamps' ? S.stamps : S.docs;
+    const r = u.currency === 'stamps' ? sRate : rate;
+    const ok = have >= u.cost; if (ok) affordable++;
+    const btn = card.querySelector('[data-act="buyUpg"]');
+    btn.disabled = !ok;
+    card.querySelector('[data-f="bl"]').textContent = ok ? 'Approve requisition' : (r > 0 ? `⏳ Pending funds · ${fmtTime((u.cost - have) / r)}` : '⏳ Pending funds');
+    card.querySelector('[data-f="bs"]').textContent = curIcon(u) + ' ' + fmt(u.cost);
+  }
+  // Список купленных
+  const fk = S.upgrades.join(',');
+  if (fk !== filedKey) {
+    filedKey = fk;
+    const bought = S.upgrades.map(id => UPG_BY_ID[id]).filter(Boolean);
+    $('upgFiled').innerHTML = bought.length ? `<details class="filed" ${filedOpen ? 'open' : ''}><summary>Filed &amp; approved (${bought.length})</summary>` +
+      bought.map(u => `<div class="filed-row">${u.emoji} ${esc(u.name)}<br><span class="mono">✓ ${esc(effectText(u))}</span></div>`).join('') + '</details>' : '';
+    const det = $('upgFiled').querySelector('details');
+    if (det) det.addEventListener('toggle', () => { filedOpen = det.open; });
+  }
+  const badge = $('upgBadge');
+  badge.hidden = affordable === 0; badge.textContent = affordable;
+}
+
+/* ---------- Реструктуризация ---------- */
+function renderRestructure(m) {
+  const gain = seniorityGain(S);
+  $('rDesc').textContent = TEXTS.restructureDesc.replace('{bonus}', '+' + Math.round(m.senPer * 100));
+  $('rSen').textContent = fmt(S.seniority);
+  $('rBonus').textContent = '+' + Math.round(S.seniority * m.senPer * 100) + '%';
+  $('rRun').textContent = fmt(S.runEarned);
+  $('rAll').textContent = fmt(S.allTimeEarned);
+  $('rNext').textContent = fmt(nextSeniorityAt(S));
+  $('rGain').textContent = '+' + fmt(gain) + ' 🎖️';
+  const p = Math.min(1, S.runEarned / CONFIG.prestige.minRunEarned);
+  $('rProg').style.width = (p * 100) + '%';
+  $('rProgText').textContent = `${fmt(S.runEarned)} / ${fmt(CONFIG.prestige.minRunEarned)} documents this fiscal period`;
+  const can = canRestructure(S);
+  $('rBtn').disabled = !can;
+  $('rBtn').firstElementChild.textContent = can ? 'File Form 99-R' : (p < 1 ? 'Insufficient fiscal output' : 'Awaiting next Seniority point');
+  $('rCount').textContent = S.restructures;
+  $('rCap').textContent = m.capHours + 'h';
+  $('rEff').textContent = pct(m.eff);
+  $('rOwned').textContent = totalOwned(S);
+}
+
+/* ---------- Главная отрисовка ---------- */
+function render() {
+  const m = getMods(S);
+  const rate = totalRate(S, m), sRate = stampRate(S, m);
+  $('docs').textContent = fmt(S.docs);
+  $('rate').textContent = '+' + fmtRate(rate) + ' / sec';
+  $('stampsLine').hidden = !m.stampsOn;
+  if (m.stampsOn) { $('stamps').textContent = fmt(S.stamps); $('stampRate').textContent = '+' + fmtRate(sRate) + '/s'; }
+  $('senLine').hidden = S.seniority <= 0;
+  if (S.seniority > 0) { $('sen').textContent = fmt(S.seniority); $('senBonus').textContent = '+' + Math.round(S.seniority * m.senPer * 100) + '%'; }
+  // Кнопка ручной подписи уходит на второй план после первой покупки
+  $('signBtn').classList.toggle('minor', totalOwned(S) > 0);
+
+  // Вкладки
+  const locks = { depts: false, upgs: !upgradesUnlocked(S), restr: !restructureUnlocked(S) };
+  const icons = { depts: '🗄️', upgs: '📎', restr: '🔄' };
+  document.querySelectorAll('.tab').forEach(t => {
+    const id = t.dataset.id;
+    t.disabled = locks[id];
+    t.querySelector('.t-ico').textContent = locks[id] ? '🔒' : icons[id];
+    t.classList.toggle('active', id === activeTab);
+  });
+  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'p-' + activeTab));
+
+  renderDepts(m, rate);
+  renderUpgrades(m, rate, sRate);
+  if (activeTab === 'restr') renderRestructure(m);
+}
+
+/* ---------- Эффект печати на карточке ---------- */
+function stampFx(cardId, text) {
+  const card = $(cardId); if (!card) return;
+  const s = document.createElement('div');
+  s.className = 'stamp-anim'; s.textContent = text || 'APPROVED';
+  card.appendChild(s); setTimeout(() => s.remove(), 1100);
+}
+
+/* ---------- Действия игрока ---------- */
+function onSign(btn) {
+  S.docs += CONFIG.manualSignAmount; S.runEarned += CONFIG.manualSignAmount; S.allTimeEarned += CONFIG.manualSignAmount;
+  haptic.light();
+  const f = document.createElement('span');
+  f.className = 'float-num'; f.textContent = '+' + CONFIG.manualSignAmount;
+  btn.appendChild(f); setTimeout(() => f.remove(), 800);
+  render();
+}
+function onBuyDept(id) {
+  const d = DEPT_BY_ID[id], m = getMods(S);
+  let n = S.buyMode === 'max' ? maxBuy(S, d, m) : S.buyMode;
+  const before = owned(S, id);
+  if (!buyDept(S, id, n)) return;
+  haptic.light();
+  stampFx('d-' + id);
+  const every = CONFIG.milestones.every;
+  if (Math.floor(owned(S, id) / every) > Math.floor(before / every)) {
+    toast(`📈 ${d.name} reached ${Math.floor(owned(S, id) / every) * every}. Output ×${CONFIG.milestones.mult}, per Form 25-X.`);
+    haptic.success();
+  }
+  if (before === 0 && totalOwned(S) === n && id === DEPARTMENTS[0].id) toast('🪑 First department opened. The company now runs itself, as all good companies do.');
+  render();
+}
+function onBuyUpg(id) {
+  const u = UPG_BY_ID[id];
+  if (!buyUpgrade(S, id)) return;
+  haptic.light();
+  if (u.effect.type === 'unlockStamps') { toast('🔏 Stamps unlocked. Every department now presses stamps.'); haptic.success(); }
+  else toast('✅ Approved: ' + u.name);
+  render(); save();
+}
+function onRestructure() {
+  if (!canRestructure(S)) return;
+  const gain = seniorityGain(S), m = getMods(S);
+  const total = S.seniority + gain;
+  showModal({
+    form: TEXTS.restructureConfirmForm, title: TEXTS.restructureConfirmTitle, stamp: 'BOARD',
+    body: `<p>You will receive <b class="mono">+${fmt(gain)}</b> Seniority.</p>` +
+      `<p>Total Seniority: <b class="mono">${fmt(total)}</b> → <b class="mono">+${Math.round(total * m.senPer * 100)}%</b> to all income, permanently.</p>` +
+      `<p class="hint" style="font-size:13px">All documents, departments, stamps and upgrades will be shredded. Seniority and corporate records are kept.</p>`,
+    buttons: [
+      { label: TEXTS.restructureBtn, onClick: () => {
+          S = restructure(S);
+          deptKey = upgKey = filedKey = '';
+          activeTab = 'depts';
+          haptic.success();
+          toast(`🎖️ Restructuring complete. Seniority: ${fmt(S.seniority)}.`);
+          save(); render();
+        } },
+      { label: TEXTS.cancelBtn, ghost: true },
+    ],
+  });
+}
+function onReset() {
+  showModal({
+    form: TEXTS.resetForm, title: TEXTS.resetTitle, stamp: 'VOID', body: `<p>${TEXTS.resetBody}</p>`,
+    buttons: [
+      { label: TEXTS.resetBtn, danger: true, onClick: () => {
+          Store.wipe(); S = freshState(); deptKey = upgKey = filedKey = ''; activeTab = 'depts';
+          save(); render(); showIntro();
+        } },
+      { label: TEXTS.cancelBtn, ghost: true },
+    ],
+  });
+}
+function showIntro() {
+  showModal({ form: TEXTS.introForm, title: '🗂️ ' + TEXTS.introTitle, stamp: 'HIRED',
+    body: TEXTS.introBody.map(p => `<p>${p}</p>`).join(''), buttons: [{ label: TEXTS.introBtn }] });
+}
+
+// Один обработчик кликов на всё (делегирование)
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-act]');
+  if (!t || t.disabled) return;
+  const id = t.dataset.id;
+  switch (t.dataset.act) {
+    case 'sign': onSign(t); break;
+    case 'buyDept': onBuyDept(id); break;
+    case 'buyUpg': onBuyUpg(id); break;
+    case 'tab': activeTab = id; window.scrollTo({ top: 0 }); render(); break;
+    case 'mode': S.buyMode = id === 'max' ? 'max' : +id; haptic.light(); render(); break;
+    case 'restructure': onRestructure(); break;
+    case 'reset': onReset(); break;
+  }
+});
+$('overlay').addEventListener('click', e => { if (e.target === $('overlay')) closeModal(); });
+
+/* ---------- Сохранение ---------- */
+function save() { if (!S) return; S.lastSeen = Date.now(); Store.save(S); }
+
+/* ---------- Игровой цикл ---------- */
+function tick() {
+  if (!S || document.hidden) return;   // в фоне не считаем: при возврате сработает офлайн-логика
+  const now = Date.now();
+  const dt = (now - lastTick) / 1000;
+  lastTick = now;
+  if (dt <= 0) return;
+  if (dt >= CONFIG.offline.minAwaySec) applyAway(dt);
+  else advance(S, dt, 1);
+  S.lastSeen = now;
+  checkUnlocks(false);
+  render();
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) save();
+  else tick();
+});
+window.addEventListener('pagehide', save);
+
+/* ---------- Ротация служебных записок ---------- */
+function rotateMemo() {
+  const el = $('memo');
+  el.classList.add('fade');
+  setTimeout(() => { el.textContent = pick(TEXTS.memos); el.classList.remove('fade'); }, 400);
+}
+
+/* ---------- Старт ---------- */
+(async function start() {
+  const saved = migrate(await Store.load());
+  $('memo').textContent = pick(TEXTS.memos);
+  if (saved) {
+    S = saved;
+    const away = (Date.now() - (S.lastSeen || Date.now())) / 1000;
+    if (away >= CONFIG.offline.minAwaySec) applyAway(away);
+    else if (away > 0) advance(S, away, 1);
+    checkUnlocks(true);
+  } else {
+    S = freshState();
+    showIntro();
+  }
+  lastTick = Date.now();
+  S.lastSeen = lastTick;
+  render();
+  setInterval(tick, CONFIG.tickMs);
+  setInterval(save, CONFIG.saveIntervalMs);
+  setInterval(rotateMemo, 15000);
+})();
+</script>
+</body>
+</html>
