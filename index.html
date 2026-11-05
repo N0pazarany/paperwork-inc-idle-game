@@ -50,6 +50,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 .hint{color:var(--hint)}
 .wrap{max-width:520px;margin:0 auto;padding:10px 12px calc(28px + env(safe-area-inset-bottom))}
+/* Настройка «Анимации печатей: выкл» */
+html.no-anim *, html.no-anim *::before, html.no-anim *::after{animation:none!important;transition:none!important}
+html.no-anim .stamp-anim, html.no-anim .float-num{display:none}
 
 /* ---------- Шапка-бланк ---------- */
 .hdr{
@@ -60,15 +63,20 @@ button{font:inherit;color:inherit;cursor:pointer}
 .hdr::after{ /* красная «линия полей» как на бланке */
   content:""; position:absolute; top:0; bottom:0; left:8px; width:1px; background:var(--ink); opacity:.35;
 }
-.hdr-top{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--hint)}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--hint);position:relative;z-index:1}
+.hdr-right{display:flex;align-items:center;gap:8px}
 .brand{font-weight:800;color:var(--text);letter-spacing:.16em}
+.gear{
+  border:1px solid var(--line-strong); background:var(--card); border-radius:6px;
+  width:32px; height:30px; font-size:16px; line-height:1; padding:0;
+}
+.gear:active{transform:scale(.94)}
 .docs{font-size:40px;font-weight:700;margin-top:6px;line-height:1.1;letter-spacing:-.01em}
 .docs-label{font-size:11px;color:var(--hint);text-transform:uppercase;letter-spacing:.1em}
 .rate{font-size:15px;color:var(--link);margin-top:4px}
 .subres{display:flex;gap:6px 14px;flex-wrap:wrap;margin-top:6px;font-size:13px}
-.subres:empty{display:none}
 .seal{
-  position:absolute; right:12px; top:30px; transform:rotate(-14deg);
+  position:absolute; right:12px; top:42px; transform:rotate(-14deg);
   border:3px double var(--ink); color:var(--ink); border-radius:50%;
   width:78px; height:78px; display:flex; align-items:center; justify-content:center; text-align:center;
   font:800 10px/1.15 var(--mono); letter-spacing:.08em; opacity:.33; pointer-events:none;
@@ -90,10 +98,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 @keyframes floatUp{from{opacity:1;transform:translate(-50%,0)}to{opacity:0;transform:translate(-50%,-34px)}}
 
 /* ---------- Строка служебной записки ---------- */
-.memo{
-  margin:8px 2px 0; font:12px/1.35 var(--mono); color:var(--hint);
-  min-height:32px; transition:opacity .4s;
-}
+.memo{margin:8px 2px 0; font:12px/1.35 var(--mono); color:var(--hint); min-height:32px; transition:opacity .4s}
 .memo.fade{opacity:0}
 
 /* ---------- Вкладки-папки ---------- */
@@ -102,11 +107,13 @@ button{font:inherit;color:inherit;cursor:pointer}
   background:var(--bg); border-bottom:1px solid var(--line-strong); margin-top:4px;
 }
 .tab{
-  flex:1; border:1px solid var(--line-strong); border-bottom:0; border-radius:8px 8px 0 0;
-  background:transparent; padding:9px 4px 8px; font-size:13px; font-weight:600; color:var(--hint);
+  flex:1 1 auto; border:1px solid var(--line-strong); border-bottom:0; border-radius:8px 8px 0 0;
+  background:transparent; padding:9px 6px 8px; font-size:13px; font-weight:600; color:var(--hint);
   position:relative; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
 .tab.active{background:var(--card);color:var(--text);margin-bottom:-1px}
+html[lang=ru] .tab{font-size:12.5px;padding-left:4px;padding-right:4px}
+@media (max-width:370px){.tab{font-size:12px}.tab .t-ico{display:none}}
 .tab:disabled{opacity:.45;cursor:default}
 .badge{
   display:inline-block; min-width:16px; height:16px; padding:0 4px; margin-left:4px; border-radius:8px;
@@ -143,6 +150,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .btn:active:not(:disabled){transform:scale(.985)}
 .btn:disabled{background:transparent;color:var(--hint);border:1px dashed var(--line-strong);cursor:default}
 .btn.danger{background:transparent;color:var(--ink);border:1px solid var(--ink)}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line-strong)}
 
 .redacted .c-name .rbar{background:var(--text);color:transparent;border-radius:2px;padding:0 4px}
 .redacted{opacity:.75}
@@ -175,9 +183,9 @@ details.filed summary{font-size:12px;color:var(--hint);text-transform:uppercase;
 .filed-row{font-size:13px;padding:6px 2px;border-bottom:1px dashed var(--line)}
 .filed-row .mono{font-size:11.5px;color:var(--link)}
 
-/* Реструктуризация */
+/* Реорганизация */
 .kv{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:13px}
-.kv b{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.kv b{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
 .big-gain{font:700 28px var(--mono);color:var(--ink);text-align:center;margin:10px 0 2px}
 .progress{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin:6px 0 4px}
 .progress i{display:block;height:100%;background:var(--ink);width:0}
@@ -194,11 +202,12 @@ details.filed summary{font-size:12px;color:var(--hint);text-transform:uppercase;
   width:100%; max-width:480px; max-height:88vh; overflow:auto; background:var(--card); color:var(--text);
   border-radius:10px; padding:18px 18px calc(16px + env(safe-area-inset-bottom)); position:relative;
   background-image:repeating-linear-gradient(to bottom, transparent 0 23px, var(--rule) 23px 24px);
-  animation:slideUp .25s ease-out;
+  animation:slideUp .25s ease-out; overscroll-behavior:contain;
 }
 @keyframes slideUp{from{transform:translateY(30px)}to{transform:none}}
 .sheet .m-form{font:11px var(--mono);color:var(--hint);letter-spacing:.1em;text-transform:uppercase}
 .sheet h2{margin:4px 0 10px;font-size:20px}
+.sheet.stamped .m-form,.sheet.stamped h2{padding-right:118px}
 .sheet .m-body{font-size:14.5px}
 .sheet .m-body p{margin:0 0 10px}
 .sheet .m-joke{font-style:italic;color:var(--hint);border-left:2px solid var(--ink);padding:2px 0 2px 10px;margin:12px 0}
@@ -209,7 +218,35 @@ details.filed summary{font-size:12px;color:var(--hint);text-transform:uppercase;
 }
 .m-btns{display:flex;flex-direction:column;gap:8px;margin-top:14px}
 .m-btns .btn{justify-content:center}
-.m-btns .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line-strong)}
+textarea.code{
+  width:100%; height:110px; resize:none; font:11px/1.35 var(--mono); word-break:break-all;
+  background:var(--bg); color:var(--text); border:1px solid var(--line-strong); border-radius:6px; padding:8px;
+  -webkit-user-select:text; user-select:text;
+}
+
+/* ---------- Окно настроек ---------- */
+.set-sec{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--hint);margin:16px 0 2px}
+.set-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px 12px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.set-label small{display:block;font-size:11.5px;color:var(--hint)}
+.switch{
+  width:46px; height:26px; border-radius:13px; border:0; padding:0; flex:none;
+  background:var(--line-strong); position:relative; transition:background .15s;
+}
+.switch::after{
+  content:""; position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%;
+  background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.25); transition:left .15s;
+}
+.switch.on{background:var(--accent)}
+.switch.on::after{left:23px}
+.seg{display:flex;border:1px solid var(--line-strong);border-radius:6px;overflow:hidden;flex:none}
+.seg button{border:0;background:transparent;padding:6px 10px;font-size:12.5px;color:var(--hint)}
+.seg button+button{border-left:1px solid var(--line-strong)}
+.seg button.on{background:var(--text);color:var(--card)}
+input.vol{width:150px;accent-color:var(--accent)}
+input.vol:disabled{opacity:.4}
+.btn-row{display:flex;gap:8px}
+.btn-row .btn{justify-content:center;font-size:13px}
+.credit{text-align:center;font-size:11px;color:var(--hint);margin-top:16px;letter-spacing:.04em}
 
 /* ---------- Тост ---------- */
 .toast{
@@ -227,29 +264,32 @@ details.filed summary{font-size:12px;color:var(--hint);text-transform:uppercase;
   <!-- Шапка: главные цифры -->
   <header class="hdr">
     <div class="seal">PAPER<br>WORK<br>INC.</div>
-    <div class="hdr-top"><span class="brand">Paperwork Inc.</span><span class="mono">Form 0-0 · Ledger</span></div>
-    <div class="docs mono" id="docs">0</div>
-    <div class="docs-label">documents approved</div>
-    <div class="rate mono" id="rate">+0 / sec</div>
-    <div class="subres">
-      <span id="stampsLine" hidden>🔏 <b class="mono" id="stamps">0</b> stamps <span class="mono hint" id="stampRate"></span></span>
-      <span id="senLine" hidden>🎖️ Seniority <b class="mono" id="sen">0</b> <span class="mono hint" id="senBonus"></span></span>
+    <div class="hdr-top">
+      <span class="brand">Paperwork Inc.</span>
+      <span class="hdr-right"><span class="mono" data-i18n="ledger"></span><button class="gear" data-act="settings" aria-label="Settings">⚙️</button></span>
     </div>
-    <button class="sign" id="signBtn" data-act="sign">✍️ Sign manually <span class="mono">(+1)</span></button>
+    <div class="docs mono" id="docs">0</div>
+    <div class="docs-label" data-i18n="docsLabel"></div>
+    <div class="rate mono" id="rate">+0</div>
+    <div class="subres">
+      <span id="stampsLine" hidden>🔏 <b class="mono" id="stamps">0</b> <span data-i18n="stampsWord"></span> <span class="mono hint" id="stampRate"></span></span>
+      <span id="senLine" hidden>🎖️ <span data-i18n="seniority"></span> <b class="mono" id="sen">0</b> <span class="mono hint" id="senBonus"></span></span>
+    </div>
+    <button class="sign" id="signBtn" data-act="sign">✍️ <span data-i18n="sign"></span> <span class="mono">(+1)</span></button>
   </header>
 
   <div class="memo" id="memo"></div>
 
   <!-- Вкладки -->
   <nav class="tabs" id="tabs">
-    <button class="tab active" data-act="tab" data-id="depts"><span class="t-ico">🗄️</span> Departments</button>
-    <button class="tab" data-act="tab" data-id="upgs"><span class="t-ico">📎</span> Upgrades<span class="badge" id="upgBadge" hidden></span></button>
-    <button class="tab" data-act="tab" data-id="restr"><span class="t-ico">🔄</span> Restructuring</button>
+    <button class="tab active" data-act="tab" data-id="depts"><span class="t-ico">🗄️</span> <span data-i18n="tabDepts"></span></button>
+    <button class="tab" data-act="tab" data-id="upgs"><span class="t-ico">📎</span> <span data-i18n="tabUpgs"></span><span class="badge" id="upgBadge" hidden></span></button>
+    <button class="tab" data-act="tab" data-id="restr"><span class="t-ico">🔄</span> <span data-i18n="tabRestr"></span></button>
   </nav>
 
   <!-- Отделы -->
   <section class="panel active" id="p-depts">
-    <div class="po">Purchase order · qty<span class="sp"></span>
+    <div class="po"><span data-i18n="purchaseOrder"></span><span class="sp"></span>
       <button data-act="mode" data-id="1">×1</button>
       <button data-act="mode" data-id="10">×10</button>
       <button data-act="mode" data-id="max">MAX</button>
@@ -257,38 +297,37 @@ details.filed summary{font-size:12px;color:var(--hint);text-transform:uppercase;
     <div id="deptList"></div>
   </section>
 
-  <!-- Апгрейды -->
+  <!-- Улучшения -->
   <section class="panel" id="p-upgs">
     <div id="upgList"></div>
     <div id="upgFiled"></div>
   </section>
 
-  <!-- Реструктуризация -->
+  <!-- Реорганизация -->
   <section class="panel" id="p-restr">
     <div class="card">
       <div class="c-head"><span class="c-emoji">🔄</span><div class="c-title">
-        <div class="c-name">Voluntary Corporate Restructuring</div>
-        <div class="c-form mono">Form 99-R · Board approval required</div></div></div>
+        <div class="c-name" data-i18n="rTitle"></div>
+        <div class="c-form mono" data-i18n="rForm"></div></div></div>
       <div class="c-desc" id="rDesc"></div>
-      <div class="kv"><span>Current Seniority</span><b id="rSen">0</b></div>
-      <div class="kv"><span>Income bonus</span><b id="rBonus">+0%</b></div>
-      <div class="kv"><span>Approved this fiscal period</span><b id="rRun">0</b></div>
-      <div class="kv"><span>Approved, all time</span><b id="rAll">0</b></div>
-      <div class="kv"><span>Next Seniority point at (all time)</span><b id="rNext">0</b></div>
+      <div class="kv"><span data-i18n="rSenL"></span><b id="rSen">0</b></div>
+      <div class="kv"><span data-i18n="rBonusL"></span><b id="rBonus">+0%</b></div>
+      <div class="kv"><span data-i18n="rRunL"></span><b id="rRun">0</b></div>
+      <div class="kv"><span data-i18n="rAllL"></span><b id="rAll">0</b></div>
+      <div class="kv"><span data-i18n="rNextL"></span><b id="rNext">0</b></div>
       <div class="big-gain" id="rGain">+0</div>
-      <div class="hint" style="text-align:center;font-size:12px">Seniority awarded upon restructuring</div>
-      <div class="section-title">Minimum fiscal output</div>
+      <div class="hint" style="text-align:center;font-size:12px" data-i18n="rGainHint"></div>
+      <div class="section-title" data-i18n="rMinOutput"></div>
       <div class="progress"><i id="rProg"></i></div>
       <div class="mono hint" style="font-size:12px;margin-bottom:12px" id="rProgText"></div>
-      <button class="btn" id="rBtn" data-act="restructure"><span>File Form 99-R</span><span class="sub">🔄</span></button>
+      <button class="btn" id="rBtn" data-act="restructure"><span></span><span class="sub">🔄</span></button>
     </div>
-    <div class="section-title">Corporate records</div>
+    <div class="section-title" data-i18n="recordsTitle"></div>
     <div class="card">
-      <div class="kv"><span>Restructurings filed</span><b id="rCount">0</b></div>
-      <div class="kv"><span>Offline records cap</span><b id="rCap">8h</b></div>
-      <div class="kv"><span>Offline efficiency</span><b id="rEff">50%</b></div>
-      <div class="kv"><span>Departments owned</span><b id="rOwned">0</b></div>
-      <div style="margin-top:12px"><button class="btn danger" data-act="reset"><span>Shred all records (hard reset)</span><span class="sub">🗑️</span></button></div>
+      <div class="kv"><span data-i18n="rCountL"></span><b id="rCount">0</b></div>
+      <div class="kv"><span data-i18n="rCapL"></span><b id="rCap">8h</b></div>
+      <div class="kv"><span data-i18n="rEffL"></span><b id="rEff">50%</b></div>
+      <div class="kv"><span data-i18n="rOwnedL"></span><b id="rOwned">0</b></div>
     </div>
   </section>
 </div>
@@ -300,16 +339,22 @@ details.filed summary{font-size:12px;color:var(--hint);text-transform:uppercase;
 'use strict';
 /* =====================================================================
    PAPERWORK INC. — idle-игра для Telegram Mini App
-   Всё, что касается баланса и текстов, лежит в начале скрипта
-   (CONFIG, DEPARTMENTS, UPGRADES, TEXTS). Правьте там.
+   Всё, что касается баланса и текстов, лежит в начале скрипта:
+     CONFIG, DEPARTMENTS, UPGRADES — баланс (и английские названия)
+     I18N — все тексты интерфейса на английском и русском
+     DEFAULT_SETTINGS — настройки по умолчанию
+     SFX — рецепты звуков
    Блок между маркерами ENGINE — чистая логика без DOM
    (её же можно прогнать в Node для проверки баланса).
+   ВАЖНО для обновлений: не меняйте id отделов/апгрейдов и SAVE_KEY —
+   иначе у игроков пропадёт прогресс.
    ===================================================================== */
 
 // ===== ENGINE START =====
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
+  version: '1.1',              // версия игры (показывается в настройках)
   costGrowth: 1.15,            // рост цены отдела: база × 1.15^количество
   manualSignAmount: 1,         // сколько даёт кнопка «Sign manually»
   tickMs: 250,                 // частота обновления экрана
@@ -445,70 +490,6 @@ const UPGRADES = [
     desc:"Signifies years of service, or at least years of attendance." },
 ];
 
-/* ---------- Тексты интерфейса и шутки ---------- */
-const TEXTS = {
-  introTitle: 'Letter of Appointment',
-  introForm: 'Form 0-1 · Human Resources',
-  introBody: [
-    'Congratulations. Following a thorough review of no candidates, you have been appointed <b>Director of Paperwork Inc.</b>',
-    'Your mandate: approve documents, so we can open departments, which approve more documents.',
-    'There are no departments yet. Kindly begin by signing something yourself.',
-  ],
-  introBtn: 'Accept appointment',
-  awayTitle: 'Welcome back, Director',
-  awayForm: 'Form 8-H · Absence Report',
-  awayBtn: 'Acknowledge receipt',
-  awayStamp: 'RECEIVED',
-  quietOffice: 'The office was very quiet. Mostly because there is no office yet.',
-  restructureDesc: 'Dissolve every department, shred every upgrade and stamp, then re-incorporate with more Seniority. Each Seniority point permanently adds {bonus}% to all income.',
-  restructureConfirmTitle: 'File for Restructuring?',
-  restructureConfirmForm: 'Form 99-R · Final Notice',
-  restructureBtn: 'Restructure the company',
-  cancelBtn: 'Defer to next quarter',
-  resetTitle: 'Shred all records?',
-  resetForm: 'Form 404 · Irreversible',
-  resetBody: 'Everything goes into the shredder, including Seniority. There is no appeals process. There is not even an appeals form.',
-  resetBtn: 'Shred everything',
-  noUpgrades: 'No pending requisitions. Keep approving; procurement will be in touch.',
-  jokes: [
-    'Accounting spent the morning reconciling the stapler inventory. It is off by one stapler.',
-    'The Committee of Committees formed a subcommittee to review the coffee machine\'s performance review.',
-    'Someone replied-all to the memo about not replying-all. Forty-two people replied-all to apologize.',
-    'Three interns were promoted to Senior Intern. Duties unchanged; badges now laminated.',
-    'The printer jammed. A task force has been convened.',
-    'Legal reviewed the lunch menu and approved it, subject to Appendix C.',
-    'The Archive found a document approving the Archive. It has been archived.',
-    'A meeting was held to discuss why meetings run long. It ran long.',
-    'Facilities replaced the "Out of Order" sign with a newer "Out of Order" sign.',
-    'The quarterly report was submitted in triplicate, then in quadruplicate, pending review.',
-    'An employee asked a question. It has been forwarded for clarification by end of fiscal year.',
-    'Per last week\'s memo, all memos must now reference last week\'s memo.',
-    'The suggestion box was emptied. All suggestions were approved, filed and ignored in order of receipt.',
-    'Two departments merged, then demerged, producing a record number of forms.',
-    'Someone found a pen that works. It has been placed in a secure location.',
-    'The vending machine was granted signing authority on an interim basis.',
-    'The fire drill was postponed pending approval of the Fire Drill Request Form.',
-    'A clerk took a personal day. The paperwork for it is still being processed.',
-    'The Head of Filing was misfiled. He has since been located under "H".',
-    'Staff observed a moment of silence for the fax machine. Then it rang.',
-  ],
-  memos: [
-    'MEMO: Please stop approving memos before reading them. Or after.',
-    'REMINDER: Form 27-B must be filed before Form 27-A, which authorizes Form 27-B.',
-    'NOTICE: The 4th floor is now the 3rd floor. The 3rd floor is pending review.',
-    'PER MY LAST MEMO: see my last memo.',
-    'FACILITIES: The elevator is undergoing scheduled unscheduled maintenance.',
-    'HR: Casual Friday has been moved to Monday and renamed Formal Monday.',
-    'IT: Your password must now contain a stamp, a staple and a sincere apology.',
-    'BULLETIN: Productivity is up 0.4%. A committee has been formed to find out why.',
-    'POLICY: Sticky notes are now classified as Formal Adhesive Correspondence.',
-    'KITCHEN: Whoever labeled the milk "Confidential" — thank you.',
-    'ACCOUNTING: Please submit receipts for your receipts.',
-    'NOTICE: The quiet room is closed due to noise complaints.',
-    'REMINDER: Deadlines are approaching. Deadlines are always approaching.',
-  ],
-};
-
 /* ---------- Справочники ---------- */
 const DEPT_BY_ID = Object.fromEntries(DEPARTMENTS.map(d => [d.id, d]));
 const UPG_BY_ID = Object.fromEntries(UPGRADES.map(u => [u.id, u]));
@@ -531,6 +512,8 @@ function freshState(prev) {
     created: prev ? prev.created : now,
     runStarted: now,
     lastSeen: now,
+    settings: prev && prev.settings ? Object.assign({}, prev.settings) : null, // настройки переживают реорганизацию
+    stats: prev && prev.stats ? Object.assign({}, prev.stats) : null,          // как и личное дело
   };
 }
 const owned = (s, id) => s.depts[id] || 0;
@@ -654,6 +637,402 @@ function restructure(s) {
 }
 // ===== ENGINE END =====
 
+/* =====================================================================
+   ТЕКСТЫ (I18N)
+   ui — строки интерфейса, {name} — подстановки
+   lists — шутки, служебные записки, письмо о назначении
+   depts / upgs — переводы названий и описаний (английские лежат
+   прямо в DEPARTMENTS и UPGRADES)
+   ===================================================================== */
+const I18N = {
+  en: {
+    name: 'English',
+    ui: {
+      ledger: 'Form 0-0 · Ledger',
+      docsLabel: 'documents approved',
+      perSec: '/ sec', perS: '/s',
+      stampsWord: 'stamps',
+      seniority: 'Seniority',
+      sign: 'Sign manually',
+      tabDepts: 'Departments', tabUpgs: 'Upgrades', tabRestr: 'Restructuring',
+      purchaseOrder: 'Purchase order · qty',
+      form: 'Form',
+      acquire: 'Acquire ×{n}',
+      pending: 'Pending funds',
+      each: '{v}/s each', total: '{v}/s total',
+      milestone: '{c}/{next} → output ×{m}',
+      classified: 'Classified · pending clearance',
+      clearance: 'Clearance granted once <b class="mono">{n}</b> documents are approved this fiscal period.',
+      approveReq: 'Approve requisition',
+      filed: 'Filed &amp; approved ({n})',
+      noUpgrades: 'No pending requisitions. Keep approving; procurement will be in touch.',
+      stampApproved: 'APPROVED',
+      // реорганизация
+      rTitle: 'Voluntary Corporate Restructuring',
+      rForm: 'Form 99-R · Board approval required',
+      rDesc: 'Dissolve every department, shred every upgrade and stamp, then re-incorporate with more Seniority. Each Seniority point permanently adds +{bonus}% to all income.',
+      rSenL: 'Current Seniority', rBonusL: 'Income bonus',
+      rRunL: 'Approved this fiscal period', rAllL: 'Approved, all time',
+      rNextL: 'Next Seniority point at (all time)',
+      rGainHint: 'Seniority awarded upon restructuring',
+      rMinOutput: 'Minimum fiscal output',
+      rProg: '{a} / {b} documents this fiscal period',
+      rFile: 'File Form 99-R', rInsufficient: 'Insufficient fiscal output', rAwaiting: 'Awaiting next Seniority point',
+      recordsTitle: 'Corporate records',
+      rCountL: 'Restructurings filed', rCapL: 'Offline records cap', rEffL: 'Offline efficiency', rOwnedL: 'Departments owned',
+      // единицы времени
+      tS: 's', tM: 'm', tH: 'h', tD: 'd',
+      // письмо о назначении
+      introTitle: 'Letter of Appointment', introForm: 'Form 0-1 · Human Resources', introBtn: 'Accept appointment', stampHired: 'HIRED',
+      // возвращение
+      awayTitle: 'Welcome back, Director', awayForm: 'Form 8-H · Absence Report', awayBtn: 'Acknowledge receipt', stampReceived: 'RECEIVED',
+      awayBody: 'While you were away for <b class="mono">{t}</b>, the company approved <b class="mono">{d}</b> documents',
+      awayStamps: ' and pressed <b class="mono">{s}</b> stamps',
+      awayEff: 'Offline efficiency {e} · records cover up to {h}h',
+      awayCapped: '⚠️ Records only cover the first <b>{h}h</b> of your absence. Upgrades can expand the filing cabinet.',
+      awayMeanwhile: '📎 Meanwhile:',
+      awayQuiet: 'You were away for <b class="mono">{t}</b>.',
+      quietOffice: 'The office was very quiet. Mostly because there is no office yet.',
+      awayToast: '📬 While you were away: +{n} documents',
+      // подтверждение реорганизации
+      rcTitle: 'File for Restructuring?', rcForm: 'Form 99-R · Final Notice', stampBoard: 'BOARD',
+      rcGain: 'You will receive <b class="mono">+{g}</b> Seniority.',
+      rcTotal: 'Total Seniority: <b class="mono">{t}</b> → <b class="mono">+{p}%</b> to all income, permanently.',
+      rcWarn: 'All documents, departments, stamps and upgrades will be shredded. Seniority, settings and corporate records are kept.',
+      rcBtn: 'Restructure the company', cancel: 'Defer to next quarter',
+      // полный сброс
+      resetTitle: 'Shred all records?', resetForm: 'Form 404 · Irreversible', stampVoid: 'VOID',
+      resetBody: 'Everything goes into the shredder, including Seniority. There is no appeals process. There is not even an appeals form.',
+      resetBtn: 'Shred everything',
+      // уведомления
+      tUpgTab: '📎 Procurement has opened. Upgrades tab unlocked.',
+      tRestrTab: '🔄 The Board mentions "restructuring". Tab unlocked.',
+      tNewDept: '{e} New department cleared for acquisition: {name}',
+      tCanRestr: '🎖️ Restructuring is now available. Form 99-R awaits.',
+      tMilestone: '📈 {name} reached {n}. Output ×{m}, per Form 25-X.',
+      tFirstDept: '🪑 First department opened. The company now runs itself, as all good companies do.',
+      tStamps: '🔏 Stamps unlocked. Every department now presses stamps.',
+      tApproved: '✅ Approved: {name}',
+      tRestructured: '🎖️ Restructuring complete. Seniority: {n}.',
+      // эффекты апгрейдов
+      eDept: '{name} output +{p}%', eGlobal: 'All department output +{p}%', eCost: 'All department prices −{p}%',
+      eCap: 'Offline records cap +{h}h', eEff: 'Offline efficiency +{p}%',
+      eStamps: 'Unlocks Stamps: every department presses {r} stamps/sec',
+      eStampMult: 'Stamp output +{p}%', eSen: 'Each Seniority point gives +{p}% more income',
+      // настройки
+      settingsTitle: 'Preferences', settingsForm: 'Form 0-S · Personal preferences',
+      secGeneral: 'General', language: 'Language',
+      secSound: 'Sound & feedback', sound: 'Sound effects', volume: 'Volume',
+      ambience: 'Office ambience', ambienceHint: 'Quiet hum and a ticking clock',
+      haptics: 'Vibration', hapticsHint: 'Works in Telegram only',
+      secDisplay: 'Display', memos: 'Office memos', animations: 'Stamp animations',
+      numFormat: 'Number format',
+      awayReport: 'Absence report', awayAlways: 'Always', awayLong: '30+ min', awayNever: 'Never',
+      secRecords: 'Records', export: 'Export', import: 'Import',
+      saveHint: 'Move progress to another device or keep a backup.',
+      storageCloud: 'Progress is saved to the Telegram cloud.', storageLocal: 'Progress is saved in this browser.',
+      secStats: 'Personnel file', since: 'In office since', played: 'Time in office', signs: 'Manual signatures',
+      bought: 'Departments acquired', lifetime: 'Documents, all time', restrCount: 'Restructurings',
+      secDanger: 'Shredder', reset: 'Shred all records (hard reset)',
+      close: 'Close', back: 'Back', credit: 'Made with Claude Opus 5.5',
+      exportTitle: 'Export save', exportBody: 'Copy this code and keep it somewhere safe. Paste it into Import on another device.',
+      copy: 'Copy code', tCopied: '📋 Code copied', tCopyFail: 'Select the code and copy it manually',
+      importTitle: 'Import save', importBody: 'Paste a save code below. Current progress will be replaced.',
+      importBtn: 'Import', tImported: '✅ Records restored', tImportBad: '⚠️ Code not recognised',
+    },
+    lists: {
+      intro: [
+        'Congratulations. Following a thorough review of no candidates, you have been appointed <b>Director of Paperwork Inc.</b>',
+        'Your mandate: approve documents, so we can open departments, which approve more documents.',
+        'There are no departments yet. Kindly begin by signing something yourself.',
+      ],
+      jokes: [
+        'Accounting spent the morning reconciling the stapler inventory. It is off by one stapler.',
+        'The Committee of Committees formed a subcommittee to review the coffee machine\'s performance review.',
+        'Someone replied-all to the memo about not replying-all. Forty-two people replied-all to apologize.',
+        'Three interns were promoted to Senior Intern. Duties unchanged; badges now laminated.',
+        'The printer jammed. A task force has been convened.',
+        'Legal reviewed the lunch menu and approved it, subject to Appendix C.',
+        'The Archive found a document approving the Archive. It has been archived.',
+        'A meeting was held to discuss why meetings run long. It ran long.',
+        'Facilities replaced the "Out of Order" sign with a newer "Out of Order" sign.',
+        'The quarterly report was submitted in triplicate, then in quadruplicate, pending review.',
+        'An employee asked a question. It has been forwarded for clarification by end of fiscal year.',
+        'Per last week\'s memo, all memos must now reference last week\'s memo.',
+        'The suggestion box was emptied. All suggestions were approved, filed and ignored in order of receipt.',
+        'Two departments merged, then demerged, producing a record number of forms.',
+        'Someone found a pen that works. It has been placed in a secure location.',
+        'The vending machine was granted signing authority on an interim basis.',
+        'The fire drill was postponed pending approval of the Fire Drill Request Form.',
+        'A clerk took a personal day. The paperwork for it is still being processed.',
+        'The Head of Filing was misfiled. He has since been located under "H".',
+        'Staff observed a moment of silence for the fax machine. Then it rang.',
+      ],
+      memos: [
+        'MEMO: Please stop approving memos before reading them. Or after.',
+        'REMINDER: Form 27-B must be filed before Form 27-A, which authorizes Form 27-B.',
+        'NOTICE: The 4th floor is now the 3rd floor. The 3rd floor is pending review.',
+        'PER MY LAST MEMO: see my last memo.',
+        'FACILITIES: The elevator is undergoing scheduled unscheduled maintenance.',
+        'HR: Casual Friday has been moved to Monday and renamed Formal Monday.',
+        'IT: Your password must now contain a stamp, a staple and a sincere apology.',
+        'BULLETIN: Productivity is up 0.4%. A committee has been formed to find out why.',
+        'POLICY: Sticky notes are now classified as Formal Adhesive Correspondence.',
+        'KITCHEN: Whoever labeled the milk "Confidential" — thank you.',
+        'ACCOUNTING: Please submit receipts for your receipts.',
+        'NOTICE: The quiet room is closed due to noise complaints.',
+        'REMINDER: Deadlines are approaching. Deadlines are always approaching.',
+      ],
+    },
+  },
+
+  ru: {
+    name: 'Русский',
+    ui: {
+      ledger: 'Форма 0-0 · Реестр',
+      docsLabel: 'документов одобрено',
+      perSec: '/ сек', perS: '/с',
+      stampsWord: 'печатей',
+      seniority: 'Выслуга',
+      sign: 'Подписать вручную',
+      tabDepts: 'Отделы', tabUpgs: 'Улучшения', tabRestr: 'Реорганизация',
+      purchaseOrder: 'Заявка · кол-во',
+      form: 'Форма',
+      acquire: 'Приобрести ×{n}',
+      pending: 'Ожидание средств',
+      each: '{v}/с за шт.', total: 'всего {v}/с',
+      milestone: '{c}/{next} → выработка ×{m}',
+      classified: 'Секретно · ожидает допуска',
+      clearance: 'Допуск будет выдан после одобрения <b class="mono">{n}</b> документов в текущем отчётном периоде.',
+      approveReq: 'Утвердить заявку',
+      filed: 'Подшито и утверждено ({n})',
+      noUpgrades: 'Заявок на рассмотрении нет. Продолжайте одобрять, отдел закупок с вами свяжется.',
+      stampApproved: 'ОДОБРЕНО',
+      rTitle: 'Добровольная реорганизация компании',
+      rForm: 'Форма 99-Р · Требуется решение правления',
+      rDesc: 'Распустить все отделы, уничтожить все улучшения и печати, а затем учредить компанию заново с большей выслугой. Каждая единица выслуги навсегда добавляет +{bonus}% ко всему доходу.',
+      rSenL: 'Текущая выслуга', rBonusL: 'Бонус к доходу',
+      rRunL: 'Одобрено за отчётный период', rAllL: 'Одобрено за всё время',
+      rNextL: 'Следующая единица выслуги (всего)',
+      rGainHint: 'Выслуга, начисляемая при реорганизации',
+      rMinOutput: 'Минимальный объём за период',
+      rProg: '{a} / {b} документов за отчётный период',
+      rFile: 'Подать форму 99-Р', rInsufficient: 'Недостаточный объём за период', rAwaiting: 'Ожидается следующая единица выслуги',
+      recordsTitle: 'Корпоративный учёт',
+      rCountL: 'Проведено реорганизаций', rCapL: 'Лимит офлайн-учёта', rEffL: 'Эффективность офлайна', rOwnedL: 'Отделов во владении',
+      tS: 'с', tM: 'м', tH: 'ч', tD: 'д',
+      introTitle: 'Приказ о назначении', introForm: 'Форма 0-1 · Отдел кадров', introBtn: 'Приступить к обязанностям', stampHired: 'ПРИНЯТ',
+      awayTitle: 'С возвращением, директор', awayForm: 'Форма 8-Н · Акт об отсутствии', awayBtn: 'Подтвердить получение', stampReceived: 'ПОЛУЧЕНО',
+      awayBody: 'Пока вас не было (<b class="mono">{t}</b>), компания одобрила документов: <b class="mono">{d}</b>',
+      awayStamps: ', поставила печатей: <b class="mono">{s}</b>',
+      awayEff: 'Эффективность офлайна {e} · учёт до {h} ч',
+      awayCapped: '⚠️ Учтены только первые <b>{h} ч</b> отсутствия. Улучшения могут расширить картотеку.',
+      awayMeanwhile: '📎 Тем временем:',
+      awayQuiet: 'Вас не было <b class="mono">{t}</b>.',
+      quietOffice: 'В офисе было очень тихо. В основном потому, что офиса пока нет.',
+      awayToast: '📬 Пока вас не было: +{n} документов',
+      rcTitle: 'Подать на реорганизацию?', rcForm: 'Форма 99-Р · Последнее уведомление', stampBoard: 'ПРАВЛЕНИЕ',
+      rcGain: 'Вы получите выслугу: <b class="mono">+{g}</b>.',
+      rcTotal: 'Итого выслуга: <b class="mono">{t}</b> → <b class="mono">+{p}%</b> ко всему доходу навсегда.',
+      rcWarn: 'Все документы, отделы, печати и улучшения будут уничтожены. Выслуга, настройки и корпоративный учёт сохранятся.',
+      rcBtn: 'Реорганизовать компанию', cancel: 'Отложить до следующего квартала',
+      resetTitle: 'Уничтожить все записи?', resetForm: 'Форма 404 · Безвозвратно', stampVoid: 'АННУЛИРОВАНО',
+      resetBody: 'В шредер отправится всё, включая выслугу. Порядка обжалования нет. Нет даже бланка для обжалования.',
+      resetBtn: 'Уничтожить всё',
+      tUpgTab: '📎 Открыт отдел закупок. Доступна вкладка «Улучшения».',
+      tRestrTab: '🔄 Правление обмолвилось о «реорганизации». Вкладка открыта.',
+      tNewDept: '{e} Новый отдел допущен к приобретению: {name}',
+      tCanRestr: '🎖️ Реорганизация доступна. Форма 99-Р ждёт подписи.',
+      tMilestone: '📈 {name}: {n} шт. Выработка ×{m} согласно форме 25-Х.',
+      tFirstDept: '🪑 Первый отдел открыт. Теперь компания работает сама, как и положено хорошей компании.',
+      tStamps: '🔏 Печати открыты. Теперь каждый отдел ставит печати.',
+      tApproved: '✅ Утверждено: {name}',
+      tRestructured: '🎖️ Реорганизация завершена. Выслуга: {n}.',
+      eDept: '{name}: выработка +{p}%', eGlobal: 'Выработка всех отделов +{p}%', eCost: 'Цены всех отделов −{p}%',
+      eCap: 'Лимит офлайн-учёта +{h} ч', eEff: 'Эффективность офлайна +{p}%',
+      eStamps: 'Открывает печати: каждый отдел ставит {r} печ./сек',
+      eStampMult: 'Производство печатей +{p}%', eSen: 'Каждая единица выслуги даёт ещё +{p}% к доходу',
+      settingsTitle: 'Настройки', settingsForm: 'Форма 0-Н · Личные настройки',
+      secGeneral: 'Общие', language: 'Язык',
+      secSound: 'Звук и отклик', sound: 'Звуковые эффекты', volume: 'Громкость',
+      ambience: 'Шум офиса', ambienceHint: 'Тихий гул и тиканье часов',
+      haptics: 'Вибрация', hapticsHint: 'Работает только в Telegram',
+      secDisplay: 'Отображение', memos: 'Служебные записки', animations: 'Анимации печатей',
+      numFormat: 'Формат чисел',
+      awayReport: 'Акт об отсутствии', awayAlways: 'Всегда', awayLong: '30+ мин', awayNever: 'Никогда',
+      secRecords: 'Документация', export: 'Экспорт', import: 'Импорт',
+      saveHint: 'Перенос прогресса на другое устройство или резервная копия.',
+      storageCloud: 'Прогресс сохраняется в облаке Telegram.', storageLocal: 'Прогресс сохраняется в этом браузере.',
+      secStats: 'Личное дело', since: 'В должности с', played: 'Время в офисе', signs: 'Подписей вручную',
+      bought: 'Отделов приобретено', lifetime: 'Документов за всё время', restrCount: 'Реорганизаций',
+      secDanger: 'Шредер', reset: 'Уничтожить все записи (полный сброс)',
+      close: 'Закрыть', back: 'Назад', credit: 'Сделано с помощью Claude Opus 5.5',
+      exportTitle: 'Экспорт сохранения', exportBody: 'Скопируйте этот код и сохраните его. На другом устройстве вставьте его в «Импорт».',
+      copy: 'Скопировать код', tCopied: '📋 Код скопирован', tCopyFail: 'Выделите код и скопируйте вручную',
+      importTitle: 'Импорт сохранения', importBody: 'Вставьте код сохранения. Текущий прогресс будет заменён.',
+      importBtn: 'Импортировать', tImported: '✅ Записи восстановлены', tImportBad: '⚠️ Код не распознан',
+    },
+    lists: {
+      intro: [
+        'Поздравляем. По итогам тщательного рассмотрения ни одного кандидата вы назначены <b>директором Paperwork Inc.</b>',
+        'Ваша задача: одобрять документы, чтобы открывать отделы, которые одобряют ещё больше документов.',
+        'Отделов пока нет. Просим начать с того, чтобы подписать что-нибудь лично.',
+      ],
+      jokes: [
+        'Бухгалтерия всё утро сверяла учёт степлеров. Не хватает одного степлера.',
+        'Комитет по комитетам создал подкомитет для аттестации кофемашины.',
+        'Кто-то ответил всем на письмо с просьбой не отвечать всем. Сорок два человека ответили всем с извинениями.',
+        'Трёх стажёров повысили до старших стажёров. Обязанности прежние, бейджи теперь заламинированы.',
+        'Зажевало принтер. Создана рабочая группа.',
+        'Юридический отдел согласовал меню обеда с учётом Приложения В.',
+        'Архив нашёл документ, одобряющий Архив. Документ сдан в архив.',
+        'Провели совещание о том, почему совещания затягиваются. Затянулось.',
+        'Хозчасть заменила табличку «Не работает» на новую табличку «Не работает».',
+        'Квартальный отчёт сдан в трёх экземплярах, затем в четырёх. На рассмотрении.',
+        'Сотрудник задал вопрос. Вопрос направлен на уточнение до конца финансового года.',
+        'Согласно письму от прошлой недели, все письма теперь должны ссылаться на письмо от прошлой недели.',
+        'Ящик для предложений опустошён. Все предложения одобрены, подшиты и проигнорированы в порядке поступления.',
+        'Два отдела объединились, затем разъединились, установив рекорд по количеству бланков.',
+        'Кто-то нашёл пишущую ручку. Её поместили в надёжное место.',
+        'Торговому автомату временно предоставили право подписи.',
+        'Учебную пожарную тревогу перенесли до согласования заявки на учебную пожарную тревогу.',
+        'Клерк взял отгул. Документы на отгул всё ещё оформляются.',
+        'Начальника картотеки подшили не туда. Его нашли на букву «Н».',
+        'Сотрудники почтили минутой молчания факс. Потом он зазвонил.',
+      ],
+      memos: [
+        'СЛУЖЕБНАЯ ЗАПИСКА: Просьба не одобрять записки до прочтения. Или после.',
+        'НАПОМИНАНИЕ: Форма 27-Б подаётся до формы 27-А, которая разрешает подачу формы 27-Б.',
+        'ОБЪЯВЛЕНИЕ: 4-й этаж теперь 3-й. 3-й этаж на рассмотрении.',
+        'СОГЛАСНО МОЕМУ ПРЕДЫДУЩЕМУ ПИСЬМУ: см. моё предыдущее письмо.',
+        'ХОЗЧАСТЬ: Лифт находится на плановом внеплановом обслуживании.',
+        'ОТДЕЛ КАДРОВ: Пятница в свободной форме перенесена на понедельник и переименована в Официальный понедельник.',
+        'ИТ-ОТДЕЛ: Пароль должен содержать печать, скобу от степлера и искреннее извинение.',
+        'БЮЛЛЕТЕНЬ: Производительность выросла на 0,4%. Создан комитет для выяснения причин.',
+        'РЕГЛАМЕНТ: Стикеры теперь относятся к официальной клейкой корреспонденции.',
+        'КУХНЯ: Тому, кто подписал молоко «Конфиденциально», — спасибо.',
+        'БУХГАЛТЕРИЯ: Просьба предоставлять чеки на чеки.',
+        'ОБЪЯВЛЕНИЕ: Комната тишины закрыта из-за жалоб на шум.',
+        'НАПОМИНАНИЕ: Сроки приближаются. Сроки всегда приближаются.',
+      ],
+    },
+    depts: {
+      intern: { name: 'Стол стажёра', desc: 'Один стол, один стажёр, одна ручка на цепочке. Подписывает всё, что положат перед ним.' },
+      filing: { name: 'Картотека', desc: 'Раскладывает документы по алфавиту, затем по дате, затем по настроению.' },
+      archive: { name: 'Архив', desc: 'Здесь документы получают одобрение посмертно. Пахнет тонером и сожалением.' },
+      approvals: { name: 'Отдел согласований', desc: 'Согласовывает заявки на подачу заявок на согласование. Не работает по пятницам и большинству четвергов.' },
+      committee: { name: 'Комитет по комитетам', desc: 'Собирается еженедельно, чтобы решить, когда собраться. Протокол ведётся, утверждается и подшивается в трёх экземплярах.' },
+      taskforce: { name: 'Межотдельская рабочая группа', desc: 'Создана для сокращения документооборота. Подготовила по этому вопросу уже четыре тысячи страниц.' },
+      reporting: { name: 'Отдел отчётности по отделам', desc: 'Отчитывается о работе всех отделов, включая себя, включая этот отчёт.' },
+      synergy: { name: 'Управление стратегической синергии', desc: 'Выстраивает вертикали с горизонталями. Какие именно — никто не уточнял.' },
+      review: { name: 'Бессрочная ревизионная коллегия', desc: 'Ничто не покидает коллегию без проверки. Ничто ещё не покидало коллегию.' },
+      headoffice: { name: 'Головной офис головных офисов', desc: 'Расположен на этаже, которого нет в лифте. Направляет служебные записки самому себе.' },
+    },
+    upgs: {
+      coffee: { name: 'Едва тёплый кофе за счёт компании', desc: 'Заварен в 7:00, подан в 11:00. Стажёры теперь формально бодрствуют.' },
+      paperclips: { name: 'Скрепки премиум-класса', desc: 'Под золото, нержавеющие, одобрены Подкомиссией по стандартам скрепок.' },
+      poster: { name: 'Мотивационный плакат «Держись»', desc: 'Кот держится за ветку. Боевой дух держится за кота.' },
+      overtime: { name: 'Программа неоплачиваемых переработок', desc: 'Оформлена как «возможность профессионального роста». Стажёры многому научились.' },
+      answering: { name: 'Автоответчик для нерабочего времени', desc: 'Ваш звонок очень важен для нас. Он будет одобрен в порядке поступления.' },
+      alphabet: { name: 'Алфавитный порядок (пилотный проект)', desc: 'Смелый эксперимент. Предварительно установлено, что «А» идёт раньше «Б». Ожидается рецензия.' },
+      rubberstamp: { name: 'Официальная резиновая печать', desc: 'Заказана по форме 31-С, для которой нужна печать. Печать одолжили.' },
+      toner: { name: 'Оптовый контракт на тонер', desc: 'Триста картриджей, все не той модели. Отдел закупок считает это победой.' },
+      indextabs: { name: 'Цветные разделители для папок', desc: 'Красный — срочно. Синий — тоже срочно. Зелёный — на рассмотрении.' },
+      carbon: { name: 'Копирка сорта «В трёх экземплярах»', desc: 'Каждое согласование теперь порождает ещё два согласования, которые тоже нужно согласовать.' },
+      nightshift: { name: 'Клерк ночной смены', desc: 'Его никто не видел. Зато его подпись стоит везде.' },
+      quorum: { name: 'Положение о снижении кворума', desc: 'Кворумом теперь считаются все пришедшие плюс стулья.' },
+      retreat: { name: 'Обязательный выездной тимбилдинг', desc: 'Упражнение «падение на доверие» заменили бланком доверия. Подписали все. Не упал никто.' },
+      meta: { name: 'Отчёт об отчётах об отчётах', desc: 'Делает вывод, что нужно больше отчётов. Отчёт об этом выводе готовится.' },
+      whitepaper: { name: 'Аналитическая записка о синергии, ред. 2', desc: 'Первая редакция была слишком понятной. Эту профессионально запутали.' },
+      minutes: { name: 'Протокол протоколов', desc: 'Фиксирует зафиксированное. Утверждён единогласно людьми, которые не слушали.' },
+      letterhead: { name: 'Бланки головного офиса с тиснением', desc: 'Достаточно тяжёлые, чтобы подпереть дверь. Иногда — и решение.' },
+      selfinking: { name: 'Самокрасящиеся печати', desc: 'Упразднены штемпельная подушка, шкаф для подушек и ответственный за подушки.' },
+      standing: { name: 'Столы для работы стоя', desc: 'Сидение переквалифицировано в несогласованную позу.' },
+      ooo: { name: 'Автоответ «Нахожусь вне офиса»', desc: '«Я нахожусь вне офиса. Ваш документ всё равно одобрен.»' },
+      procurement: { name: 'Упрощённая форма 88-Q', desc: 'Теперь закупка требует всего одиннадцать подписей вместо двенадцати.' },
+      viscous: { name: 'Чернила необычной вязкости', desc: 'Сохнут мгновенно и навсегда. Просьба не ставить печати на коллег.' },
+      sleepwalk: { name: 'Регламент о лунатизме', desc: 'Сотрудникам разрешено одобрять документы во сне при условии предварительной подачи формы 0-Z.' },
+      pneumatic: { name: 'Пневмопочта между отделами', desc: 'Документы теперь летают между этажами со скоростью сорок километров в час. Некоторые прибывают уже одобренными.' },
+      lapelpin: { name: 'Значок за выслугу лет', desc: 'Свидетельствует о годах службы. Или хотя бы о годах присутствия.' },
+    },
+  },
+};
+
+/* ---------- Настройки по умолчанию ---------- */
+const DEFAULT_SETTINGS = {
+  lang: null,            // null — определить автоматически по языку Telegram/браузера
+  sound: true,           // звуковые эффекты
+  volume: 0.6,           // общая громкость 0..1
+  ambience: false,       // фоновый шум офиса
+  haptics: true,         // вибрация (только в Telegram)
+  memos: true,           // бегущие служебные записки
+  animations: true,      // анимации печатей
+  numFormat: 'short',    // 'short' = 1.2M, 'sci' = 1.20e6
+  awayReport: 'always',  // окно возвращения: 'always' | 'long' (от 30 мин) | 'never'
+};
+const DEFAULT_STATS = { signs: 0, playSec: 0, bought: 0 };
+
+/* =====================================================================
+   ЗВУКИ — синтезируются через Web Audio API, без файлов.
+   Каждый рецепт получает (A, t): A — звуковой движок, t — время старта.
+   A.tone(t, {...}) — тон, A.hiss(t, {...}) — отфильтрованный шум.
+   ===================================================================== */
+const SFX = {
+  // царапанье ручки — ручная подпись
+  sign(A, t) {
+    A.hiss(t, { dur: 0.06, gain: 0.12, freq: 3200, q: 3 });
+    A.hiss(t + 0.07, { dur: 0.05, gain: 0.09, freq: 4200, q: 3 });
+  },
+  // удар резиновой печати — покупка отдела
+  stamp(A, t) {
+    A.tone(t, { freq: 150, freqEnd: 45, dur: 0.16, gain: 0.7, attack: 0.002 });
+    A.hiss(t, { dur: 0.06, gain: 0.35, filter: 'lowpass', freq: 1200 });
+    A.hiss(t, { dur: 0.015, gain: 0.12, filter: 'highpass', freq: 5000 });
+  },
+  // звонок на ресепшене — апгрейд
+  upgrade(A, t) {
+    A.hiss(t, { dur: 0.012, gain: 0.1, filter: 'highpass', freq: 6000 });
+    A.tone(t, { freq: 1568, dur: 1.1, gain: 0.2 });
+    A.tone(t, { freq: 1573, dur: 1.1, gain: 0.1 });
+    A.tone(t, { freq: 3920, dur: 0.5, gain: 0.06 });
+  },
+  // кассовый аппарат — веха ×2 и доступность реорганизации
+  milestone(A, t) {
+    A.hiss(t, { dur: 0.05, gain: 0.3, freq: 1400, q: 1.5 });
+    A.hiss(t + 0.05, { dur: 0.03, gain: 0.2, freq: 2600, q: 2 });
+    [2093, 2637, 3136].forEach((f, i) => A.tone(t + 0.08 + i * 0.015, { freq: f, dur: 0.8, gain: 0.12 }));
+  },
+  // офисный телефон — открылся новый отдел или вкладка
+  ring(A, t) {
+    for (let b = 0; b < 2; b++)
+      for (let i = 0; i < 9; i++)
+        A.tone(t + b * 0.42 + i * 0.035, { freq: i % 2 ? 1040 : 880, type: 'triangle', dur: 0.04, gain: 0.08, attack: 0.003 });
+  },
+  // шелест бумаг и колокольчик — подтверждение акта об отсутствии
+  welcome(A, t) {
+    A.hiss(t, { dur: 0.22, gain: 0.25, freq: 900, freqEnd: 2800, q: 0.8 });
+    A.hiss(t + 0.2, { dur: 0.25, gain: 0.22, freq: 1200, freqEnd: 3500, q: 0.8 });
+    A.tone(t + 0.45, { freq: 1318, dur: 0.9, gain: 0.13 });
+  },
+  // шредер — реорганизация и полный сброс
+  shredder(A, t) {
+    const c = A.ctx, o = c.createOscillator(), f = c.createBiquadFilter(), g = c.createGain(), d = 1.4;
+    o.type = 'sawtooth'; o.frequency.value = 75;
+    f.type = 'lowpass'; f.frequency.value = 700;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(0.18, t + 0.05);
+    for (let k = 0.1; k < d - 0.1; k += 0.07) g.gain.setValueAtTime(0.1 + Math.random() * 0.1, t + k);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    o.connect(f); f.connect(g); g.connect(A.master);
+    o.start(t); o.stop(t + d + 0.05);
+    A.hiss(t, { dur: d, gain: 0.16, freq: 1500, q: 0.7, attack: 0.05 });
+  },
+  // шорох листа — переключение вкладок
+  tab(A, t) { A.hiss(t, { dur: 0.035, gain: 0.08, filter: 'highpass', freq: 2500 }); },
+  // щелчок — переключатели
+  click(A, t) { A.tone(t, { freq: 1200, type: 'square', dur: 0.025, gain: 0.035 }); },
+};
+
 
 /* =====================================================================
    TELEGRAM: инициализация, хаптика, облачное сохранение
@@ -667,12 +1046,21 @@ if (IN_TG) {
   if (tgv('7.7')) { try { tg.disableVerticalSwipes(); } catch (e) {} } // чтобы скролл не сворачивал приложение
 }
 
+// Язык по умолчанию: из профиля Telegram, иначе из браузера
+function detectLang() {
+  let code = '';
+  try { code = (IN_TG && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.language_code) || ''; } catch (e) {}
+  if (!code) code = navigator.language || 'en';
+  return /^(ru|be|kk)/i.test(code) ? 'ru' : 'en';
+}
+
 const haptic = {
-  light() { if (tgv('6.1')) try { tg.HapticFeedback.impactOccurred('light'); } catch (e) {} },
-  success() { if (tgv('6.1')) try { tg.HapticFeedback.notificationOccurred('success'); } catch (e) {} },
+  on() { return tgv('6.1') && (!S || S.settings.haptics); },
+  light() { if (this.on()) try { tg.HapticFeedback.impactOccurred('light'); } catch (e) {} },
+  success() { if (this.on()) try { tg.HapticFeedback.notificationOccurred('success'); } catch (e) {} },
 };
 
-const SAVE_KEY = 'paperwork_inc_save_v1';
+const SAVE_KEY = 'paperwork_inc_save_v1';   // не менять — иначе старые сохранения не найдутся
 const Store = {
   cloud: IN_TG && tgv('6.9') && !!tg.CloudStorage,
   // Загружаем и из облака, и из localStorage — берём более свежее
@@ -705,7 +1093,14 @@ const Store = {
   },
 };
 
-// Дополняем старое сохранение недостающими полями
+// Дополняем настройки и статистику значениями по умолчанию
+function ensureSettings(s) {
+  s.settings = Object.assign({}, DEFAULT_SETTINGS, s.settings || {});
+  if (!s.settings.lang || !I18N[s.settings.lang]) s.settings.lang = detectLang();
+  s.stats = Object.assign({}, DEFAULT_STATS, s.stats || {});
+  return s;
+}
+// Дополняем старое сохранение недостающими полями (так обновления не ломают прогресс)
 function migrate(raw) {
   if (!raw || typeof raw !== 'object') return null;
   const s = Object.assign(freshState(), raw);
@@ -714,17 +1109,115 @@ function migrate(raw) {
   s.flags = Object.assign({}, raw.flags || {});
   for (const k of ['docs','stamps','runEarned','stampsEarnedRun','allTimeEarned','seniority','restructures'])
     if (!isFinite(s[k]) || s[k] < 0) s[k] = 0;
-  return s;
+  return ensureSettings(s);
 }
 
 /* =====================================================================
-   ФОРМАТИРОВАНИЕ
+   ЗВУКОВОЙ ДВИЖОК
    ===================================================================== */
+const Sound = {
+  ctx: null, master: null, noise: null, amb: null,
+  init() {
+    if (this.ctx) return true;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return false;
+    try { this.ctx = new AC(); } catch (e) { return false; }
+    this.master = this.ctx.createGain();
+    this.master.connect(this.ctx.destination);
+    // 2 секунды белого шума — основа для шорохов, печатей и шредера
+    const len = this.ctx.sampleRate * 2, buf = this.ctx.createBuffer(1, len, this.ctx.sampleRate), data = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+    this.noise = buf;
+    this.setVolume();
+    return true;
+  },
+  // Браузеры разрешают звук только после касания — вызываем на каждое касание
+  unlock() {
+    if (!S || !S.settings.sound) return;
+    if (!this.init()) return;
+    if (this.ctx.state === 'suspended') this.ctx.resume();
+    this.syncAmbience();
+  },
+  setVolume() { if (this.master && S) this.master.gain.value = S.settings.volume; },
+  play(name) {
+    if (!S || !S.settings.sound || document.hidden) return;
+    if (!this.init()) return;
+    if (this.ctx.state === 'suspended') this.ctx.resume();
+    const f = SFX[name];
+    if (f) try { f(this, this.ctx.currentTime + 0.01); } catch (e) {}
+  },
+  tone(t, { freq, freqEnd, type = 'sine', dur = 0.2, gain = 0.3, attack = 0.005 }) {
+    const c = this.ctx, o = c.createOscillator(), g = c.createGain();
+    o.type = type;
+    o.frequency.setValueAtTime(freq, t);
+    if (freqEnd) o.frequency.exponentialRampToValueAtTime(freqEnd, t + dur);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(gain, t + attack);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(this.master);
+    o.start(t); o.stop(t + dur + 0.05);
+  },
+  hiss(t, { dur = 0.1, gain = 0.3, filter = 'bandpass', freq = 1000, freqEnd, q = 1, attack = 0.003 }) {
+    const c = this.ctx, s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
+    s.buffer = this.noise;
+    f.type = filter;
+    f.frequency.setValueAtTime(freq, t);
+    if (freqEnd) f.frequency.exponentialRampToValueAtTime(freqEnd, t + dur);
+    f.Q.value = q;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(gain, t + attack);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    s.connect(f); f.connect(g); g.connect(this.master);
+    s.start(t, Math.random() * 1.5, dur + 0.1);
+  },
+  // Фоновый шум офиса: низкий гул + тиканье часов
+  syncAmbience() {
+    const want = !!(S && S.settings.sound && S.settings.ambience && !document.hidden && this.ctx && this.ctx.state === 'running');
+    if (want && !this.amb) {
+      const c = this.ctx, src = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
+      src.buffer = this.noise; src.loop = true;
+      f.type = 'lowpass'; f.frequency.value = 220;
+      g.gain.value = 0.05;
+      src.connect(f); f.connect(g); g.connect(this.master); src.start();
+      let tick = false;
+      const timer = setInterval(() => {
+        tick = !tick;
+        try { this.tone(c.currentTime + 0.01, { freq: tick ? 2600 : 2200, dur: 0.012, gain: 0.025, attack: 0.001 }); } catch (e) {}
+      }, 1000);
+      this.amb = { src, timer };
+    } else if (!want && this.amb) {
+      try { this.amb.src.stop(); } catch (e) {}
+      clearInterval(this.amb.timer);
+      this.amb = null;
+    }
+  },
+};
+
+/* =====================================================================
+   ЯЗЫК И ФОРМАТИРОВАНИЕ
+   ===================================================================== */
+let LANG = 'en';
+let NUMFMT = 'short';
+function t(key, vars) {
+  let s = I18N[LANG].ui[key];
+  if (s == null) s = I18N.en.ui[key];
+  if (s == null) return key;
+  if (vars) s = s.replace(/\{(\w+)\}/g, (m, k) => (vars[k] != null ? vars[k] : m));
+  return s;
+}
+const tlist = key => (I18N[LANG].lists && I18N[LANG].lists[key]) || I18N.en.lists[key];
+const dName = d => ((I18N[LANG].depts || {})[d.id] || d).name;
+const dDesc = d => ((I18N[LANG].depts || {})[d.id] || d).desc;
+const uName = u => ((I18N[LANG].upgs || {})[u.id] || u).name;
+const uDesc = u => ((I18N[LANG].upgs || {})[u.id] || u).desc;
+const formStr = f => f.replace(/^Form/, t('form'));
+
 function fmt(n) {
   if (!isFinite(n)) return '∞';
   if (n < 0) return '-' + fmt(-n);
   if (n < 10) return (Math.floor(n * 10) / 10).toFixed(n % 1 === 0 ? 0 : 1);
   if (n < 1000) return String(Math.floor(n));
+  if (NUMFMT === 'sci') return n.toExponential(2).replace('e+', 'e');
   const units = ['K', 'M', 'B', 'T'];
   const e = Math.floor(Math.log10(n) / 3);
   if (e > units.length) return n.toExponential(2).replace('e+', 'e');
@@ -736,32 +1229,32 @@ function fmtTime(sec) {
   if (!isFinite(sec)) return '∞';
   sec = Math.max(0, Math.ceil(sec));
   const pad = x => String(x).padStart(2, '0');
-  if (sec < 60) return sec + 's';
+  if (sec < 60) return sec + t('tS');
   const m = Math.floor(sec / 60);
-  if (m < 60) return m + 'm ' + pad(sec % 60) + 's';
+  if (m < 60) return m + t('tM') + ' ' + pad(sec % 60) + t('tS');
   const h = Math.floor(m / 60);
-  if (h < 24) return h + 'h ' + pad(m % 60) + 'm';
-  return Math.floor(h / 24) + 'd ' + (h % 24) + 'h';
+  if (h < 24) return h + t('tH') + ' ' + pad(m % 60) + t('tM');
+  return Math.floor(h / 24) + t('tD') + ' ' + (h % 24) + t('tH');
 }
 const pct = x => Math.round(x * 100) + '%';
 const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 const esc = str => String(str).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
 
 // Номер формы для апгрейда генерируется из его позиции
-function upgForm(u) { const i = UPGRADES.indexOf(u); return 'Form ' + (60 + i) + '-' + 'ABCDEFGHJKLMNPRSTUVWXYZ'[i % 23]; }
+function upgForm(u) { const i = UPGRADES.indexOf(u); return t('form') + ' ' + (60 + i) + '-' + 'ABCDEFGHJKLMNPRSTUVWXYZ'[i % 23]; }
 // Человекочитаемый эффект апгрейда
 function effectText(u) {
   const e = u.effect;
-  const pctMult = mult => '+' + Math.round((mult - 1) * 100) + '%';
+  const up = mult => Math.round((mult - 1) * 100);
   switch (e.type) {
-    case 'dept': return DEPT_BY_ID[e.dept].name + ' output ' + pctMult(e.mult);
-    case 'global': return 'All department output ' + pctMult(e.mult);
-    case 'cost': return 'All department prices −' + Math.round((1 - e.mult) * 100) + '%';
-    case 'offlineCap': return 'Offline records cap +' + e.hours + 'h';
-    case 'offlineEff': return 'Offline efficiency +' + Math.round(e.add * 100) + '%';
-    case 'unlockStamps': return 'Unlocks Stamps: every department presses ' + CONFIG.stamps.perDepartmentPerSec + ' stamps/sec';
-    case 'stampMult': return 'Stamp output ' + pctMult(e.mult);
-    case 'seniority': return 'Each Seniority point +' + Math.round(e.add * 100) + '% more income';
+    case 'dept': return t('eDept', { name: dName(DEPT_BY_ID[e.dept]), p: up(e.mult) });
+    case 'global': return t('eGlobal', { p: up(e.mult) });
+    case 'cost': return t('eCost', { p: Math.round((1 - e.mult) * 100) });
+    case 'offlineCap': return t('eCap', { h: e.hours });
+    case 'offlineEff': return t('eEff', { p: Math.round(e.add * 100) });
+    case 'unlockStamps': return t('eStamps', { r: CONFIG.stamps.perDepartmentPerSec });
+    case 'stampMult': return t('eStampMult', { p: up(e.mult) });
+    case 'seniority': return t('eSen', { p: Math.round(e.add * 100) });
   }
   return '';
 }
@@ -775,7 +1268,26 @@ let S = null;                 // текущее состояние
 let activeTab = 'depts';
 let lastTick = Date.now();
 let deptKey = '', upgKey = '', filedKey = '', filedOpen = false;
-let modalOpen = false;
+let modalKind = null;         // null | 'modal' | 'settings'
+
+/* ---------- Применение настроек ---------- */
+function applyStaticTexts() {
+  document.documentElement.lang = LANG;
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = t(el.dataset.i18n); });
+}
+function applySettings() {
+  const st = S.settings;
+  const langChanged = LANG !== st.lang;
+  LANG = st.lang; NUMFMT = st.numFormat;
+  document.documentElement.classList.toggle('no-anim', !st.animations);
+  $('memo').hidden = !st.memos;
+  if (langChanged) $('memo').textContent = pick(tlist('memos'));
+  applyStaticTexts();
+  deptKey = upgKey = filedKey = '';   // пересобрать карточки на новом языке
+  Sound.setVolume();
+  if (st.sound) Sound.unlock(); else Sound.syncAmbience();
+  render();
+}
 
 /* ---------- Тосты (очередь) ---------- */
 const toastQ = []; let toastBusy = false;
@@ -788,34 +1300,156 @@ function nextToast() {
 }
 
 /* ---------- Модальное окно ---------- */
+// buttons: [{ label, ghost, danger, keepOpen, onClick }]
 function showModal({ form, title, stamp, body, buttons }) {
   const sheet = $('sheet');
+  sheet.classList.toggle('stamped', !!stamp);
   sheet.innerHTML =
     (stamp ? `<div class="m-stamp">${stamp}</div>` : '') +
     `<div class="m-form">${form || ''}</div><h2>${title}</h2><div class="m-body">${body}</div>` +
     `<div class="m-btns">${buttons.map((b, i) => `<button class="btn ${b.ghost ? 'ghost' : ''} ${b.danger ? 'danger' : ''}" data-mb="${i}">${b.label}</button>`).join('')}</div>`;
   sheet.querySelectorAll('[data-mb]').forEach(btn => {
-    btn.onclick = () => { const b = buttons[+btn.dataset.mb]; closeModal(); if (b.onClick) b.onClick(); };
+    btn.onclick = () => { const b = buttons[+btn.dataset.mb]; if (!b.keepOpen) closeModal(); if (b.onClick) b.onClick(); };
   });
-  $('overlay').classList.add('show'); modalOpen = true;
+  sheet.scrollTop = 0;
+  $('overlay').classList.add('show'); modalKind = 'modal';
 }
-function closeModal() { $('overlay').classList.remove('show'); modalOpen = false; }
+function closeModal() { $('overlay').classList.remove('show'); modalKind = null; }
+
+/* ---------- Окно настроек ---------- */
+function showSettings() {
+  const st = S.settings, sheet = $('sheet');
+  const keepScroll = modalKind === 'settings' ? sheet.scrollTop : 0;
+  sheet.classList.remove('stamped');
+  const sw = key => `<button class="switch ${st[key] ? 'on' : ''}" data-set="${key}" aria-pressed="${!!st[key]}"></button>`;
+  const seg = (key, opts) => `<div class="seg">${opts.map(([v, l]) => `<button class="${st[key] === v ? 'on' : ''}" data-set="${key}" data-val="${v}">${l}</button>`).join('')}</div>`;
+  const row = (label, ctrl, hint) => `<div class="set-row"><div class="set-label">${label}${hint ? `<small>${hint}</small>` : ''}</div>${ctrl}</div>`;
+  const kv = (k, v) => `<div class="kv"><span>${k}</span><b>${v}</b></div>`;
+  const since = new Date(S.created || Date.now()).toLocaleDateString(LANG === 'ru' ? 'ru-RU' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  sheet.innerHTML = `
+    <div class="m-form">${t('settingsForm')}</div><h2>⚙️ ${t('settingsTitle')}</h2>
+    <div class="set-sec">${t('secGeneral')}</div>
+    ${row(t('language'), seg('lang', Object.keys(I18N).map(k => [k, I18N[k].name])))}
+    <div class="set-sec">${t('secSound')}</div>
+    ${row(t('sound'), sw('sound'))}
+    ${row(t('volume'), `<input type="range" class="vol" min="0" max="100" step="5" value="${Math.round(st.volume * 100)}" data-set="volume" ${st.sound ? '' : 'disabled'}>`)}
+    ${row(t('ambience'), sw('ambience'), t('ambienceHint'))}
+    ${row(t('haptics'), sw('haptics'), IN_TG ? '' : t('hapticsHint'))}
+    <div class="set-sec">${t('secDisplay')}</div>
+    ${row(t('memos'), sw('memos'))}
+    ${row(t('animations'), sw('animations'))}
+    ${row(t('numFormat'), seg('numFormat', [['short', '1.2M'], ['sci', '1.20e6']]))}
+    ${row(t('awayReport'), seg('awayReport', [['always', t('awayAlways')], ['long', t('awayLong')], ['never', t('awayNever')]]))}
+    <div class="set-sec">${t('secRecords')}</div>
+    <p class="hint" style="font-size:12px;margin:6px 0 8px">${t('saveHint')} ${Store.cloud ? t('storageCloud') : t('storageLocal')}</p>
+    <div class="btn-row">
+      <button class="btn ghost" data-set-act="export">📤 ${t('export')}</button>
+      <button class="btn ghost" data-set-act="import">📥 ${t('import')}</button>
+    </div>
+    <div class="set-sec">${t('secStats')}</div>
+    ${kv(t('since'), since)}
+    ${kv(t('played'), fmtTime(S.stats.playSec))}
+    ${kv(t('signs'), fmt(S.stats.signs))}
+    ${kv(t('bought'), fmt(S.stats.bought))}
+    ${kv(t('lifetime'), fmt(S.allTimeEarned))}
+    ${kv(t('restrCount'), S.restructures)}
+    <div class="set-sec">${t('secDanger')}</div>
+    <div style="margin-top:8px"><button class="btn danger" data-set-act="reset"><span>${t('reset')}</span><span class="sub">🗑️</span></button></div>
+    <div class="credit mono">Paperwork Inc. v${CONFIG.version} · ${t('credit')}</div>
+    <div class="m-btns"><button class="btn" data-set-act="close">${t('close')}</button></div>`;
+  $('overlay').classList.add('show');
+  modalKind = 'settings';
+  sheet.scrollTop = keepScroll;
+}
+$('sheet').addEventListener('click', e => {
+  if (modalKind !== 'settings') return;
+  const b = e.target.closest('[data-set],[data-set-act]');
+  if (!b) return;
+  if (b.dataset.setAct) {
+    Sound.play('click');
+    switch (b.dataset.setAct) {
+      case 'close': closeModal(); save(); break;
+      case 'export': showExport(); break;
+      case 'import': showImport(); break;
+      case 'reset': onReset(); break;
+    }
+    return;
+  }
+  const key = b.dataset.set;
+  if (key === 'volume') return;
+  S.settings[key] = b.dataset.val != null ? b.dataset.val : !S.settings[key];
+  applySettings();
+  Sound.play('click'); haptic.light();
+  showSettings();
+  save();
+});
+$('sheet').addEventListener('input', e => {
+  if (e.target.dataset && e.target.dataset.set === 'volume') { S.settings.volume = +e.target.value / 100; Sound.setVolume(); }
+});
+$('sheet').addEventListener('change', e => {
+  if (e.target.dataset && e.target.dataset.set === 'volume') { Sound.play('stamp'); save(); }
+});
+
+/* ---------- Экспорт и импорт сохранения ---------- */
+const CODE_PREFIX = 'PWI1.';
+function exportCode() { return CODE_PREFIX + btoa(unescape(encodeURIComponent(JSON.stringify(S)))); }
+function parseCode(code) {
+  code = String(code || '').trim().replace(/\s+/g, '');
+  if (code.indexOf(CODE_PREFIX) !== 0) return null;
+  try { return migrate(JSON.parse(decodeURIComponent(escape(atob(code.slice(CODE_PREFIX.length)))))); } catch (e) { return null; }
+}
+function showExport() {
+  save();
+  showModal({
+    form: t('settingsForm'), title: '📤 ' + t('exportTitle'),
+    body: `<p>${t('exportBody')}</p><textarea class="code" id="saveCode" readonly>${esc(exportCode())}</textarea>`,
+    buttons: [
+      { label: '📋 ' + t('copy'), keepOpen: true, onClick: copyCode },
+      { label: t('back'), ghost: true, onClick: showSettings },
+    ],
+  });
+}
+function copyCode() {
+  const ta = $('saveCode'); if (!ta) return;
+  ta.focus(); ta.select();
+  const fallback = () => { let ok = false; try { ok = document.execCommand('copy'); } catch (e) {} toast(ok ? t('tCopied') : t('tCopyFail')); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).then(() => toast(t('tCopied')), fallback);
+  else fallback();
+}
+function showImport() {
+  showModal({
+    form: t('settingsForm'), title: '📥 ' + t('importTitle'),
+    body: `<p>${t('importBody')}</p><textarea class="code" id="saveCode" placeholder="PWI1.…"></textarea>`,
+    buttons: [
+      { label: t('importBtn'), keepOpen: true, onClick: () => {
+          const next = parseCode($('saveCode').value);
+          if (!next) { toast(t('tImportBad')); return; }
+          next.settings = Object.assign({}, S.settings);   // настройки этого устройства сохраняем
+          next.lastSeen = Date.now();                        // офлайн-доход за время в коде не начисляем
+          S = next; closeModal();
+          activeTab = 'depts'; applySettings(); save();
+          Sound.play('upgrade'); haptic.success(); toast(t('tImported'));
+        } },
+      { label: t('back'), ghost: true, onClick: showSettings },
+    ],
+  });
+}
 
 /* ---------- Окно «пока вас не было» ---------- */
 function showAway(awaySec, countedSec, gained, m) {
   const capped = awaySec > countedSec + 1;
   let body = '';
   if (gained.docs <= 0) {
-    body = `<p>You were away for <b class="mono">${fmtTime(awaySec)}</b>.</p><div class="m-joke">${TEXTS.quietOffice}</div>`;
+    body = `<p>${t('awayQuiet', { t: fmtTime(awaySec) })}</p><div class="m-joke">${t('quietOffice')}</div>`;
   } else {
-    body = `<p>While you were away for <b class="mono">${fmtTime(awaySec)}</b>, the company approved <b class="mono">${fmt(gained.docs)}</b> documents` +
-      (gained.stamps > 0 ? ` and pressed <b class="mono">${fmt(gained.stamps)}</b> stamps` : '') + `.</p>` +
-      `<p class="hint mono" style="font-size:12px">Offline efficiency ${pct(m.eff)} · records cover up to ${m.capHours}h</p>` +
-      (capped ? `<p style="font-size:13px">⚠️ Records only cover the first <b>${m.capHours}h</b> of your absence. Upgrades can expand the filing cabinet.</p>` : '') +
-      `<div class="m-joke">📎 Meanwhile: ${pick(TEXTS.jokes)}</div>`;
+    body = `<p>${t('awayBody', { t: fmtTime(awaySec), d: fmt(gained.docs) })}` +
+      (gained.stamps > 0 ? t('awayStamps', { s: fmt(gained.stamps) }) : '') + `.</p>` +
+      `<p class="hint mono" style="font-size:12px">${t('awayEff', { e: pct(m.eff), h: m.capHours })}</p>` +
+      (capped ? `<p style="font-size:13px">${t('awayCapped', { h: m.capHours })}</p>` : '') +
+      `<div class="m-joke">${t('awayMeanwhile')} ${pick(tlist('jokes'))}</div>`;
   }
-  showModal({ form: TEXTS.awayForm, title: '📬 ' + TEXTS.awayTitle, stamp: TEXTS.awayStamp, body,
-    buttons: [{ label: TEXTS.awayBtn }] });
+  showModal({ form: t('awayForm'), title: '📬 ' + t('awayTitle'), stamp: t('stampReceived'), body,
+    buttons: [{ label: t('awayBtn'), onClick: () => Sound.play('welcome') }] });
   if (gained.docs > 0) haptic.success();
 }
 
@@ -825,34 +1459,26 @@ function applyAway(sec) {
   const counted = Math.min(sec, m.capHours * 3600);
   const gained = advance(S, counted, m.eff);
   checkUnlocks(true);
-  showAway(sec, counted, gained, m);
+  const mode = S.settings.awayReport;
+  if (mode === 'always' || (mode === 'long' && sec >= 1800)) showAway(sec, counted, gained, m);
+  else if (gained.docs > 0) toast(t('awayToast', { n: fmt(gained.docs) }));
 }
 
 /* ---------- Проверка открытия механик ---------- */
 function checkUnlocks(silent) {
-  const m = getMods(S);
-  if (!S.flags.upgradesTab && upgradesUnlocked(S)) {
-    S.flags.upgradesTab = true;
-    if (!silent) { toast('📎 Procurement has opened. Upgrades tab unlocked.'); haptic.success(); }
-  }
-  if (!S.flags.restructureTab && restructureUnlocked(S)) {
-    S.flags.restructureTab = true;
-    if (!silent) { toast('🔄 The Board mentions "restructuring". Tab unlocked.'); haptic.success(); }
-  }
+  const notify = (msg, sfx) => { if (silent) return; toast(msg); haptic.success(); Sound.play(sfx); };
+  if (!S.flags.upgradesTab && upgradesUnlocked(S)) { S.flags.upgradesTab = true; notify(t('tUpgTab'), 'ring'); }
+  if (!S.flags.restructureTab && restructureUnlocked(S)) { S.flags.restructureTab = true; notify(t('tRestrTab'), 'ring'); }
   DEPARTMENTS.forEach((d, i) => {
     const f = 'seen_' + d.id;
-    if (i > 0 && !S.flags[f] && deptVisible(S, d, i)) {
-      S.flags[f] = true;
-      if (!silent) { toast(d.emoji + ' New department cleared for acquisition: ' + d.name); haptic.success(); }
-    }
+    if (i > 0 && !S.flags[f] && deptVisible(S, d, i)) { S.flags[f] = true; notify(t('tNewDept', { e: d.emoji, name: dName(d) }), 'ring'); }
   });
   if (canRestructure(S) && !S.flags['canR_' + S.restructures]) {
-    S.flags['canR_' + S.restructures] = true;
-    if (!silent) { toast('🎖️ Restructuring is now available. Form 99-R awaits.'); haptic.success(); }
+    S.flags['canR_' + S.restructures] = true; notify(t('tCanRestr'), 'milestone');
   }
 }
 
-/* ---------- Сборка карточек отделов ---------- */
+/* ---------- Отделы ---------- */
 function buildDepts() {
   const vis = []; let teaser = null;
   DEPARTMENTS.forEach((d, i) => { if (deptVisible(S, d, i)) vis.push(d); else if (!teaser) teaser = d; });
@@ -862,9 +1488,9 @@ function buildDepts() {
   let html = vis.map(d => `
     <div class="card dept" id="d-${d.id}">
       <div class="c-head"><span class="c-emoji">${d.emoji}</span>
-        <div class="c-title"><div class="c-name">${esc(d.name)}</div><div class="c-form mono">${d.form}</div></div>
+        <div class="c-title"><div class="c-name">${esc(dName(d))}</div><div class="c-form mono">${formStr(d.form)}</div></div>
         <div class="c-owned mono" data-f="owned"></div></div>
-      <div class="c-desc">${esc(d.desc)}</div>
+      <div class="c-desc">${esc(dDesc(d))}</div>
       <div class="c-stats mono" data-f="stats"></div>
       <div class="ms"><div class="ms-bar"><i data-f="bar"></i></div><span class="mono" data-f="ms"></span></div>
       <button class="btn" data-act="buyDept" data-id="${d.id}"><span data-f="bl"></span><span class="sub mono" data-f="bs"></span></button>
@@ -872,9 +1498,9 @@ function buildDepts() {
   if (teaser) html += `
     <div class="card redacted" id="d-teaser">
       <div class="c-head"><span class="c-emoji">🔒</span>
-        <div class="c-title"><div class="c-name"><span class="rbar">${'X'.repeat(Math.min(24, teaser.name.length))}</span></div>
-        <div class="c-form mono">Classified · pending clearance</div></div></div>
-      <div class="c-desc">Clearance granted once <b class="mono">${fmt(teaser.baseCost * CONFIG.reveal.deptAtFraction)}</b> documents are approved this fiscal period.</div>
+        <div class="c-title"><div class="c-name"><span class="rbar">${'X'.repeat(Math.min(24, dName(teaser).length))}</span></div>
+        <div class="c-form mono">${t('classified')}</div></div></div>
+      <div class="c-desc">${t('clearance', { n: fmt(teaser.baseCost * CONFIG.reveal.deptAtFraction) })}</div>
     </div>`;
   $('deptList').innerHTML = html;
 }
@@ -890,11 +1516,11 @@ function renderDepts(m, rate) {
     const total = deptRate(S, d, m);
     const each = c > 0 ? total / c : deptRateAt(d, 1, m);
     f('stats').textContent = c > 0
-      ? `${fmtRate(each)}/s each · ${fmtRate(total)}/s total` + (rate > 0 ? ` · ${Math.round(total / rate * 100)}%` : '')
-      : `${fmtRate(deptRateAt(d, 1, m))}/s each`;
+      ? t('each', { v: fmtRate(each) }) + ' · ' + t('total', { v: fmtRate(total) }) + (rate > 0 ? ` · ${Math.round(total / rate * 100)}%` : '')
+      : t('each', { v: fmtRate(each) });
     const nextMs = (Math.floor(c / every) + 1) * every;
     f('bar').style.width = ((c % every) / every * 100) + '%';
-    f('ms').textContent = `${c}/${nextMs} → output ×${CONFIG.milestones.mult}`;
+    f('ms').textContent = t('milestone', { c, next: nextMs, m: CONFIG.milestones.mult });
     // кнопка покупки
     let n = S.buyMode === 'max' ? maxBuy(S, d, m) : S.buyMode;
     if (n < 1) n = 1;
@@ -902,13 +1528,13 @@ function renderDepts(m, rate) {
     const btn = card.querySelector('[data-act="buyDept"]');
     const ok = S.docs >= cost;
     btn.disabled = !ok;
-    f('bl').textContent = ok ? `Acquire ×${n}` : (rate > 0 ? `⏳ Pending funds · ${fmtTime((cost - S.docs) / rate)}` : '⏳ Pending funds');
+    f('bl').textContent = ok ? t('acquire', { n }) : '⏳ ' + t('pending') + (rate > 0 ? ' · ' + fmtTime((cost - S.docs) / rate) : '');
     f('bs').textContent = '📄 ' + fmt(cost);
   }
   document.querySelectorAll('.po button').forEach(b => b.classList.toggle('on', String(S.buyMode) === b.dataset.id));
 }
 
-/* ---------- Апгрейды ---------- */
+/* ---------- Улучшения ---------- */
 function renderUpgrades(m, rate, sRate) {
   const avail = UPGRADES.filter(u => !hasUpg(S, u.id) && upgVisible(S, u, m))
     .sort((a, b) => (a.currency === b.currency ? a.cost - b.cost : a.currency === 'docs' ? -1 : 1));
@@ -918,11 +1544,11 @@ function renderUpgrades(m, rate, sRate) {
     $('upgList').innerHTML = avail.length ? avail.map(u => `
       <div class="card upg" id="u-${u.id}">
         <div class="c-head"><span class="c-emoji">${u.emoji}</span>
-          <div class="c-title"><div class="c-name">${esc(u.name)}</div><div class="c-form mono">${upgForm(u)}</div></div></div>
-        <div class="c-desc">${esc(u.desc)}</div>
+          <div class="c-title"><div class="c-name">${esc(uName(u))}</div><div class="c-form mono">${upgForm(u)}</div></div></div>
+        <div class="c-desc">${esc(uDesc(u))}</div>
         <div class="effect mono">▸ ${esc(effectText(u))}</div>
         <button class="btn" data-act="buyUpg" data-id="${u.id}"><span data-f="bl"></span><span class="sub mono" data-f="bs"></span></button>
-      </div>`).join('') : `<div class="empty">${TEXTS.noUpgrades}</div>`;
+      </div>`).join('') : `<div class="empty">${t('noUpgrades')}</div>`;
   }
   let affordable = 0;
   for (const u of avail) {
@@ -930,9 +1556,8 @@ function renderUpgrades(m, rate, sRate) {
     const have = u.currency === 'stamps' ? S.stamps : S.docs;
     const r = u.currency === 'stamps' ? sRate : rate;
     const ok = have >= u.cost; if (ok) affordable++;
-    const btn = card.querySelector('[data-act="buyUpg"]');
-    btn.disabled = !ok;
-    card.querySelector('[data-f="bl"]').textContent = ok ? 'Approve requisition' : (r > 0 ? `⏳ Pending funds · ${fmtTime((u.cost - have) / r)}` : '⏳ Pending funds');
+    card.querySelector('[data-act="buyUpg"]').disabled = !ok;
+    card.querySelector('[data-f="bl"]').textContent = ok ? t('approveReq') : '⏳ ' + t('pending') + (r > 0 ? ' · ' + fmtTime((u.cost - have) / r) : '');
     card.querySelector('[data-f="bs"]').textContent = curIcon(u) + ' ' + fmt(u.cost);
   }
   // Список купленных
@@ -940,8 +1565,8 @@ function renderUpgrades(m, rate, sRate) {
   if (fk !== filedKey) {
     filedKey = fk;
     const bought = S.upgrades.map(id => UPG_BY_ID[id]).filter(Boolean);
-    $('upgFiled').innerHTML = bought.length ? `<details class="filed" ${filedOpen ? 'open' : ''}><summary>Filed &amp; approved (${bought.length})</summary>` +
-      bought.map(u => `<div class="filed-row">${u.emoji} ${esc(u.name)}<br><span class="mono">✓ ${esc(effectText(u))}</span></div>`).join('') + '</details>' : '';
+    $('upgFiled').innerHTML = bought.length ? `<details class="filed" ${filedOpen ? 'open' : ''}><summary>${t('filed', { n: bought.length })}</summary>` +
+      bought.map(u => `<div class="filed-row">${u.emoji} ${esc(uName(u))}<br><span class="mono">✓ ${esc(effectText(u))}</span></div>`).join('') + '</details>' : '';
     const det = $('upgFiled').querySelector('details');
     if (det) det.addEventListener('toggle', () => { filedOpen = det.open; });
   }
@@ -949,10 +1574,10 @@ function renderUpgrades(m, rate, sRate) {
   badge.hidden = affordable === 0; badge.textContent = affordable;
 }
 
-/* ---------- Реструктуризация ---------- */
+/* ---------- Реорганизация ---------- */
 function renderRestructure(m) {
   const gain = seniorityGain(S);
-  $('rDesc').textContent = TEXTS.restructureDesc.replace('{bonus}', '+' + Math.round(m.senPer * 100));
+  $('rDesc').textContent = t('rDesc', { bonus: Math.round(m.senPer * 100) });
   $('rSen').textContent = fmt(S.seniority);
   $('rBonus').textContent = '+' + Math.round(S.seniority * m.senPer * 100) + '%';
   $('rRun').textContent = fmt(S.runEarned);
@@ -961,12 +1586,12 @@ function renderRestructure(m) {
   $('rGain').textContent = '+' + fmt(gain) + ' 🎖️';
   const p = Math.min(1, S.runEarned / CONFIG.prestige.minRunEarned);
   $('rProg').style.width = (p * 100) + '%';
-  $('rProgText').textContent = `${fmt(S.runEarned)} / ${fmt(CONFIG.prestige.minRunEarned)} documents this fiscal period`;
+  $('rProgText').textContent = t('rProg', { a: fmt(S.runEarned), b: fmt(CONFIG.prestige.minRunEarned) });
   const can = canRestructure(S);
   $('rBtn').disabled = !can;
-  $('rBtn').firstElementChild.textContent = can ? 'File Form 99-R' : (p < 1 ? 'Insufficient fiscal output' : 'Awaiting next Seniority point');
+  $('rBtn').firstElementChild.textContent = can ? t('rFile') : (p < 1 ? t('rInsufficient') : t('rAwaiting'));
   $('rCount').textContent = S.restructures;
-  $('rCap').textContent = m.capHours + 'h';
+  $('rCap').textContent = m.capHours + t('tH');
   $('rEff').textContent = pct(m.eff);
   $('rOwned').textContent = totalOwned(S);
 }
@@ -976,9 +1601,9 @@ function render() {
   const m = getMods(S);
   const rate = totalRate(S, m), sRate = stampRate(S, m);
   $('docs').textContent = fmt(S.docs);
-  $('rate').textContent = '+' + fmtRate(rate) + ' / sec';
+  $('rate').textContent = '+' + fmtRate(rate) + ' ' + t('perSec');
   $('stampsLine').hidden = !m.stampsOn;
-  if (m.stampsOn) { $('stamps').textContent = fmt(S.stamps); $('stampRate').textContent = '+' + fmtRate(sRate) + '/s'; }
+  if (m.stampsOn) { $('stamps').textContent = fmt(S.stamps); $('stampRate').textContent = '+' + fmtRate(sRate) + t('perS'); }
   $('senLine').hidden = S.seniority <= 0;
   if (S.seniority > 0) { $('sen').textContent = fmt(S.seniority); $('senBonus').textContent = '+' + Math.round(S.seniority * m.senPer * 100) + '%'; }
   // Кнопка ручной подписи уходит на второй план после первой покупки
@@ -987,11 +1612,11 @@ function render() {
   // Вкладки
   const locks = { depts: false, upgs: !upgradesUnlocked(S), restr: !restructureUnlocked(S) };
   const icons = { depts: '🗄️', upgs: '📎', restr: '🔄' };
-  document.querySelectorAll('.tab').forEach(t => {
-    const id = t.dataset.id;
-    t.disabled = locks[id];
-    t.querySelector('.t-ico').textContent = locks[id] ? '🔒' : icons[id];
-    t.classList.toggle('active', id === activeTab);
+  document.querySelectorAll('.tab').forEach(tb => {
+    const id = tb.dataset.id;
+    tb.disabled = locks[id];
+    tb.querySelector('.t-ico').textContent = locks[id] ? '🔒' : icons[id];
+    tb.classList.toggle('active', id === activeTab);
   });
   document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'p-' + activeTab));
 
@@ -1001,43 +1626,48 @@ function render() {
 }
 
 /* ---------- Эффект печати на карточке ---------- */
-function stampFx(cardId, text) {
+function stampFx(cardId) {
+  if (!S.settings.animations) return;
   const card = $(cardId); if (!card) return;
   const s = document.createElement('div');
-  s.className = 'stamp-anim'; s.textContent = text || 'APPROVED';
+  s.className = 'stamp-anim'; s.textContent = t('stampApproved');
   card.appendChild(s); setTimeout(() => s.remove(), 1100);
 }
 
 /* ---------- Действия игрока ---------- */
 function onSign(btn) {
-  S.docs += CONFIG.manualSignAmount; S.runEarned += CONFIG.manualSignAmount; S.allTimeEarned += CONFIG.manualSignAmount;
-  haptic.light();
-  const f = document.createElement('span');
-  f.className = 'float-num'; f.textContent = '+' + CONFIG.manualSignAmount;
-  btn.appendChild(f); setTimeout(() => f.remove(), 800);
+  const a = CONFIG.manualSignAmount;
+  S.docs += a; S.runEarned += a; S.allTimeEarned += a; S.stats.signs++;
+  haptic.light(); Sound.play('sign');
+  if (S.settings.animations) {
+    const f = document.createElement('span');
+    f.className = 'float-num'; f.textContent = '+' + a;
+    btn.appendChild(f); setTimeout(() => f.remove(), 800);
+  }
   render();
 }
 function onBuyDept(id) {
   const d = DEPT_BY_ID[id], m = getMods(S);
-  let n = S.buyMode === 'max' ? maxBuy(S, d, m) : S.buyMode;
+  const n = S.buyMode === 'max' ? maxBuy(S, d, m) : S.buyMode;
   const before = owned(S, id);
   if (!buyDept(S, id, n)) return;
-  haptic.light();
+  S.stats.bought += n;
+  haptic.light(); Sound.play('stamp');
   stampFx('d-' + id);
   const every = CONFIG.milestones.every;
   if (Math.floor(owned(S, id) / every) > Math.floor(before / every)) {
-    toast(`📈 ${d.name} reached ${Math.floor(owned(S, id) / every) * every}. Output ×${CONFIG.milestones.mult}, per Form 25-X.`);
-    haptic.success();
+    toast(t('tMilestone', { name: dName(d), n: Math.floor(owned(S, id) / every) * every, m: CONFIG.milestones.mult }));
+    haptic.success(); setTimeout(() => Sound.play('milestone'), 150);
   }
-  if (before === 0 && totalOwned(S) === n && id === DEPARTMENTS[0].id) toast('🪑 First department opened. The company now runs itself, as all good companies do.');
+  if (before === 0 && totalOwned(S) === n && id === DEPARTMENTS[0].id) toast(t('tFirstDept'));
   render();
 }
 function onBuyUpg(id) {
   const u = UPG_BY_ID[id];
   if (!buyUpgrade(S, id)) return;
-  haptic.light();
-  if (u.effect.type === 'unlockStamps') { toast('🔏 Stamps unlocked. Every department now presses stamps.'); haptic.success(); }
-  else toast('✅ Approved: ' + u.name);
+  haptic.light(); Sound.play('upgrade');
+  if (u.effect.type === 'unlockStamps') { toast(t('tStamps')); haptic.success(); }
+  else toast(t('tApproved', { name: uName(u) }));
   render(); save();
 }
 function onRestructure() {
@@ -1045,56 +1675,63 @@ function onRestructure() {
   const gain = seniorityGain(S), m = getMods(S);
   const total = S.seniority + gain;
   showModal({
-    form: TEXTS.restructureConfirmForm, title: TEXTS.restructureConfirmTitle, stamp: 'BOARD',
-    body: `<p>You will receive <b class="mono">+${fmt(gain)}</b> Seniority.</p>` +
-      `<p>Total Seniority: <b class="mono">${fmt(total)}</b> → <b class="mono">+${Math.round(total * m.senPer * 100)}%</b> to all income, permanently.</p>` +
-      `<p class="hint" style="font-size:13px">All documents, departments, stamps and upgrades will be shredded. Seniority and corporate records are kept.</p>`,
+    form: t('rcForm'), title: t('rcTitle'), stamp: t('stampBoard'),
+    body: `<p>${t('rcGain', { g: fmt(gain) })}</p><p>${t('rcTotal', { t: fmt(total), p: Math.round(total * m.senPer * 100) })}</p>` +
+      `<p class="hint" style="font-size:13px">${t('rcWarn')}</p>`,
     buttons: [
-      { label: TEXTS.restructureBtn, onClick: () => {
-          S = restructure(S);
+      { label: t('rcBtn'), onClick: () => {
+          S = restructure(S); ensureSettings(S);
           deptKey = upgKey = filedKey = '';
           activeTab = 'depts';
-          haptic.success();
-          toast(`🎖️ Restructuring complete. Seniority: ${fmt(S.seniority)}.`);
+          haptic.success(); Sound.play('shredder');
+          toast(t('tRestructured', { n: fmt(S.seniority) }));
           save(); render();
         } },
-      { label: TEXTS.cancelBtn, ghost: true },
+      { label: t('cancel'), ghost: true },
     ],
   });
 }
 function onReset() {
   showModal({
-    form: TEXTS.resetForm, title: TEXTS.resetTitle, stamp: 'VOID', body: `<p>${TEXTS.resetBody}</p>`,
+    form: t('resetForm'), title: t('resetTitle'), stamp: t('stampVoid'), body: `<p>${t('resetBody')}</p>`,
     buttons: [
-      { label: TEXTS.resetBtn, danger: true, onClick: () => {
-          Store.wipe(); S = freshState(); deptKey = upgKey = filedKey = ''; activeTab = 'depts';
+      { label: t('resetBtn'), danger: true, onClick: () => {
+          const keep = Object.assign({}, S.settings);   // настройки переживают сброс
+          Store.wipe(); S = ensureSettings(freshState()); S.settings = keep;
+          deptKey = upgKey = filedKey = ''; activeTab = 'depts';
+          Sound.play('shredder');
           save(); render(); showIntro();
         } },
-      { label: TEXTS.cancelBtn, ghost: true },
+      { label: t('cancel'), ghost: true, onClick: showSettings },
     ],
   });
 }
 function showIntro() {
-  showModal({ form: TEXTS.introForm, title: '🗂️ ' + TEXTS.introTitle, stamp: 'HIRED',
-    body: TEXTS.introBody.map(p => `<p>${p}</p>`).join(''), buttons: [{ label: TEXTS.introBtn }] });
+  showModal({ form: t('introForm'), title: '🗂️ ' + t('introTitle'), stamp: t('stampHired'),
+    body: tlist('intro').map(p => `<p>${p}</p>`).join(''),
+    buttons: [{ label: t('introBtn'), onClick: () => Sound.play('stamp') }] });
 }
 
 // Один обработчик кликов на всё (делегирование)
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-act]');
-  if (!t || t.disabled) return;
-  const id = t.dataset.id;
-  switch (t.dataset.act) {
-    case 'sign': onSign(t); break;
+  const tEl = e.target.closest('[data-act]');
+  if (!tEl || tEl.disabled) return;
+  const id = tEl.dataset.id;
+  switch (tEl.dataset.act) {
+    case 'sign': onSign(tEl); break;
     case 'buyDept': onBuyDept(id); break;
     case 'buyUpg': onBuyUpg(id); break;
-    case 'tab': activeTab = id; window.scrollTo({ top: 0 }); render(); break;
-    case 'mode': S.buyMode = id === 'max' ? 'max' : +id; haptic.light(); render(); break;
+    case 'tab': if (activeTab !== id) Sound.play('tab'); activeTab = id; window.scrollTo({ top: 0 }); render(); break;
+    case 'mode': S.buyMode = id === 'max' ? 'max' : +id; haptic.light(); Sound.play('click'); render(); break;
     case 'restructure': onRestructure(); break;
-    case 'reset': onReset(); break;
+    case 'settings': Sound.play('click'); showSettings(); break;
   }
 });
-$('overlay').addEventListener('click', e => { if (e.target === $('overlay')) closeModal(); });
+$('overlay').addEventListener('click', e => {
+  if (e.target === $('overlay')) { const wasSettings = modalKind === 'settings'; closeModal(); if (wasSettings) save(); }
+});
+// Звук разблокируется первым касанием
+document.addEventListener('pointerdown', () => Sound.unlock(), { passive: true });
 
 /* ---------- Сохранение ---------- */
 function save() { if (!S) return; S.lastSeen = Date.now(); Store.save(S); }
@@ -1107,39 +1744,50 @@ function tick() {
   lastTick = now;
   if (dt <= 0) return;
   if (dt >= CONFIG.offline.minAwaySec) applyAway(dt);
-  else advance(S, dt, 1);
+  else { advance(S, dt, 1); S.stats.playSec += dt; }
   S.lastSeen = now;
   checkUnlocks(false);
   render();
 }
 
 document.addEventListener('visibilitychange', () => {
-  if (document.hidden) save();
-  else tick();
+  if (document.hidden) {
+    save();
+    Sound.syncAmbience();
+    if (Sound.ctx && Sound.ctx.state === 'running') Sound.ctx.suspend();
+  } else {
+    if (Sound.ctx && Sound.ctx.state === 'suspended') Sound.ctx.resume().then(() => Sound.syncAmbience(), () => {});
+    tick();
+  }
 });
 window.addEventListener('pagehide', save);
 
 /* ---------- Ротация служебных записок ---------- */
 function rotateMemo() {
+  if (!S || !S.settings.memos) return;
   const el = $('memo');
   el.classList.add('fade');
-  setTimeout(() => { el.textContent = pick(TEXTS.memos); el.classList.remove('fade'); }, 400);
+  setTimeout(() => { el.textContent = pick(tlist('memos')); el.classList.remove('fade'); }, 400);
 }
 
 /* ---------- Старт ---------- */
 (async function start() {
   const saved = migrate(await Store.load());
-  $('memo').textContent = pick(TEXTS.memos);
   if (saved) {
     S = saved;
+    LANG = S.settings.lang; NUMFMT = S.settings.numFormat;
+    applySettings();
     const away = (Date.now() - (S.lastSeen || Date.now())) / 1000;
     if (away >= CONFIG.offline.minAwaySec) applyAway(away);
     else if (away > 0) advance(S, away, 1);
     checkUnlocks(true);
   } else {
-    S = freshState();
+    S = ensureSettings(freshState());
+    LANG = S.settings.lang;
+    applySettings();
     showIntro();
   }
+  $('memo').textContent = pick(tlist('memos'));
   lastTick = Date.now();
   S.lastSeen = lastTick;
   render();

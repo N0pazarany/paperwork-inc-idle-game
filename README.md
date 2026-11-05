@@ -1,4 +1,3 @@
-[README.md](https://github.com/user-attachments/files/34444910/README.md)[README.md](https://github.com/user-attachments/files/34444908/README.md)
 # 📎 Paperwork Inc.
 
 🇷🇺 Русский · [🇬🇧 English](#english)
@@ -41,6 +40,9 @@
 - **25 апгрейдов.** Видны только почти доступные и уже купленные.
 - **Офлайн-доход:** на старте начисляется 50% дохода и не больше чем за 8 часов. Апгрейды поднимают это до 100% и 20 часов.
 - **Restructuring:** Seniority = `floor(√(всего заработано / 5·10⁹))`. Нужно заработать минимум 300B за период.
+- **Два языка:** английский и русский. При первом запуске язык выбирается по профилю Telegram, сменить его можно в настройках.
+- **Звуки:** синтезируются прямо в браузере, без файлов. Удар печати, звонок, кассовый аппарат, шредер; по желанию — фоновый шум офиса.
+- **Настройки ⚙️:** язык, звук и громкость, шум офиса, вибрация, служебные записки, анимации, формат чисел, окно возвращения, экспорт и импорт сохранения, личное дело со статистикой, полный сброс.
 
 ---
 
@@ -91,7 +93,7 @@ S.lastSeen = Date.now() - 5 * 3600e3; save(); location.reload(); // имитир
 S.runEarned = S.allTimeEarned = 4e11; render();          // открыть реструктуризацию
 ```
 
-Полностью сбросить прогресс можно кнопкой **Shred all records** во вкладке Restructuring.
+Полностью сбросить прогресс можно в настройках ⚙️ → **Shred all records**.
 
 ### Где что править
 
@@ -102,7 +104,9 @@ S.runEarned = S.allTimeEarned = 4e11; render();          // открыть ре�
 | `CONFIG` | Рост цен, офлайн-лимит и эффективность, вехи, пороги открытия вкладок, формула престижа |
 | `DEPARTMENTS` | Отделы: цена, выработка, эмодзи, номер формы, описание |
 | `UPGRADES` | Апгрейды: цена, валюта, условия появления, эффект, описание |
-| `TEXTS` | Все строки интерфейса, шутки для окна возвращения, служебные записки |
+| `I18N` | Все тексты на английском и русском: интерфейс, шутки, служебные записки, переводы отделов и апгрейдов |
+| `DEFAULT_SETTINGS` | Настройки по умолчанию для новых игроков |
+| `SFX` | Рецепты звуков |
 
 Код между маркерами `// ===== ENGINE START =====` и `// ===== ENGINE END =====` — это чистая логика без DOM. Её можно загрузить в Node и прогнать симуляцию баланса.
 
@@ -128,7 +132,9 @@ S.runEarned = S.allTimeEarned = 4e11; render();          // открыть ре�
 - Внутри Telegram запись идёт и в CloudStorage, и в `localStorage`. При загрузке берётся более свежая версия.
 - Сохранение занимает около 500 байт при лимите CloudStorage в 4096 байт на ключ.
 
-Если поменяется формат сохранения, обновите функцию `migrate()` или смените ключ.
+Если поменяется формат сохранения, обновите функцию `migrate()`. Новые поля добавляются с значениями по умолчанию, поэтому обновления не стирают прогресс. **Не меняйте** `id` отделов и апгрейдов и ключ сохранения, иначе прогресс у игроков пропадёт.
+
+Чтобы добавить язык, скопируйте блок `en` в `I18N` под новым кодом (например, `de`) и переведите строки. Язык сам появится в настройках.
 
 ---
 
@@ -172,6 +178,9 @@ It's an idle game, not a clicker. Income accrues on its own, even while the game
 - **25 upgrades.** Only those that are nearly affordable or already bought are shown.
 - **Offline income:** starts at 50% efficiency for up to 8 hours. Upgrades raise this to 100% and 20 hours.
 - **Restructuring:** Seniority = `floor(√(total earned / 5·10⁹))`. Requires at least 300B earned in the current period.
+- **Two languages:** English and Russian. Picked from the Telegram profile on first launch, switchable in settings.
+- **Sound:** synthesized in the browser, no audio files. Stamp thud, desk bell, cash register, shredder, and optional office ambience.
+- **Settings ⚙️:** language, sound and volume, office ambience, vibration, memos, animations, number format, absence report, save export/import, personnel file with stats, hard reset.
 
 ## Deployment
 
@@ -218,7 +227,7 @@ S.lastSeen = Date.now() - 5 * 3600e3; save(); location.reload(); // simulate 5 h
 S.runEarned = S.allTimeEarned = 4e11; render();          // unlock restructuring
 ```
 
-To wipe all progress, use **Shred all records** on the Restructuring tab.
+To wipe all progress, open settings ⚙️ → **Shred all records**.
 
 ### Where to tweak things
 
@@ -229,7 +238,9 @@ All balance values and texts sit at the top of the `<script>`:
 | `CONFIG` | Cost growth, offline cap and efficiency, milestones, tab unlock thresholds, prestige formula |
 | `DEPARTMENTS` | Departments: cost, output, emoji, form number, description |
 | `UPGRADES` | Upgrades: cost, currency, unlock conditions, effect, description |
-| `TEXTS` | All UI strings, return-screen jokes, office memos |
+| `I18N` | All texts in English and Russian: UI, jokes, memos, department and upgrade translations |
+| `DEFAULT_SETTINGS` | Default settings for new players |
+| `SFX` | Sound recipes |
 
 Code between `// ===== ENGINE START =====` and `// ===== ENGINE END =====` is pure logic with no DOM. You can load it in Node to run balance simulations.
 
@@ -255,4 +266,6 @@ Unlock conditions (`req`) can include `dept` + `count`, `upgrade`, `earned` (ear
 - Inside Telegram it writes to both CloudStorage and `localStorage`, and loads whichever is newer.
 - A save is about 500 bytes, well under CloudStorage's 4096-byte limit per key.
 
-If you change the save format, update `migrate()` or bump the key.
+If you change the save format, update `migrate()`. New fields get default values, so updates never wipe progress. **Do not change** department or upgrade `id`s or the save key, or players will lose their progress.
+
+To add a language, copy the `en` block in `I18N` under a new code (e.g. `de`) and translate it. It will appear in settings automatically.
