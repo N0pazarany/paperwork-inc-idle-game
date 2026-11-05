@@ -354,7 +354,7 @@ input.vol:disabled{opacity:.4}
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.1',              // версия игры (показывается в настройках)
+  version: '1.2',              // версия игры (показывается в настройках)
   costGrowth: 1.15,            // рост цены отдела: база × 1.15^количество
   manualSignAmount: 1,         // сколько даёт кнопка «Sign manually»
   tickMs: 250,                 // частота обновления экрана
@@ -1224,6 +1224,19 @@ function fmt(n) {
   const v = n / Math.pow(1000, e);
   return (v < 100 ? (Math.floor(v * 10) / 10).toFixed(1) : String(Math.floor(v))) + units[e - 1];
 }
+// Формат с большей точностью для шапки: 1.234K, 12.34K, 123.4K — чтобы рост был виден
+function fmtPrecise(n) {
+  if (!isFinite(n)) return '∞';
+  if (n < 1000) return n < 10 ? (Math.floor(n * 10) / 10).toFixed(1) : String(Math.floor(n));
+  if (NUMFMT === 'sci') return Number(n).toExponential(3).replace('e+', 'e');
+  const units = ['K', 'M', 'B', 'T'];
+  const e = Math.floor(Math.log10(n) / 3);
+  if (e > units.length) return Number(n).toExponential(3).replace('e+', 'e');
+  const v = n / Math.pow(1000, e);
+  const dec = v < 10 ? 3 : v < 100 ? 2 : 1;
+  const p = Math.pow(10, dec);
+  return (Math.floor(v * p) / p).toFixed(dec) + units[e - 1];
+}
 function fmtRate(n) { return n > 0 && n < 10 ? (Math.round(n * 100) / 100).toString() : fmt(n); }
 function fmtTime(sec) {
   if (!isFinite(sec)) return '∞';
@@ -1600,10 +1613,10 @@ function renderRestructure(m) {
 function render() {
   const m = getMods(S);
   const rate = totalRate(S, m), sRate = stampRate(S, m);
-  $('docs').textContent = fmt(S.docs);
+  curRate = rate; curSRate = sRate;   // для плавного счётчика в шапке
   $('rate').textContent = '+' + fmtRate(rate) + ' ' + t('perSec');
   $('stampsLine').hidden = !m.stampsOn;
-  if (m.stampsOn) { $('stamps').textContent = fmt(S.stamps); $('stampRate').textContent = '+' + fmtRate(sRate) + t('perS'); }
+  if (m.stampsOn) { $('stampRate').textContent = '+' + fmtRate(sRate) + t('perS'); }
   $('senLine').hidden = S.seniority <= 0;
   if (S.seniority > 0) { $('sen').textContent = fmt(S.seniority); $('senBonus').textContent = '+' + Math.round(S.seniority * m.senPer * 100) + '%'; }
   // Кнопка ручной подписи уходит на второй план после первой покупки
@@ -1733,6 +1746,34 @@ $('overlay').addEventListener('click', e => {
 // Звук разблокируется первым касанием
 document.addEventListener('pointerdown', () => Sound.unlock(), { passive: true });
 
+/* ---------- Плавный счётчик в шапке ----------
+   Каждый кадр показываем «живое» значение: сохранённое + доход с последнего тика.
+   Траты и крупные начисления (офлайн, импорт) докручиваются за доли секунды. */
+let curRate = 0, curSRate = 0;
+const shown = { docs: null, stamps: null };
+let lastFrame = 0;
+function easeTo(cur, target, rate, dt) {
+  if (cur == null || !S.settings.animations) return target;
+  const diff = target - cur;
+  if (diff >= 0 && diff <= rate * 0.6 + 1e-9) return target;          // обычный рост — сразу
+  if (Math.abs(diff) <= Math.abs(target) * 1e-5) return target;        // практически совпало
+  return cur + diff * Math.min(1, dt * 9);                              // трата или крупное начисление — докрутка
+}
+function frame(now) {
+  if (S && !document.hidden) {
+    const dt = Math.min(0.1, (now - (lastFrame || now)) / 1000);
+    const since = Math.min(0.5, Math.max(0, (Date.now() - lastTick) / 1000));
+    shown.docs = easeTo(shown.docs, S.docs + curRate * since, curRate, dt);
+    $('docs').textContent = fmtPrecise(shown.docs);
+    if (curSRate > 0 || S.stamps > 0) {
+      shown.stamps = easeTo(shown.stamps, S.stamps + curSRate * since, curSRate, dt);
+      $('stamps').textContent = fmtPrecise(shown.stamps);
+    }
+  }
+  lastFrame = now;
+  requestAnimationFrame(frame);
+}
+
 /* ---------- Сохранение ---------- */
 function save() { if (!S) return; S.lastSeen = Date.now(); Store.save(S); }
 
@@ -1792,6 +1833,7 @@ function rotateMemo() {
   S.lastSeen = lastTick;
   render();
   setInterval(tick, CONFIG.tickMs);
+  requestAnimationFrame(frame);
   setInterval(save, CONFIG.saveIntervalMs);
   setInterval(rotateMemo, 15000);
 })();
