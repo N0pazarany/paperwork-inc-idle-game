@@ -11,7 +11,7 @@
 🤖 Игра сделана с помощью **Claude Opus 5.5** от Anthropic: код, баланс и тексты.
 
 **▶️ Играть:** `https://t.me/<бот>/<short_name>`
-**🌐 В браузере:** `https://<логин>.github.io/<репозиторий>/`
+**🌐 В браузере:** [https://n0pazarany.github.io/paperwork-inc-idle-game/](https://n0pazarany.github.io/paperwork-inc-idle-game/)
 
 ---
 
@@ -37,7 +37,9 @@
 
 - **10 отделов**, от Intern's Desk до Head Office of Head Offices. Цена растёт как `база × 1.15^количество`.
 - **Вехи:** каждые 25 штук одного отдела удваивают его выработку.
-- **25 апгрейдов.** Видны только почти доступные и уже купленные.
+- **55 апгрейдов**, в том числе удвоители за 50, 100 и 200 штук каждого отдела. Видны только почти доступные и уже купленные.
+- **Льготы за выслугу:** при реорганизации вместе с выслугой выдаются почётные грамоты (Merits). На них покупаются постоянные льготы: стартовые отделы и документы, скидки, офлайн-бонусы, фамильная печать, автопокупка отделов.
+- **22 достижения** 🏆, каждое даёт +1% ко всему доходу навсегда.
 - **Офлайн-доход:** на старте начисляется 50% дохода и не больше чем за 8 часов. Апгрейды поднимают это до 100% и 20 часов.
 - **Restructuring:** Seniority = `floor(√(всего заработано / 5·10⁹))`. Нужно заработать минимум 300B за период.
 - **Два языка:** английский и русский. При первом запуске язык выбирается по профилю Telegram, сменить его можно в настройках.
@@ -101,9 +103,11 @@ S.runEarned = S.allTimeEarned = 4e11; render();          // открыть ре�
 
 | Объект | Что внутри |
 |---|---|
-| `CONFIG` | Рост цен, офлайн-лимит и эффективность, вехи, пороги открытия вкладок, формула престижа |
+| `CONFIG` | Рост цен, офлайн-лимит и эффективность, вехи, пороги открытия вкладок, формула престижа, апгрейды на 50/100/200, ссылка на репозиторий (`repoUrl`) |
 | `DEPARTMENTS` | Отделы: цена, выработка, эмодзи, номер формы, описание |
 | `UPGRADES` | Апгрейды: цена, валюта, условия появления, эффект, описание |
+| `PERKS` | Льготы за выслугу: цены уровней и эффекты |
+| `ACHIEVEMENTS` | Достижения и условия их получения |
 | `I18N` | Все тексты на английском и русском: интерфейс, шутки, служебные записки, переводы отделов и апгрейдов |
 | `DEFAULT_SETTINGS` | Настройки по умолчанию для новых игроков |
 | `SFX` | Рецепты звуков |
@@ -151,7 +155,7 @@ The whole game is a single `index.html`: no build step, no frameworks, no images
 🤖 Made with **Claude Opus 5.5** by Anthropic: code, balancing and writing.
 
 **▶️ Play:** `https://t.me/<bot>/<short_name>`
-**🌐 In a browser:** `https://<username>.github.io/<repository>/`
+**🌐 In a browser:** [https://n0pazarany.github.io/paperwork-inc-idle-game/](https://n0pazarany.github.io/paperwork-inc-idle-game/)
 
 ## How to play
 
@@ -175,7 +179,9 @@ It's an idle game, not a clicker. Income accrues on its own, even while the game
 
 - **10 departments**, from Intern's Desk to Head Office of Head Offices. Price grows as `base × 1.15^owned`.
 - **Milestones:** every 25 units of a department double its output.
-- **25 upgrades.** Only those that are nearly affordable or already bought are shown.
+- **55 upgrades**, including doublers at 50, 100 and 200 units of each department. Only those that are nearly affordable or already bought are shown.
+- **Tenure Benefits:** every restructuring also grants Merits, spent on permanent perks: starting departments and documents, discounts, offline bonuses, an heirloom stamp, auto-buying departments.
+- **22 achievements** 🏆, each permanently adds +1% to all income.
 - **Offline income:** starts at 50% efficiency for up to 8 hours. Upgrades raise this to 100% and 20 hours.
 - **Restructuring:** Seniority = `floor(√(total earned / 5·10⁹))`. Requires at least 300B earned in the current period.
 - **Two languages:** English and Russian. Picked from the Telegram profile on first launch, switchable in settings.
@@ -235,9 +241,11 @@ All balance values and texts sit at the top of the `<script>`:
 
 | Object | Contents |
 |---|---|
-| `CONFIG` | Cost growth, offline cap and efficiency, milestones, tab unlock thresholds, prestige formula |
+| `CONFIG` | Cost growth, offline cap and efficiency, milestones, tab unlock thresholds, prestige formula, 50/100/200 upgrades, repository link (`repoUrl`) |
 | `DEPARTMENTS` | Departments: cost, output, emoji, form number, description |
 | `UPGRADES` | Upgrades: cost, currency, unlock conditions, effect, description |
+| `PERKS` | Tenure Benefits: level costs and effects |
+| `ACHIEVEMENTS` | Achievements and their conditions |
 | `I18N` | All texts in English and Russian: UI, jokes, memos, department and upgrade translations |
 | `DEFAULT_SETTINGS` | Default settings for new players |
 | `SFX` | Sound recipes |

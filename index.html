@@ -71,6 +71,19 @@ html.no-anim .stamp-anim, html.no-anim .float-num{display:none}
   width:32px; height:30px; font-size:16px; line-height:1; padding:0;
 }
 .gear:active{transform:scale(.94)}
+@media (max-width:420px){.hdr-right .mono{display:none}}
+.shop-head{font-size:15px;margin-bottom:4px}
+.shop-head b{font-family:var(--mono);font-size:20px}
+.perk-auto{display:flex;justify-content:space-between;align-items:center;font-size:13px;margin:-2px 0 8px}
+.ach-sum{font:12px var(--mono);color:var(--hint);margin:-4px 0 10px}
+.ach{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+.ach .ae{font-size:22px;width:30px;text-align:center;flex:none}
+.ach .an{font-weight:700;font-size:14px}
+.ach .ad{font-size:12px;color:var(--hint)}
+.ach.locked .ae{filter:grayscale(1);opacity:.35}
+.ach.locked .an{color:var(--hint)}
+.ach .ok{margin-left:auto;color:var(--ink);font:800 11px var(--mono);letter-spacing:.08em;border:2px solid var(--ink);border-radius:3px;padding:1px 5px;transform:rotate(-8deg);flex:none}
+.credit a{color:var(--link);text-decoration:none}
 .docs{font-size:40px;font-weight:700;margin-top:6px;line-height:1.1;letter-spacing:-.01em}
 .docs-label{font-size:11px;color:var(--hint);text-transform:uppercase;letter-spacing:.1em}
 .rate{font-size:15px;color:var(--link);margin-top:4px}
@@ -266,7 +279,7 @@ input.vol:disabled{opacity:.4}
     <div class="seal">PAPER<br>WORK<br>INC.</div>
     <div class="hdr-top">
       <span class="brand">Paperwork Inc.</span>
-      <span class="hdr-right"><span class="mono" data-i18n="ledger"></span><button class="gear" data-act="settings" aria-label="Settings">⚙️</button></span>
+      <span class="hdr-right"><span class="mono" data-i18n="ledger"></span><button class="gear" data-act="achievements" aria-label="Achievements">🏆</button><button class="gear" data-act="settings" aria-label="Settings">⚙️</button></span>
     </div>
     <div class="docs mono" id="docs">0</div>
     <div class="docs-label" data-i18n="docsLabel"></div>
@@ -322,6 +335,12 @@ input.vol:disabled{opacity:.4}
       <div class="mono hint" style="font-size:12px;margin-bottom:12px" id="rProgText"></div>
       <button class="btn" id="rBtn" data-act="restructure"><span></span><span class="sub">🔄</span></button>
     </div>
+    <div class="section-title" data-i18n="shopTitle"></div>
+    <div class="card">
+      <div class="shop-head">📜 <span data-i18n="meritsWord"></span>: <b id="merits">0</b></div>
+      <div class="c-desc" data-i18n="shopHint"></div>
+    </div>
+    <div id="perkList"></div>
     <div class="section-title" data-i18n="recordsTitle"></div>
     <div class="card">
       <div class="kv"><span data-i18n="rCountL"></span><b id="rCount">0</b></div>
@@ -354,7 +373,16 @@ input.vol:disabled{opacity:.4}
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.2',              // версия игры (показывается в настройках)
+  version: '1.3',              // версия игры (показывается в настройках)
+  repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
+  achievementBonus: 0.01,      // +1% ко всему доходу за каждое достижение
+  // Апгрейды «по количеству»: появляются у каждого отдела на 50/100/200 штук
+  // cost = база отдела × 1.15^at × costUnits
+  tierUpgrades: [
+    { key: 't50',  at: 50,  mult: 2, costUnits: 4, emoji: '📋' },
+    { key: 't100', at: 100, mult: 2, costUnits: 4, emoji: '🏅' },
+    { key: 't200', at: 200, mult: 2, costUnits: 4, emoji: '🧾' },
+  ],
   costGrowth: 1.15,            // рост цены отдела: база × 1.15^количество
   manualSignAmount: 1,         // сколько даёт кнопка «Sign manually»
   tickMs: 250,                 // частота обновления экрана
@@ -490,9 +518,58 @@ const UPGRADES = [
     desc:"Signifies years of service, or at least years of attendance." },
 ];
 
+/* ---------- Апгрейды по количеству (генерируются для каждого отдела) ----------
+   id вида 'intern_t50' — не менять, они хранятся в сохранениях */
+DEPARTMENTS.forEach(d => CONFIG.tierUpgrades.forEach(tu => UPGRADES.push({
+  id: d.id + '_' + tu.key, emoji: tu.emoji, tier: tu.key, dept: d.id,
+  cost: Math.round(d.baseCost * Math.pow(CONFIG.costGrowth, tu.at) * tu.costUnits), currency: 'docs',
+  req: { dept: d.id, count: tu.at }, effect: { type: 'dept', dept: d.id, mult: tu.mult },
+})));
+
+/* ---------- Льготы за выслугу (покупаются за почётные грамоты, не сбрасываются) ----------
+   costs — цена каждого уровня; названия и описания — в I18N */
+const PERKS = [
+  { id:'headstart', emoji:'🪑', costs:[2, 4, 8],          effect:{ type:'startDepts', count:10 } },
+  { id:'capital',   emoji:'💼', costs:[1, 3, 6],          effect:{ type:'startDocs', values:[5e3, 5e5, 5e7] } },
+  { id:'discount',  emoji:'🏷️', costs:[2, 3, 5, 8],       effect:{ type:'cost', perLevel:0.05 } },
+  { id:'lunch',     emoji:'🥪', costs:[1, 2, 3, 5],       effect:{ type:'offlineCap', perLevel:2 } },
+  { id:'remote',    emoji:'🏠', costs:[2, 4, 6],          effect:{ type:'offlineEff', perLevel:0.1 } },
+  { id:'heirloom',  emoji:'🔏', costs:[3],                effect:{ type:'startUpgrade', upgrade:'rubberstamp' } },
+  { id:'autoreq',   emoji:'🤖', costs:[3, 6, 10],         effect:{ type:'autobuy', intervals:[5, 2, 0.5] } },
+  { id:'corner',    emoji:'🪟', costs:[3, 5, 8, 12, 18],  effect:{ type:'seniority', perLevel:0.02 } },
+];
+
+/* ---------- Достижения (каждое даёт CONFIG.achievementBonus к доходу, не сбрасываются) ---------- */
+const stt = s => s.stats || {};
+const ACHIEVEMENTS = [
+  { id:'docs1k',   emoji:'📄', check: s => s.allTimeEarned >= 1e3 },
+  { id:'docs1m',   emoji:'📚', check: s => s.allTimeEarned >= 1e6 },
+  { id:'docs1b',   emoji:'🗄️', check: s => s.allTimeEarned >= 1e9 },
+  { id:'docs1t',   emoji:'⛰️', check: s => s.allTimeEarned >= 1e12 },
+  { id:'docs1q',   emoji:'🌲', check: s => s.allTimeEarned >= 1e15 },
+  { id:'rate1k',   emoji:'⏱️', check: (s, r) => r >= 1e3 },
+  { id:'rate1m',   emoji:'🏭', check: (s, r) => r >= 1e6 },
+  { id:'rate1b',   emoji:'🌀', check: (s, r) => r >= 1e9 },
+  { id:'sign100',  emoji:'✍️', check: s => stt(s).signs >= 100 },
+  { id:'intern50', emoji:'🪑', check: s => owned(s, 'intern') >= 50 },
+  { id:'total100', emoji:'👥', check: s => totalOwned(s) >= 100 },
+  { id:'total500', emoji:'🗂️', check: s => totalOwned(s) >= 500 },
+  { id:'every',    emoji:'🏢', check: s => DEPARTMENTS.every(d => owned(s, d.id) > 0) },
+  { id:'hundred',  emoji:'💯', check: s => DEPARTMENTS.some(d => owned(s, d.id) >= 100) },
+  { id:'upg10',    emoji:'📎', check: s => s.upgrades.length >= 10 },
+  { id:'upg25',    emoji:'🧷', check: s => s.upgrades.length >= 25 },
+  { id:'stamps1k', emoji:'🔏', check: s => s.stamps >= 1e3 },
+  { id:'away8',    emoji:'🏖️', check: s => stt(s).maxAway >= 8 * 3600 },
+  { id:'play1h',   emoji:'☕', check: s => stt(s).playSec >= 3600 },
+  { id:'restr1',   emoji:'🔄', check: s => s.restructures >= 1 },
+  { id:'restr5',   emoji:'♻️', check: s => s.restructures >= 5 },
+  { id:'sen25',    emoji:'🎖️', check: s => s.seniority >= 25 },
+];
+
 /* ---------- Справочники ---------- */
 const DEPT_BY_ID = Object.fromEntries(DEPARTMENTS.map(d => [d.id, d]));
 const UPG_BY_ID = Object.fromEntries(UPGRADES.map(u => [u.id, u]));
+const PERK_BY_ID = Object.fromEntries(PERKS.map(p => [p.id, p]));
 
 /* ---------- Состояние игры ---------- */
 // prev — предыдущее состояние, если делаем реструктуризацию (сохраняем престиж)
@@ -512,6 +589,9 @@ function freshState(prev) {
     created: prev ? prev.created : now,
     runStarted: now,
     lastSeen: now,
+    merits: prev ? (prev.merits || 0) : 0,                                     // почётные грамоты — валюта льгот
+    perks: prev && prev.perks ? Object.assign({}, prev.perks) : {},            // купленные льготы (уровни)
+    achievements: prev && prev.achievements ? prev.achievements.slice() : [],  // полученные достижения
     settings: prev && prev.settings ? Object.assign({}, prev.settings) : null, // настройки переживают реорганизацию
     stats: prev && prev.stats ? Object.assign({}, prev.stats) : null,          // как и личное дело
   };
@@ -540,6 +620,20 @@ function getMods(s) {
     else if (e.type === 'stampMult') m.stampMult *= e.mult;
     else if (e.type === 'seniority') m.senPer += e.add;
   }
+  // льготы за выслугу
+  m.autobuy = 0;
+  for (const p of PERKS) {
+    const L = (s.perks && s.perks[p.id]) || 0;
+    if (!L) continue;
+    const e = p.effect;
+    if (e.type === 'cost') m.cost *= Math.pow(1 - e.perLevel, L);
+    else if (e.type === 'offlineCap') m.capHours += e.perLevel * L;
+    else if (e.type === 'offlineEff') m.eff += e.perLevel * L;
+    else if (e.type === 'seniority') m.senPer += e.perLevel * L;
+    else if (e.type === 'autobuy') m.autobuy = e.intervals[L - 1];
+  }
+  // достижения
+  m.global *= 1 + CONFIG.achievementBonus * ((s.achievements || []).length);
   m.eff = Math.min(1, m.eff);
   m.senMult = 1 + s.seniority * m.senPer;
   return m;
@@ -632,8 +726,42 @@ function restructure(s) {
   const g = seniorityGain(s);
   const n = freshState(s);
   n.seniority = s.seniority + g;
+  n.merits = (s.merits || 0) + g;          // грамоты начисляются вместе с выслугой
   n.restructures = s.restructures + 1;
+  applyStartPerks(n);
   return n;
+}
+// Стартовые бонусы льгот в начале нового периода
+function applyStartPerks(n) {
+  for (const p of PERKS) {
+    const L = (n.perks && n.perks[p.id]) || 0;
+    if (!L) continue;
+    const e = p.effect;
+    if (e.type === 'startDepts') DEPARTMENTS.slice(0, L).forEach(d => { n.depts[d.id] = owned(n, d.id) + e.count; });
+    else if (e.type === 'startDocs') n.docs += e.values[L - 1];
+    else if (e.type === 'startUpgrade' && !hasUpg(n, e.upgrade)) n.upgrades.push(e.upgrade);
+  }
+}
+function perkLevel(s, id) { return (s.perks && s.perks[id]) || 0; }
+function perkCost(s, p) { const L = perkLevel(s, p.id); return L < p.costs.length ? p.costs[L] : Infinity; }
+function buyPerk(s, id) {
+  const p = PERK_BY_ID[id]; if (!p) return false;
+  const cost = perkCost(s, p);
+  if (!isFinite(cost) || (s.merits || 0) < cost) return false;
+  s.merits -= cost;
+  s.perks = s.perks || {};
+  s.perks[id] = perkLevel(s, id) + 1;
+  if (p.effect.type === 'startUpgrade' && !hasUpg(s, p.effect.upgrade)) s.upgrades.push(p.effect.upgrade);
+  return true;
+}
+// Проверка достижений; возвращает только что полученные
+function updateAchievements(s) {
+  s.achievements = s.achievements || [];
+  const rate = totalRate(s), got = [];
+  for (const a of ACHIEVEMENTS) {
+    if (s.achievements.indexOf(a.id) === -1 && a.check(s, rate)) { s.achievements.push(a.id); got.push(a); }
+  }
+  return got;
 }
 // ===== ENGINE END =====
 
@@ -696,7 +824,7 @@ const I18N = {
       awayToast: '📬 While you were away: +{n} documents',
       // подтверждение реорганизации
       rcTitle: 'File for Restructuring?', rcForm: 'Form 99-R · Final Notice', stampBoard: 'BOARD',
-      rcGain: 'You will receive <b class="mono">+{g}</b> Seniority.',
+      rcGain: 'You will receive <b class="mono">+{g}</b> Seniority and <b class="mono">+{g}</b> Merits for Tenure Benefits.',
       rcTotal: 'Total Seniority: <b class="mono">{t}</b> → <b class="mono">+{p}%</b> to all income, permanently.',
       rcWarn: 'All documents, departments, stamps and upgrades will be shredded. Seniority, settings and corporate records are kept.',
       rcBtn: 'Restructure the company', cancel: 'Defer to next quarter',
@@ -739,6 +867,27 @@ const I18N = {
       copy: 'Copy code', tCopied: '📋 Code copied', tCopyFail: 'Select the code and copy it manually',
       importTitle: 'Import save', importBody: 'Paste a save code below. Current progress will be replaced.',
       importBtn: 'Import', tImported: '✅ Records restored', tImportBad: '⚠️ Code not recognised',
+      sourceCode: 'Source code on GitHub',
+      // апгрейды по количеству ({dept} — название отдела)
+      tier_t50_name: '{dept}: Laminated Procedures',
+      tier_t50_desc: 'Every procedure is now laminated, so it can no longer be changed. Work has never been simpler.',
+      tier_t100_name: '{dept}: Centennial Plaque',
+      tier_t100_desc: 'A brass plaque marks the hundredth unit. Staff work harder to avoid being asked to polish it.',
+      tier_t200_name: '{dept}: ISO-Pending Certification',
+      tier_t200_desc: 'Certification has been pending since the department was founded. It has never been more motivating.',
+      // льготы
+      shopTitle: 'Tenure Benefits', meritsWord: 'Merits',
+      shopHint: 'Merits are awarded together with Seniority on every restructuring and are never shredded. Benefits are permanent.',
+      level: 'Level {l}/{max}', maxed: 'Fully approved', grant: 'Grant benefit', needMerits: 'Not enough Merits',
+      pStartDepts: 'Each period starts with 10 × {list}',
+      pStartDocs: 'Each period starts with {n} documents',
+      pHeirloom: 'Official Rubber Stamp is kept: Stamps from the start of every period',
+      pAuto: 'While the game is open, buys the cheapest department every {s}s',
+      autoActive: 'Active', tPerk: '🎖️ Benefit granted: {name}',
+      // достижения
+      achTitle: 'Registry of Commendations', achForm: 'Form 1000-X · Personnel achievements',
+      achSummary: '{n} of {total} · +{p}% to all income',
+      tAch: '🏆 Commendation: {name} (+{p}% income)',
     },
     lists: {
       intro: [
@@ -783,6 +932,40 @@ const I18N = {
         'NOTICE: The quiet room is closed due to noise complaints.',
         'REMINDER: Deadlines are approaching. Deadlines are always approaching.',
       ],
+    },
+    perks: {
+      headstart: { name: 'Pre-Approved Furniture', desc: 'The furniture was approved before the company existed. It has been waiting for you.' },
+      capital: { name: 'Petty Cash Reserve', desc: 'Found in an envelope marked "Do not open until restructuring".' },
+      discount: { name: 'Preferred Vendor Status', desc: 'The vendor prefers us. We have not asked why.' },
+      lunch: { name: 'Extended Lunch Policy', desc: 'Lunch now ends when the paperwork for ending lunch is approved.' },
+      remote: { name: 'Remote Work Agreement', desc: 'Staff may approve documents from home, in pyjamas, in triplicate.' },
+      heirloom: { name: 'Heirloom Rubber Stamp', desc: 'Passed down through every restructuring. Still slightly damp.' },
+      autoreq: { name: 'Automated Requisitions', desc: 'A clerk was replaced by a form that fills itself in. The clerk now reviews the form.' },
+      corner: { name: 'Corner Office', desc: 'Two windows. Neither opens. Morale is at an all-time high.' },
+    },
+    ach: {
+      docs1k: { name: 'First Draft', desc: 'Approve 1K documents in total' },
+      docs1m: { name: 'Seven Figures, Pending Review', desc: 'Approve 1M documents in total' },
+      docs1b: { name: 'Billion-Form Backlog', desc: 'Approve 1B documents in total' },
+      docs1t: { name: 'Paper Mountain', desc: 'Approve 1T documents in total' },
+      docs1q: { name: 'Forestry Committee Notified', desc: 'Approve 1e15 documents in total' },
+      rate1k: { name: 'Steady Flow', desc: 'Reach 1K documents per second' },
+      rate1m: { name: 'Conveyor of Consent', desc: 'Reach 1M documents per second' },
+      rate1b: { name: 'Approval Singularity', desc: 'Reach 1B documents per second' },
+      sign100: { name: 'Wrist Strain', desc: 'Sign manually 100 times' },
+      intern50: { name: 'Open-Plan Seating', desc: "Own 50 Intern's Desks" },
+      total100: { name: 'Headcount Reached', desc: 'Own 100 departments in total' },
+      total500: { name: 'Org Chart Needs a Second Page', desc: 'Own 500 departments in total' },
+      every: { name: 'Full Org Chart', desc: 'Own at least one of every department' },
+      hundred: { name: 'Centennial Department', desc: 'Own 100 of a single department' },
+      upg10: { name: 'Procurement Enthusiast', desc: 'Have 10 upgrades in one fiscal period' },
+      upg25: { name: 'Requisitioned Everything', desc: 'Have 25 upgrades in one fiscal period' },
+      stamps1k: { name: 'Inked', desc: 'Hold 1K stamps' },
+      away8: { name: 'Extended Leave', desc: 'Return after 8 hours or more away' },
+      play1h: { name: 'Overtime', desc: 'Spend 1 hour in the office' },
+      restr1: { name: 'Under New Management', desc: 'Restructure the company once' },
+      restr5: { name: 'Serial Reorganizer', desc: 'Restructure the company 5 times' },
+      sen25: { name: 'Corner Office Material', desc: 'Reach 25 Seniority' },
     },
   },
 
@@ -832,7 +1015,7 @@ const I18N = {
       quietOffice: 'В офисе было очень тихо. В основном потому, что офиса пока нет.',
       awayToast: '📬 Пока вас не было: +{n} документов',
       rcTitle: 'Подать на реорганизацию?', rcForm: 'Форма 99-Р · Последнее уведомление', stampBoard: 'ПРАВЛЕНИЕ',
-      rcGain: 'Вы получите выслугу: <b class="mono">+{g}</b>.',
+      rcGain: 'Вы получите выслугу: <b class="mono">+{g}</b> и почётные грамоты для льгот: <b class="mono">+{g}</b>.',
       rcTotal: 'Итого выслуга: <b class="mono">{t}</b> → <b class="mono">+{p}%</b> ко всему доходу навсегда.',
       rcWarn: 'Все документы, отделы, печати и улучшения будут уничтожены. Выслуга, настройки и корпоративный учёт сохранятся.',
       rcBtn: 'Реорганизовать компанию', cancel: 'Отложить до следующего квартала',
@@ -871,6 +1054,24 @@ const I18N = {
       copy: 'Скопировать код', tCopied: '📋 Код скопирован', tCopyFail: 'Выделите код и скопируйте вручную',
       importTitle: 'Импорт сохранения', importBody: 'Вставьте код сохранения. Текущий прогресс будет заменён.',
       importBtn: 'Импортировать', tImported: '✅ Записи восстановлены', tImportBad: '⚠️ Код не распознан',
+      sourceCode: 'Исходный код на GitHub',
+      tier_t50_name: '{dept}: заламинированные регламенты',
+      tier_t50_desc: 'Все регламенты заламинированы, и менять их больше нельзя. Работать ещё никогда не было так просто.',
+      tier_t100_name: '{dept}: юбилейная табличка',
+      tier_t100_desc: 'Латунная табличка в честь сотой единицы. Сотрудники работают усерднее, лишь бы их не попросили её натирать.',
+      tier_t200_name: '{dept}: сертификация «на рассмотрении»',
+      tier_t200_desc: 'Сертификация на рассмотрении с самого основания отдела. Мотивирует как никогда.',
+      shopTitle: 'Льготы за выслугу', meritsWord: 'Почётные грамоты',
+      shopHint: 'Грамоты выдаются вместе с выслугой при каждой реорганизации и не уничтожаются. Льготы действуют постоянно.',
+      level: 'Уровень {l}/{max}', maxed: 'Утверждено полностью', grant: 'Оформить льготу', needMerits: 'Недостаточно грамот',
+      pStartDepts: 'Каждый период начинается с 10 шт.: {list}',
+      pStartDocs: 'Каждый период начинается с {n} документов',
+      pHeirloom: 'Официальная печать сохраняется: печати с начала каждого периода',
+      pAuto: 'Пока игра открыта, покупает самый дешёвый отдел каждые {s} с',
+      autoActive: 'Включено', tPerk: '🎖️ Льгота оформлена: {name}',
+      achTitle: 'Реестр благодарностей', achForm: 'Форма 1000-Х · Достижения сотрудника',
+      achSummary: '{n} из {total} · +{p}% ко всему доходу',
+      tAch: '🏆 Благодарность: {name} (+{p}% к доходу)',
     },
     lists: {
       intro: [
@@ -955,6 +1156,40 @@ const I18N = {
       pneumatic: { name: 'Пневмопочта между отделами', desc: 'Документы теперь летают между этажами со скоростью сорок километров в час. Некоторые прибывают уже одобренными.' },
       lapelpin: { name: 'Значок за выслугу лет', desc: 'Свидетельствует о годах службы. Или хотя бы о годах присутствия.' },
     },
+    perks: {
+      headstart: { name: 'Заранее согласованная мебель', desc: 'Мебель согласовали ещё до основания компании. Она вас ждёт.' },
+      capital: { name: 'Резерв мелкой наличности', desc: 'Найден в конверте с пометкой «Не вскрывать до реорганизации».' },
+      discount: { name: 'Статус привилегированного поставщика', desc: 'Поставщик нас предпочитает. Мы не уточняли почему.' },
+      lunch: { name: 'Регламент продлённого обеда', desc: 'Обед теперь заканчивается после согласования документов об окончании обеда.' },
+      remote: { name: 'Соглашение об удалённой работе', desc: 'Сотрудники могут одобрять документы из дома, в пижаме, в трёх экземплярах.' },
+      heirloom: { name: 'Фамильная печать', desc: 'Передаётся из реорганизации в реорганизацию. До сих пор слегка влажная.' },
+      autoreq: { name: 'Автоматические заявки', desc: 'Клерка заменили бланком, который заполняется сам. Клерк теперь проверяет бланк.' },
+      corner: { name: 'Угловой кабинет', desc: 'Два окна. Ни одно не открывается. Боевой дух на рекордной высоте.' },
+    },
+    ach: {
+      docs1k: { name: 'Первый черновик', desc: 'Одобрить 1K документов за всё время' },
+      docs1m: { name: 'Семизначная сумма, на рассмотрении', desc: 'Одобрить 1M документов за всё время' },
+      docs1b: { name: 'Миллиардный завал', desc: 'Одобрить 1B документов за всё время' },
+      docs1t: { name: 'Бумажная гора', desc: 'Одобрить 1T документов за всё время' },
+      docs1q: { name: 'Лесной комитет уведомлён', desc: 'Одобрить 1e15 документов за всё время' },
+      rate1k: { name: 'Стабильный поток', desc: 'Достичь 1K документов в секунду' },
+      rate1m: { name: 'Конвейер согласий', desc: 'Достичь 1M документов в секунду' },
+      rate1b: { name: 'Сингулярность согласований', desc: 'Достичь 1B документов в секунду' },
+      sign100: { name: 'Растяжение запястья', desc: 'Подписать вручную 100 раз' },
+      intern50: { name: 'Опенспейс', desc: 'Иметь 50 столов стажёра' },
+      total100: { name: 'Штат укомплектован', desc: 'Иметь 100 отделов всего' },
+      total500: { name: 'Оргструктура не помещается на лист', desc: 'Иметь 500 отделов всего' },
+      every: { name: 'Полная оргструктура', desc: 'Иметь хотя бы по одному отделу каждого вида' },
+      hundred: { name: 'Юбилейный отдел', desc: 'Иметь 100 отделов одного вида' },
+      upg10: { name: 'Энтузиаст закупок', desc: 'Иметь 10 улучшений за один период' },
+      upg25: { name: 'Закуплено всё', desc: 'Иметь 25 улучшений за один период' },
+      stamps1k: { name: 'В чернилах', desc: 'Накопить 1K печатей' },
+      away8: { name: 'Длительный отпуск', desc: 'Вернуться после 8 часов отсутствия или больше' },
+      play1h: { name: 'Сверхурочные', desc: 'Провести в офисе 1 час' },
+      restr1: { name: 'Под новым руководством', desc: 'Провести реорганизацию' },
+      restr5: { name: 'Реорганизатор со стажем', desc: 'Провести 5 реорганизаций' },
+      sen25: { name: 'Кандидат на угловой кабинет', desc: 'Набрать 25 выслуги' },
+    },
   },
 };
 
@@ -970,7 +1205,7 @@ const DEFAULT_SETTINGS = {
   numFormat: 'short',    // 'short' = 1.2M, 'sci' = 1.20e6
   awayReport: 'always',  // окно возвращения: 'always' | 'long' (от 30 мин) | 'never'
 };
-const DEFAULT_STATS = { signs: 0, playSec: 0, bought: 0 };
+const DEFAULT_STATS = { signs: 0, playSec: 0, bought: 0, maxAway: 0 };
 
 /* =====================================================================
    ЗВУКИ — синтезируются через Web Audio API, без файлов.
@@ -1109,6 +1344,10 @@ function migrate(raw) {
   s.flags = Object.assign({}, raw.flags || {});
   for (const k of ['docs','stamps','runEarned','stampsEarnedRun','allTimeEarned','seniority','restructures'])
     if (!isFinite(s[k]) || s[k] < 0) s[k] = 0;
+  // v1.3: грамоты появились позже выслуги — выдаём задним числом
+  if (raw.merits == null) s.merits = s.seniority;
+  s.perks = Object.assign({}, raw.perks || {});
+  s.achievements = Array.isArray(raw.achievements) ? raw.achievements.slice() : [];
   return ensureSettings(s);
 }
 
@@ -1116,9 +1355,10 @@ function migrate(raw) {
    ЗВУКОВОЙ ДВИЖОК
    ===================================================================== */
 const Sound = {
-  ctx: null, master: null, noise: null, amb: null,
+  ctx: null, master: null, noise: null, amb: null, gestured: false,
   init() {
     if (this.ctx) return true;
+    if (!this.gestured) return false;   // до первого касания звук не создаём — браузер всё равно не даст
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return false;
     try { this.ctx = new AC(); } catch (e) { return false; }
@@ -1133,6 +1373,7 @@ const Sound = {
   },
   // Браузеры разрешают звук только после касания — вызываем на каждое касание
   unlock() {
+    this.gestured = true;
     if (!S || !S.settings.sound) return;
     if (!this.init()) return;
     if (this.ctx.state === 'suspended') this.ctx.resume();
@@ -1208,8 +1449,10 @@ function t(key, vars) {
 const tlist = key => (I18N[LANG].lists && I18N[LANG].lists[key]) || I18N.en.lists[key];
 const dName = d => ((I18N[LANG].depts || {})[d.id] || d).name;
 const dDesc = d => ((I18N[LANG].depts || {})[d.id] || d).desc;
-const uName = u => ((I18N[LANG].upgs || {})[u.id] || u).name;
-const uDesc = u => ((I18N[LANG].upgs || {})[u.id] || u).desc;
+const uName = u => u.tier ? t('tier_' + u.tier + '_name', { dept: dName(DEPT_BY_ID[u.dept]) }) : ((I18N[LANG].upgs || {})[u.id] || u).name;
+const uDesc = u => u.tier ? t('tier_' + u.tier + '_desc') : ((I18N[LANG].upgs || {})[u.id] || u).desc;
+const pText = p => (I18N[LANG].perks || {})[p.id] || I18N.en.perks[p.id];
+const aText = a => (I18N[LANG].ach || {})[a.id] || I18N.en.ach[a.id];
 const formStr = f => f.replace(/^Form/, t('form'));
 
 function fmt(n) {
@@ -1280,7 +1523,8 @@ const $ = id => document.getElementById(id);
 let S = null;                 // текущее состояние
 let activeTab = 'depts';
 let lastTick = Date.now();
-let deptKey = '', upgKey = '', filedKey = '', filedOpen = false;
+let deptKey = '', upgKey = '', filedKey = '', perkKey = '', filedOpen = false;
+let autoTimer = 0;
 let modalKind = null;         // null | 'modal' | 'settings'
 
 /* ---------- Применение настроек ---------- */
@@ -1296,9 +1540,9 @@ function applySettings() {
   $('memo').hidden = !st.memos;
   if (langChanged) $('memo').textContent = pick(tlist('memos'));
   applyStaticTexts();
-  deptKey = upgKey = filedKey = '';   // пересобрать карточки на новом языке
+  deptKey = upgKey = filedKey = perkKey = '';   // пересобрать карточки на новом языке
   Sound.setVolume();
-  if (st.sound) Sound.unlock(); else Sound.syncAmbience();
+  if (st.sound && Sound.gestured) Sound.unlock(); else Sound.syncAmbience();
   render();
 }
 
@@ -1368,7 +1612,7 @@ function showSettings() {
     ${kv(t('restrCount'), S.restructures)}
     <div class="set-sec">${t('secDanger')}</div>
     <div style="margin-top:8px"><button class="btn danger" data-set-act="reset"><span>${t('reset')}</span><span class="sub">🗑️</span></button></div>
-    <div class="credit mono">Paperwork Inc. v${CONFIG.version} · ${t('credit')}</div>
+    <div class="credit mono">Paperwork Inc. v${CONFIG.version} · ${t('credit')}${CONFIG.repoUrl ? `<br><a href="#" data-set-act="repo">💻 ${t('sourceCode')}</a>` : ''}</div>
     <div class="m-btns"><button class="btn" data-set-act="close">${t('close')}</button></div>`;
   $('overlay').classList.add('show');
   modalKind = 'settings';
@@ -1385,6 +1629,7 @@ $('sheet').addEventListener('click', e => {
       case 'export': showExport(); break;
       case 'import': showImport(); break;
       case 'reset': onReset(); break;
+      case 'repo': e.preventDefault(); openExternal(CONFIG.repoUrl); break;
     }
     return;
   }
@@ -1402,6 +1647,13 @@ $('sheet').addEventListener('input', e => {
 $('sheet').addEventListener('change', e => {
   if (e.target.dataset && e.target.dataset.set === 'volume') { Sound.play('stamp'); save(); }
 });
+
+// Внешняя ссылка: в Telegram открываем во встроенном/внешнем браузере
+function openExternal(url) {
+  if (!url) return;
+  if (IN_TG && tg.openLink) { try { tg.openLink(url); return; } catch (e) {} }
+  window.open(url, '_blank', 'noopener');
+}
 
 /* ---------- Экспорт и импорт сохранения ---------- */
 const CODE_PREFIX = 'PWI1.';
@@ -1468,6 +1720,7 @@ function showAway(awaySec, countedSec, gained, m) {
 
 // Начисляем офлайн-доход с учётом лимита и эффективности
 function applyAway(sec) {
+  S.stats.maxAway = Math.max(S.stats.maxAway || 0, sec);
   const m = getMods(S);
   const counted = Math.min(sec, m.capHours * 3600);
   const gained = advance(S, counted, m.eff);
@@ -1609,6 +1862,89 @@ function renderRestructure(m) {
   $('rOwned').textContent = totalOwned(S);
 }
 
+/* ---------- Льготы за выслугу ---------- */
+function perkEffect(p, L) {
+  const e = p.effect;
+  switch (e.type) {
+    case 'startDepts': return t('pStartDepts', { list: DEPARTMENTS.slice(0, L).map(dName).join(', ') });
+    case 'startDocs': return t('pStartDocs', { n: fmt(e.values[L - 1]) });
+    case 'cost': return t('eCost', { p: Math.round((1 - Math.pow(1 - e.perLevel, L)) * 100) });
+    case 'offlineCap': return t('eCap', { h: e.perLevel * L });
+    case 'offlineEff': return t('eEff', { p: Math.round(e.perLevel * L * 100) });
+    case 'startUpgrade': return t('pHeirloom');
+    case 'autobuy': return t('pAuto', { s: e.intervals[L - 1] });
+    case 'seniority': return t('eSen', { p: Math.round(e.perLevel * L * 100) });
+  }
+  return '';
+}
+function renderPerks() {
+  $('merits').textContent = fmt(S.merits || 0);
+  const key = PERKS.map(p => perkLevel(S, p.id)).join(',') + '|' + (S.flags.autobuyOff ? 0 : 1);
+  if (key !== perkKey) {
+    perkKey = key;
+    $('perkList').innerHTML = PERKS.map(p => {
+      const L = perkLevel(S, p.id), max = p.costs.length, next = Math.min(L + 1, max);
+      const auto = p.effect.type === 'autobuy' && L > 0
+        ? `<div class="perk-auto"><span>${t('autoActive')}</span><button class="switch ${S.flags.autobuyOff ? '' : 'on'}" data-act="toggleAuto"></button></div>` : '';
+      return `<div class="card" id="p-${p.id}">
+        <div class="c-head"><span class="c-emoji">${p.emoji}</span>
+          <div class="c-title"><div class="c-name">${esc(pText(p).name)}</div><div class="c-form mono">${t('level', { l: L, max })}</div></div></div>
+        <div class="c-desc">${esc(pText(p).desc)}</div>
+        <div class="effect mono">▸ ${esc(perkEffect(p, next))}</div>
+        ${auto}
+        <button class="btn" data-act="buyPerk" data-id="${p.id}"><span data-f="bl"></span><span class="sub mono" data-f="bs"></span></button>
+      </div>`;
+    }).join('');
+  }
+  for (const p of PERKS) {
+    const card = $('p-' + p.id); if (!card) continue;
+    const cost = perkCost(S, p), maxed = !isFinite(cost), ok = !maxed && (S.merits || 0) >= cost;
+    card.querySelector('[data-act="buyPerk"]').disabled = !ok;
+    card.querySelector('[data-f="bl"]').textContent = maxed ? '✅ ' + t('maxed') : ok ? t('grant') : t('needMerits');
+    card.querySelector('[data-f="bs"]').textContent = maxed ? '' : '📜 ' + cost;
+  }
+}
+
+/* ---------- Достижения ---------- */
+function showAchievements() {
+  const got = S.achievements || [];
+  const list = ACHIEVEMENTS.map(a => {
+    const has = got.indexOf(a.id) !== -1, tx = aText(a);
+    return `<div class="ach ${has ? '' : 'locked'}"><span class="ae">${a.emoji}</span>
+      <div><div class="an">${esc(tx.name)}</div><div class="ad">${esc(tx.desc)}</div></div>
+      ${has ? `<span class="ok">${t('stampApproved')}</span>` : ''}</div>`;
+  }).join('');
+  showModal({
+    form: t('achForm'), title: '🏆 ' + t('achTitle'),
+    body: `<div class="ach-sum">${t('achSummary', { n: got.length, total: ACHIEVEMENTS.length, p: Math.round(got.length * CONFIG.achievementBonus * 100) })}</div>${list}`,
+    buttons: [{ label: t('close') }],
+  });
+}
+function checkAchievements() {
+  const got = updateAchievements(S);
+  got.forEach(a => toast(t('tAch', { name: aText(a).name, p: Math.round(CONFIG.achievementBonus * 100) })));
+  if (got.length) { haptic.success(); Sound.play('milestone'); }
+}
+
+// Автоматические заявки: покупаем самый дешёвый доступный отдел
+function autoBuy(dt, m) {
+  if (!m.autobuy || S.flags.autobuyOff) { autoTimer = 0; return; }
+  autoTimer += dt;
+  let guard = 0;
+  while (autoTimer >= m.autobuy && guard++ < 20) {
+    autoTimer -= m.autobuy;
+    let best = null, bestCost = Infinity;
+    DEPARTMENTS.forEach((d, i) => {
+      if (!deptVisible(S, d, i)) return;
+      const c = deptCost(S, d, 1, m);
+      if (c < bestCost) { bestCost = c; best = d; }
+    });
+    if (!best || bestCost > S.docs) break;
+    if (buyDept(S, best.id, 1)) { S.stats.bought++; stampFx('d-' + best.id); }
+  }
+  if (autoTimer > m.autobuy) autoTimer = m.autobuy;
+}
+
 /* ---------- Главная отрисовка ---------- */
 function render() {
   const m = getMods(S);
@@ -1635,7 +1971,7 @@ function render() {
 
   renderDepts(m, rate);
   renderUpgrades(m, rate, sRate);
-  if (activeTab === 'restr') renderRestructure(m);
+  if (activeTab === 'restr') { renderRestructure(m); renderPerks(); }
 }
 
 /* ---------- Эффект печати на карточке ---------- */
@@ -1694,7 +2030,7 @@ function onRestructure() {
     buttons: [
       { label: t('rcBtn'), onClick: () => {
           S = restructure(S); ensureSettings(S);
-          deptKey = upgKey = filedKey = '';
+          deptKey = upgKey = filedKey = perkKey = '';
           activeTab = 'depts';
           haptic.success(); Sound.play('shredder');
           toast(t('tRestructured', { n: fmt(S.seniority) }));
@@ -1711,7 +2047,7 @@ function onReset() {
       { label: t('resetBtn'), danger: true, onClick: () => {
           const keep = Object.assign({}, S.settings);   // настройки переживают сброс
           Store.wipe(); S = ensureSettings(freshState()); S.settings = keep;
-          deptKey = upgKey = filedKey = ''; activeTab = 'depts';
+          deptKey = upgKey = filedKey = perkKey = ''; activeTab = 'depts';
           Sound.play('shredder');
           save(); render(); showIntro();
         } },
@@ -1738,6 +2074,13 @@ document.addEventListener('click', e => {
     case 'mode': S.buyMode = id === 'max' ? 'max' : +id; haptic.light(); Sound.play('click'); render(); break;
     case 'restructure': onRestructure(); break;
     case 'settings': Sound.play('click'); showSettings(); break;
+    case 'achievements': Sound.play('click'); showAchievements(); break;
+    case 'buyPerk': {
+      const p = PERK_BY_ID[id];
+      if (buyPerk(S, id)) { haptic.success(); Sound.play('upgrade'); toast(t('tPerk', { name: pText(p).name })); save(); render(); }
+      break;
+    }
+    case 'toggleAuto': S.flags.autobuyOff = !S.flags.autobuyOff; haptic.light(); Sound.play('click'); render(); break;
   }
 });
 $('overlay').addEventListener('click', e => {
@@ -1785,9 +2128,10 @@ function tick() {
   lastTick = now;
   if (dt <= 0) return;
   if (dt >= CONFIG.offline.minAwaySec) applyAway(dt);
-  else { advance(S, dt, 1); S.stats.playSec += dt; }
+  else { advance(S, dt, 1); S.stats.playSec += dt; autoBuy(dt, getMods(S)); }
   S.lastSeen = now;
   checkUnlocks(false);
+  checkAchievements();
   render();
 }
 
