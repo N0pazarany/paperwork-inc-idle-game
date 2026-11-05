@@ -10,7 +10,7 @@
 
 🤖 Игра сделана с помощью **Claude Opus 5.5** от Anthropic: код, баланс и тексты.
 
-**▶️ Играть:** `https://t.me/<бот>/<short_name>`
+**▶️ Играть в Telegram:** [@paperwork_inc_bot](https://t.me/paperwork_inc_bot)
 **🌐 В браузере:** [https://n0pazarany.github.io/paperwork-inc-idle-game/](https://n0pazarany.github.io/paperwork-inc-idle-game/)
 
 ---
@@ -154,7 +154,7 @@ The whole game is a single `index.html`: no build step, no frameworks, no images
 
 🤖 Made with **Claude Opus 5.5** by Anthropic: code, balancing and writing.
 
-**▶️ Play:** `https://t.me/<bot>/<short_name>`
+**▶️ Play in Telegram:** [@paperwork_inc_bot](https://t.me/paperwork_inc_bot)
 **🌐 In a browser:** [https://n0pazarany.github.io/paperwork-inc-idle-game/](https://n0pazarany.github.io/paperwork-inc-idle-game/)
 
 ## How to play
