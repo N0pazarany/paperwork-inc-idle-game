@@ -6,7 +6,7 @@
 
 Сатирическая idle-игра про бюрократию для Telegram Mini App. Игрок управляет корпорацией Paperwork Inc. Корпорация одобряет документы, на них открываются новые отделы, а те одобряют ещё больше документов.
 
-Вся игра умещается в один `index.html`: без сборки, фреймворков и картинок. Единственная внешняя зависимость — SDK Telegram.
+Вся игра умещается в один `game.html`: без сборки, фреймворков и картинок. Единственная внешняя зависимость — SDK Telegram. `index.html` — крошечный загрузчик: он следит, чтобы Telegram всегда открывал свежую версию игры, а не старую копию из кэша.
 
 🤖 Игра сделана с помощью **Claude Opus 5.5** от Anthropic: код, баланс и тексты.
 
@@ -53,7 +53,7 @@
 
 ### 1. GitHub Pages
 
-1. Положите `index.html` в корень репозитория.
+1. Положите `index.html` (загрузчик) и `game.html` (игра) в корень репозитория. При обновлениях меняется только `game.html`.
 2. Откройте **Settings → Pages → Build and deployment** и выберите Source: *Deploy from a branch*, ветку `main`, папку `/ (root)`.
 3. Через 1–2 минуты игра будет доступна по адресу `https://<логин>.github.io/<репозиторий>/`.
 
@@ -72,7 +72,7 @@
 
 ### Локальный запуск
 
-Откройте `index.html` в браузере. Для мобильного вида включите эмуляцию телефона в DevTools.
+Откройте `game.html` в браузере. Для мобильного вида включите эмуляцию телефона в DevTools.
 
 Если нужен локальный сервер:
 
@@ -151,7 +151,7 @@ S.runEarned = S.allTimeEarned = 4e11; render();          // открыть ре�
 
 A satirical idle game about bureaucracy, built as a Telegram Mini App. You run Paperwork Inc., a corporation that approves documents in order to open new departments, which approve even more documents.
 
-The whole game is a single `index.html`: no build step, no frameworks, no images. The only external dependency is the Telegram SDK.
+The whole game is a single `game.html`: no build step, no frameworks, no images. The only external dependency is the Telegram SDK. `index.html` is a tiny loader that makes sure Telegram always opens the latest version instead of a cached copy.
 
 🤖 Made with **Claude Opus 5.5** by Anthropic: code, balancing and writing.
 
@@ -194,7 +194,7 @@ It's an idle game, not a clicker. Income accrues on its own, even while the game
 
 ### 1. GitHub Pages
 
-1. Put `index.html` in the repository root.
+1. Put `index.html` (loader) and `game.html` (the game) in the repository root. Updates only touch `game.html`.
 2. Go to **Settings → Pages → Build and deployment** and choose Source: *Deploy from a branch*, branch `main`, folder `/ (root)`.
 3. In 1–2 minutes the game is live at `https://<username>.github.io/<repository>/`.
 
@@ -211,7 +211,7 @@ GitHub Pages redeploys on every push to `main`; the bot needs no changes.
 
 ### Running locally
 
-Open `index.html` in a browser. Use your browser's device emulation for the mobile layout.
+Open `game.html` in a browser. Use your browser's device emulation for the mobile layout.
 
 If you need a local server:
 
