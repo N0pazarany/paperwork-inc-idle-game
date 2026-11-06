@@ -415,7 +415,7 @@ input.vol:disabled{opacity:.4}
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.4',              // версия игры (показывается в настройках)
+  version: '1.4.1',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   achievementBonus: 0.01,      // +1% ко всему доходу за каждое достижение
   // Апгрейды «по количеству»: появляются у каждого отдела на 50/100/200 штук
@@ -1512,7 +1512,7 @@ function fmt(n) {
 // Формат с большей точностью для шапки: 1.234K, 12.34K, 123.4K — чтобы рост был виден
 function fmtPrecise(n) {
   if (!isFinite(n)) return '∞';
-  if (n < 1000) return n < 10 ? (Math.floor(n * 10) / 10).toFixed(1) : String(Math.floor(n));
+  if (n < 1000) return n < 10 ? (n % 1 === 0 ? String(n) : (Math.floor(n * 10) / 10).toFixed(1)) : String(Math.floor(n));
   if (NUMFMT === 'sci') return Number(n).toExponential(3).replace('e+', 'e');
   const units = ['K', 'M', 'B', 'T'];
   const e = Math.floor(Math.log10(n) / 3);
@@ -2145,9 +2145,9 @@ let lastFrame = 0;
 function easeTo(cur, target, rate, dt) {
   if (cur == null || !S.settings.animations) return target;
   const diff = target - cur;
-  if (diff >= 0 && diff <= rate * 0.6 + 1e-9) return target;          // обычный рост — сразу
-  if (Math.abs(diff) <= Math.abs(target) * 1e-5) return target;        // практически совпало
-  return cur + diff * Math.min(1, dt * 9);                              // трата или крупное начисление — докрутка
+  if (diff >= 0 && diff <= rate * 0.6 + CONFIG.manualSignAmount + 1e-9) return target;  // обычный рост и ручная подпись — сразу
+  if (Math.abs(diff) <= Math.max(0.05, Math.abs(target) * 5e-4)) return target;          // разница уже не видна — дотягиваем
+  return cur + diff * Math.min(1, dt * 12);                                               // трата или крупное начисление — докрутка
 }
 function frame(now) {
   if (S && !document.hidden) {
