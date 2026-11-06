@@ -44,6 +44,7 @@
 - **Restructuring:** Seniority = `floor(√(всего заработано / 5·10⁹))`. Нужно заработать минимум 300B за период.
 - **Два языка:** английский и русский. При первом запуске язык выбирается по профилю Telegram, сменить его можно в настройках.
 - **Звуки:** синтезируются прямо в браузере, без файлов. Удар печати, звонок, кассовый аппарат, шредер; по желанию — фоновый шум офиса.
+- **Удержание кнопки покупки:** держите кнопку отдела, и он будет покупаться подряд, пока хватает документов.
 - **Настройки ⚙️:** язык, звук и громкость, шум офиса, вибрация, служебные записки, анимации, формат чисел, окно возвращения, экспорт и импорт сохранения, личное дело со статистикой, полный сброс.
 
 ---
@@ -186,6 +187,7 @@ It's an idle game, not a clicker. Income accrues on its own, even while the game
 - **Restructuring:** Seniority = `floor(√(total earned / 5·10⁹))`. Requires at least 300B earned in the current period.
 - **Two languages:** English and Russian. Picked from the Telegram profile on first launch, switchable in settings.
 - **Sound:** synthesized in the browser, no audio files. Stamp thud, desk bell, cash register, shredder, and optional office ambience.
+- **Hold to buy:** hold a department's buy button to keep buying while you can afford it.
 - **Settings ⚙️:** language, sound and volume, office ambience, vibration, memos, animations, number format, absence report, save export/import, personnel file with stats, hard reset.
 
 ## Deployment
