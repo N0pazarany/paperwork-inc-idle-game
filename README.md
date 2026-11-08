@@ -36,11 +36,11 @@
 
 ### Механики
 
-- **10 отделов**, от Intern's Desk до Head Office of Head Offices. Цена растёт как `база × 1.15^количество`.
+- **13 отделов**, от Intern's Desk до The Eternal Waiting Room. Цена растёт как `база × 1.15^количество`.
 - **Вехи:** каждые 25 штук одного отдела удваивают его выработку.
-- **55 апгрейдов**, в том числе удвоители за 50, 100 и 200 штук каждого отдела. Видны только почти доступные и уже купленные.
+- **84 апгрейда**, в том числе удвоители за 50, 100 и 200 штук каждого отдела. Видны только почти доступные и уже купленные.
 - **Льготы за выслугу:** при реорганизации вместе с выслугой выдаются почётные грамоты (Merits). На них покупаются постоянные льготы: стартовые отделы и документы, скидки, офлайн-бонусы, фамильная печать, автопокупка отделов.
-- **22 достижения** 🏆, каждое даёт +1% ко всему доходу навсегда.
+- **33 достижения** 🏆, каждое даёт +1% ко всему доходу навсегда.
 - **Памятка сотрудника** 📖 — короткий справочник по механикам. Разделы о том, до чего игрок ещё не дошёл, засекречены; красная точка на значке подсказывает, что рассекречен новый раздел.
 - **Офлайн-доход:** на старте начисляется 50% дохода и не больше чем за 8 часов. Апгрейды поднимают это до 100% и 20 часов.
 - **Restructuring:** Seniority = `floor(√(всего заработано / 5·10⁹))`. Нужно заработать минимум 300B за период.
@@ -185,11 +185,11 @@ It's an idle game, not a clicker. Income accrues on its own, even while the game
 
 ### Mechanics
 
-- **10 departments**, from Intern's Desk to Head Office of Head Offices. Price grows as `base × 1.15^owned`.
+- **13 departments**, from Intern's Desk to The Eternal Waiting Room. Price grows as `base × 1.15^owned`.
 - **Milestones:** every 25 units of a department double its output.
-- **55 upgrades**, including doublers at 50, 100 and 200 units of each department. Only those that are nearly affordable or already bought are shown.
+- **84 upgrades**, including doublers at 50, 100 and 200 units of each department. Only those that are nearly affordable or already bought are shown.
 - **Tenure Benefits:** every restructuring also grants Merits, spent on permanent perks: starting departments and documents, discounts, offline bonuses, an heirloom stamp, auto-buying departments.
-- **22 achievements** 🏆, each permanently adds +1% to all income.
+- **33 achievements** 🏆, each permanently adds +1% to all income.
 - **Employee Handbook** 📖, a short guide to the mechanics. Sections about things the player hasn't reached yet stay classified; a red dot on the icon marks a newly declassified section.
 - **Offline income:** starts at 50% efficiency for up to 8 hours. Upgrades raise this to 100% and 20 hours.
 - **Restructuring:** Seniority = `floor(√(total earned / 5·10⁹))`. Requires at least 300B earned in the current period.
