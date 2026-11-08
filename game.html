@@ -299,6 +299,58 @@ input.vol:disabled{opacity:.4}
 .ach.locked .an{color:var(--hint)}
 .ach .ok{margin-left:auto;color:var(--ink);font:700 11px var(--mono);letter-spacing:.06em;border:2px solid var(--ink);border-radius:3px;padding:1px 5px;transform:rotate(-8deg);flex:none}
 
+/* ---------- Директива дня и кнопка входящих ---------- */
+:root{ --good:#2f8a55; }
+.desk{margin:12px 0 2px;display:flex;flex-direction:column;gap:6px}
+.directive{background:var(--card);border-radius:6px;padding:10px 12px 10px 14px;box-shadow:0 1px 0 var(--edge),0 0 0 1px var(--edge)}
+.directive .dh{font-size:12.5px;color:var(--hint);display:flex;justify-content:space-between;gap:8px}
+.directive .dl{font-size:14px;margin-top:4px;display:flex;gap:8px;align-items:baseline;line-height:1.35}
+.directive .dl b{font:600 13px var(--mono);flex:none;min-width:38px}
+.directive .up{color:var(--good)} .directive .down{color:var(--ink)}
+.directive .calm{color:var(--hint);font-size:13.5px;margin-top:4px}
+.inbox-btn{display:flex;align-items:center;gap:10px;width:100%;border:1px solid transparent;border-radius:6px;background:var(--accent);color:var(--accent-text);padding:11px 12px;font:600 14.5px var(--sans);text-align:left}
+.inbox-btn .cnt{background:var(--ink);color:#fff;border-radius:10px;font:700 12px/20px var(--mono);min-width:20px;text-align:center;padding:0 6px}
+.inbox-btn .go{margin-left:auto;font:500 13px var(--mono);opacity:.85}
+.inbox-btn.empty{background:transparent;color:var(--hint);border:1px dashed var(--line-strong);font-weight:500}
+.inbox-btn.empty .cnt{display:none}
+.inbox-btn:active{transform:scale(.99)}
+.chip-dir{display:inline-block;margin-left:6px;font:600 11px var(--mono);border:1px solid;border-radius:4px;padding:0 4px;vertical-align:2px;white-space:nowrap}
+.chip-dir.up{color:var(--good)} .chip-dir.down{color:var(--ink)}
+
+/* ---------- Окно входящих ---------- */
+.ib-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.ib-streak{font:600 12.5px var(--mono);color:var(--good);white-space:nowrap}
+.regs{background:var(--folder);border-radius:6px;padding:9px 12px;margin:10px 0 12px;font-size:13.5px}
+.regs .rt{font-size:12px;color:var(--hint);margin-bottom:4px}
+.regs .r{margin:3px 0;line-height:1.4}
+.regs .r b{font-family:var(--mono)}
+.doc{background:#fffdf6;border-radius:4px;padding:14px 14px 10px 22px;position:relative;color:#1e2226;
+  box-shadow:0 1px 0 var(--edge),0 0 0 1px var(--edge),0 6px 16px rgba(0,0,0,.06)}
+.doc::before{content:"";position:absolute;top:0;bottom:0;left:11px;width:1px;background:#b5312a;opacity:.3}
+.doc .dt{display:flex;justify-content:space-between;align-items:baseline;gap:10px;border-bottom:1px solid rgba(0,0,0,.12);padding-bottom:6px;margin-bottom:4px}
+.doc .dt b{font:700 17px var(--mono);white-space:nowrap} .doc .dt span{font-size:13px;color:#676d64;text-align:right}
+.doc .f{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px dashed rgba(0,0,0,.12);font-size:14px}
+.doc .f:last-child{border-bottom:0}
+.doc .f > span:first-child{color:#676d64;flex:none}
+.doc .f > span:last-child{text-align:right}
+.doc .sig{font-style:italic;font-size:15px}
+.doc .ink-blue{color:#2c4a8a} .doc .ink-black{color:#1e2226} .doc .ink-red{color:#b5312a} .doc .ink-green{color:#2e7d4f}
+.doc .seal{display:inline-grid;place-items:center;width:40px;height:40px;border:2px solid #2c4a8a;border-radius:50%;color:#2c4a8a;
+  font:700 7px/1.1 var(--mono);text-align:center;opacity:.7;transform:rotate(-8deg);vertical-align:middle;margin:-8px 0}
+.verdict{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%) rotate(-12deg);border:4px solid;font:700 28px var(--mono);
+  letter-spacing:.1em;padding:4px 16px;border-radius:6px;background:rgba(255,253,246,.6);white-space:nowrap;animation:verdictIn .4s ease-out}
+@keyframes verdictIn{from{opacity:0;transform:translate(-50%,-50%) rotate(-12deg) scale(2.2)}to{opacity:1;transform:translate(-50%,-50%) rotate(-12deg) scale(1)}}
+.verdict.no{color:#b5312a;border-color:#b5312a} .verdict.yes{color:#2c4a8a;border-color:#2c4a8a}
+.ib-actions{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;margin-top:14px}
+.ib-actions .btn{justify-content:center}
+.ib-note{font:400 12px/1.5 var(--mono);color:var(--hint);text-align:center;margin-top:10px}
+.ib-result{margin-top:12px;border-left:3px solid var(--good);padding:7px 10px;font-size:14px;background:rgba(47,138,85,.09);border-radius:0 6px 6px 0;line-height:1.45}
+.ib-result.bad{border-color:var(--ink);background:rgba(181,49,42,.08)}
+.ib-result b{font-family:var(--mono)}
+.empty-desk{text-align:center;padding:24px 10px 6px;color:var(--hint)}
+.empty-desk .big{font-size:40px}
+.empty-desk p{margin:8px 0}
+
 /* ---------- Справочник ---------- */
 .hb{display:flex;gap:12px;padding:12px 0;border-bottom:1px dashed var(--line)}
 .hb:last-child{border-bottom:0}
@@ -351,6 +403,12 @@ input.vol:disabled{opacity:.4}
   </header>
 
   <div class="memo" id="memo"></div>
+
+  <!-- Стол: директива дня и входящие (открываются с Отделом согласований) -->
+  <div class="desk" id="desk" hidden>
+    <div class="directive" id="directive"></div>
+    <button class="inbox-btn" id="inboxBtn" data-act="inbox"><span>📥</span><span data-f="label"></span><span class="cnt" data-f="cnt"></span><span class="go" data-f="go"></span></button>
+  </div>
 
   <!-- Вкладки-папка -->
   <nav class="tabs" id="tabs">
@@ -441,10 +499,27 @@ input.vol:disabled{opacity:.4}
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.8',              // версия игры (показывается в настройках)
+  version: '1.9',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   itchUrl: 'https://adomant.itch.io/paperwork-inc',   // страница на itch.io — появится в настройках
-  achievementBonus: 0.01,      // +1% ко всему доходу за каждое достижение
+  achievementBonus: 0.01,
+  // Директива дня: каждый день с некоторым шансом один отдел работает лучше, другой хуже
+  directive: { plusMult: 2, minusMult: 0.5, plusChance: 0.55, minusChance: 0.45 },
+  // Входящие: документы копятся на столе, игрок проверяет их по регламенту дня
+  inbox: {
+    unlockDept: 'approvals',     // открываются с первым Отделом согласований
+    everyMin: 30, max: 8,        // новый документ раз в 30 минут, не больше 8 на столе
+    firstBatch: 3,               // сколько документов лежит на столе сразу после открытия
+    rewardMin: 5,                // награда: доход за 5 минут…
+    rewardBonusMax: 3,           // …и ещё до +3 минут с реорганизациями (кривая curve)
+    penaltyMax: 10,              // штраф: 0 в первом забеге, растёт до 10 минут дохода
+    curve: 3,                    // на curve-й реорганизации набирается половина роста
+    penaltyBalanceCap: 0.1,      // и никогда не больше 10% текущего баланса
+    streakStep: 0.1, streakMax: 10,   // +10% к награде за каждое верное решение подряд, до +100%
+    invalidChance: 0.5,          // доля документов с нарушением регламента
+    decoyChance: 0.45,           // шанс «подозрительной» детали, которую сегодняшний регламент разрешает
+    rulesByRestructures: [[0, 2], [1, 3], [3, 4]],   // сколько правил в регламенте: [от реорганизаций, правил]
+  },      // +1% ко всему доходу за каждое достижение
   // Апгрейды «по количеству»: появляются у каждого отдела на 50/100/200 штук
   // cost = база отдела × 1.15^at × costUnits
   tierUpgrades: [
@@ -477,6 +552,10 @@ const CONFIG = {
     minRunEarned: 3e11,        // минимум заработанного за период для реструктуризации
     divisor: 5e9,              // Seniority = floor(sqrt(всего_заработано / divisor))
     bonusPerPoint: 0.10,       // +10% к доходу за каждую единицу Seniority
+    // Мягкий потолок: после softcapAt единиц выслуга растёт медленнее (степень softcapExp < 1),
+    // иначе после нескольких реорганизаций рост уходит в лавину и забеги сжимаются до минут
+    softcapAt: 25,
+    softcapExp: 0.5,
   },
 };
 
@@ -712,6 +791,10 @@ const ACHIEVEMENTS = [
   { id:'restr10',  emoji:'🔁', check: s => s.restructures >= 10 },
   { id:'sen100',   emoji:'🏛️', check: s => s.seniority >= 100 },
   { id:'perksall', emoji:'📜', check: s => PERKS.every(p => perkLevel(s, p.id) >= p.costs.length) },
+  // --- v1.9: входящие
+  { id:'inbox1',   emoji:'📥', check: s => stt(s).inboxOk >= 1 },
+  { id:'inbox100', emoji:'🧐', check: s => stt(s).inboxOk >= 100 },
+  { id:'streak20', emoji:'🎯', check: s => stt(s).bestStreak >= 20 },
 ];
 
 /* ---------- Справочники ---------- */
@@ -742,6 +825,8 @@ function freshState(prev) {
     achievements: prev && prev.achievements ? prev.achievements.slice() : [],  // полученные достижения
     settings: prev && prev.settings ? Object.assign({}, prev.settings) : null, // настройки переживают реорганизацию
     stats: prev && prev.stats ? Object.assign({}, prev.stats) : null,          // как и личное дело
+    inbox: prev && prev.inbox ? JSON.parse(JSON.stringify(prev.inbox)) : null, // входящие переживают реорганизацию
+    directive: prev && prev.directive ? Object.assign({}, prev.directive) : null,
   };
 }
 const owned = (s, id) => s.depts[id] || 0;
@@ -780,6 +865,10 @@ function getMods(s) {
     else if (e.type === 'seniority') m.senPer += e.perLevel * L;
     else if (e.type === 'autobuy') m.autobuy = e.intervals[L - 1];
   }
+  // директива дня
+  const dir = s.directive;
+  if (dir && dir.plus && m.dept[dir.plus]) m.dept[dir.plus] *= CONFIG.directive.plusMult;
+  if (dir && dir.minus && m.dept[dir.minus]) m.dept[dir.minus] *= CONFIG.directive.minusMult;
   // достижения
   m.global *= 1 + CONFIG.achievementBonus * ((s.achievements || []).length);
   m.eff = Math.min(1, m.eff);
@@ -863,12 +952,21 @@ function advance(s, sec, eff) {
 }
 
 /* ---------- Престиж ---------- */
-function seniorityTotalFor(allTime) { return Math.floor(Math.sqrt(allTime / CONFIG.prestige.divisor)); }
+// Сколько выслуги положено за allTime документов: корень, а после мягкого потолка — медленнее
+function seniorityTotalFor(allTime) {
+  const p = CONFIG.prestige, r = Math.sqrt(allTime / p.divisor);
+  return Math.floor(r <= p.softcapAt ? r : p.softcapAt * Math.pow(r / p.softcapAt, p.softcapExp));
+}
+// Обратная функция: сколько документов нужно за всё время для n единиц выслуги
+function allTimeForSeniority(n) {
+  const p = CONFIG.prestige;
+  const r = n <= p.softcapAt ? n : p.softcapAt * Math.pow(n / p.softcapAt, 1 / p.softcapExp);
+  return p.divisor * r * r;
+}
 function seniorityGain(s) { return Math.max(0, seniorityTotalFor(s.allTimeEarned) - s.seniority); }
 function canRestructure(s) { return s.runEarned >= CONFIG.prestige.minRunEarned && seniorityGain(s) >= 1; }
 function nextSeniorityAt(s) {
-  const t = Math.max(seniorityTotalFor(s.allTimeEarned), s.seniority) + 1;
-  return CONFIG.prestige.divisor * t * t;
+  return allTimeForSeniority(Math.max(seniorityTotalFor(s.allTimeEarned), s.seniority) + 1);
 }
 function restructure(s) {
   const g = seniorityGain(s);
@@ -1002,6 +1100,23 @@ const I18N = {
       haptics: 'Vibration', hapticsHint: 'Works in Telegram only',
       secDisplay: 'Display', memos: 'Office memos', animations: 'Stamp animations',
       fullscreen: 'Full screen', tFsFail: '⚠️ Full screen is not available here',
+      // директива и входящие
+      dirTitle: 'Directive for {date}', dirForm: 'Form 1-D', chipToday: '{m} today',
+      inboxFull: 'Documents on your desk', inboxGo: 'Review', inboxEmpty: 'Your desk is clear', inboxEta: 'next ≈ {t}',
+      ibForm: 'Form 0-3 · Incoming correspondence', ibTitle: 'In-tray', ibOnDesk: '{n} on the desk',
+      ibStreak: 'streak {n} ✓ +{p}%', ibRegs: 'Regulations for {date}',
+      fDate: 'Date', fSigs: 'Signatures', fInk: 'Ink', fPages: 'Pages', fSeal: 'Department seal', fSubject: 'Subject',
+      sealYes: 'affixed', sealNo: 'none', inkBlue: 'blue', inkBlack: 'black', inkRed: 'red', inkGreen: 'green',
+      ibDeny: 'Deny', ibReturn: 'Return', ibApprove: 'Approve',
+      ibNote: 'Correct: +{r} · Mistake: −{p} · Return: no effect',
+      ibNoteFree: 'Correct: +{r} · Mistake: no fine in your first fiscal period · Return: no effect',
+      ibOk: 'Correct.', ibBad: 'Mistake.', ibValid: 'The document complies with the regulations.',
+      ibNoFine: 'No fine: your first fiscal period counts as training.',
+      ibNext: 'Next document', ibEmptyText: 'Your desk is clear. Everything has been reviewed, filed and forgotten.',
+      ibEta: 'Next document in ≈ {t} · up to {max} fit on the desk',
+      ibToday: 'Today: {ok} correct, {bad} mistakes · {sum}',
+      stampDenied: 'DENIED',
+      tInboxOpen: '📥 The in-tray is open: the first documents have landed on your desk.',
       loadingCloud: 'Fetching your records from the Telegram cloud…',
       tCloudRestored: '☁️ Progress restored from the Telegram cloud',
       tSynced: '☁️ Progress synced from another device',
@@ -1088,6 +1203,12 @@ const I18N = {
         "The Board met to discuss the agenda for the meeting about the agenda.",
         "IT asked everyone to turn it off and on again. The Board has not come back on.",
       ],
+      dirPlus: ['works with redoubled zeal', 'received a new stapler', 'the manager is on holiday', 'found a box of pens that work', 'the coffee machine has been repaired'],
+      dirMinus: ['closed for stocktaking', 'away at a mandatory team-building day', 'lost its only stapler', 'the printer has jammed again', 'stuck in a meeting about meetings'],
+      dirNone: ['No special instructions today. Carry on.', 'The Board is in session. No directive has been agreed upon.', 'Today is an ordinary day, as approved.'],
+      names: ['A. Pilts', 'M. Stapleton', 'V. Formby', 'E. Inksworth', 'D. Ledger', 'O. Quorum', 'N. Carbon', 'S. Docket'],
+      subjects: ['On the procurement of paperclips', 'Request to submit a request', 'Minutes of the previous minutes', 'On moving the meeting',
+        'Coffee machine incident report', 'Approval of the approval schedule', 'Inventory of the inventory', 'Leave application (retroactive)'],
       memos: [
         'MEMO: Please stop approving memos before reading them. Or after.',
         'REMINDER: Form 27-B must be filed before Form 27-A, which authorizes Form 27-B.',
@@ -1126,7 +1247,21 @@ const I18N = {
         'Resets documents, departments, upgrades and stamps in exchange for Seniority. Each point adds +{sen}% to all income, permanently.',
         'Becomes available once you approve {min} documents in one period. The more you have approved in total, the more Seniority you get, so restructure when the next run will clearly go faster.'] },
       perks: { t: 'Tenure Benefits', x: ['Each restructuring also grants Merits, one per Seniority point. Spend them on permanent benefits on the Restructuring tab: starting departments, discounts, longer offline, auto-buying.'] },
+      desk: { t: 'Directive and in-tray', x: [
+        'Every day the Board may issue a directive: one department works ×2, another at half speed. Some days bring only one of them, some bring neither.',
+        'A new document lands in your in-tray every {every} min, up to {max}. Check it against today\'s regulations and approve or deny it. A correct decision pays a few minutes of income, more with a streak. A mistake costs income, but only after your first restructuring, and never more than 10% of your documents. Not sure? Return it: no reward, no fine.'] },
       ach: { t: 'Commendations', x: ['Achievements for milestones. Each one adds +{ach}% to all income, permanently. The trophy icon opens the full registry.'] },
+    },
+    rules: {
+      weekend: { t: 'Documents dated on a weekend are void.', why: 'dated {date}, a weekend' },
+      seal: { t: 'Every document must bear its department seal.', why: 'there is no department seal' },
+      evenPages: { t: 'Page count must be even: printing is double-sided.', why: '{pages} pages is an odd number' },
+      noRed: { t: 'Red ink is reserved for the Board. Red-ink documents are void.', why: 'it is written in red ink' },
+      twoSigsB: { t: 'Forms ending in -B require two signatures.', why: 'form {form} has only one signature' },
+      inkDept: { t: '{dept} accepts blue ink only.', why: '{dept} sent it in {ink} ink' },
+      stale: { t: 'Documents older than 3 days have expired.', why: 'dated {date}, more than 3 days ago' },
+      maxPages: { t: 'Documents longer than 10 pages are not accepted.', why: 'it has {pages} pages' },
+      future: { t: 'Documents dated in the future are void.', why: 'dated {date}, in the future' },
     },
     perks: {
       headstart: { name: 'Pre-Approved Furniture', desc: 'The furniture was approved before the company existed. It has been waiting for you.' },
@@ -1172,6 +1307,9 @@ const I18N = {
       restr10: { name: 'Restructuring Veteran', desc: 'Restructure the company 10 times' },
       sen100: { name: 'Living Institution', desc: 'Reach 100 Seniority' },
       perksall: { name: 'Fully Benefited', desc: 'Max out every Tenure Benefit' },
+      inbox1: { name: 'First Ruling', desc: 'Make your first correct in-tray decision' },
+      inbox100: { name: 'Eagle-Eyed Clerk', desc: 'Make 100 correct in-tray decisions' },
+      streak20: { name: 'Infallible', desc: 'Make 20 correct in-tray decisions in a row' },
     },
   },
 
@@ -1247,6 +1385,22 @@ const I18N = {
       haptics: 'Вибрация', hapticsHint: 'Работает только в Telegram',
       secDisplay: 'Отображение', memos: 'Служебные записки', animations: 'Анимации печатей',
       fullscreen: 'Полный экран', tFsFail: '⚠️ Полноэкранный режим здесь недоступен',
+      dirTitle: 'Директива на {date}', dirForm: 'Форма 1-Д', chipToday: '{m} сегодня',
+      inboxFull: 'На столе документы', inboxGo: 'Разобрать', inboxEmpty: 'Стол пуст', inboxEta: 'следующий ≈ {t}',
+      ibForm: 'Форма 0-3 · Входящая корреспонденция', ibTitle: 'Входящие', ibOnDesk: 'на столе: {n}',
+      ibStreak: 'серия {n} ✓ +{p}%', ibRegs: 'Регламент на {date}',
+      fDate: 'Дата', fSigs: 'Подписи', fInk: 'Чернила', fPages: 'Страниц', fSeal: 'Печать отдела', fSubject: 'Предмет',
+      sealYes: 'стоит', sealNo: 'нет', inkBlue: 'синие', inkBlack: 'чёрные', inkRed: 'красные', inkGreen: 'зелёные',
+      ibDeny: 'Отказать', ibReturn: 'Вернуть', ibApprove: 'Одобрить',
+      ibNote: 'Верно: +{r} · Ошибка: −{p} · «Вернуть» — без последствий',
+      ibNoteFree: 'Верно: +{r} · Ошибка: без штрафа в первом отчётном периоде · «Вернуть» — без последствий',
+      ibOk: 'Верно.', ibBad: 'Ошибка.', ibValid: 'Документ соответствует регламенту.',
+      ibNoFine: 'Штрафа нет: первый отчётный период считается учебным.',
+      ibNext: 'Следующий документ', ibEmptyText: 'Стол пуст. Всё разобрано, подшито и забыто.',
+      ibEta: 'Следующий документ ≈ через {t} · на столе помещается {max}',
+      ibToday: 'Сегодня: верных {ok}, ошибок {bad} · {sum}',
+      stampDenied: 'ОТКАЗАНО',
+      tInboxOpen: '📥 Открыты входящие: на стол легли первые документы.',
       loadingCloud: 'Запрашиваем ваши записи из облака Telegram…',
       tCloudRestored: '☁️ Прогресс восстановлен из облака Telegram',
       tSynced: '☁️ Прогресс синхронизирован с другого устройства',
@@ -1329,6 +1483,12 @@ const I18N = {
         "Правление собралось, чтобы обсудить повестку совещания о повестке.",
         "ИТ-отдел попросил всех выключить и включить снова. Правление пока не включилось.",
       ],
+      dirPlus: ['работает с удвоенным рвением', 'получил новый степлер', 'начальник в отпуске', 'нашёл коробку пишущих ручек', 'починили кофемашину'],
+      dirMinus: ['закрыт на инвентаризацию', 'на обязательном тимбилдинге', 'потерял единственный степлер', 'снова зажевало принтер', 'застрял на совещании о совещаниях'],
+      dirNone: ['Особых указаний нет. Продолжайте.', 'Правление заседает. Директиву пока не согласовали.', 'Сегодня обычный день, как и было утверждено.'],
+      names: ['А. Пыльцов', 'М. Скрепкина', 'В. Бланков', 'Е. Чернилина', 'Д. Реестров', 'О. Кворумов', 'Н. Копиркина', 'С. Делопроизводов'],
+      subjects: ['О закупке скрепок', 'Заявка на подачу заявки', 'Протокол предыдущего протокола', 'О переносе совещания',
+        'Акт о происшествии с кофемашиной', 'Утверждение графика утверждений', 'Инвентаризация инвентаря', 'Заявление на отпуск (задним числом)'],
       memos: [
         'СЛУЖЕБНАЯ ЗАПИСКА: Просьба не одобрять записки до прочтения. Или после.',
         'НАПОМИНАНИЕ: Форма 27-Б подаётся до формы 27-А, которая разрешает подачу формы 27-Б.',
@@ -1429,7 +1589,21 @@ const I18N = {
         'Обнуляет документы, отделы, улучшения и печати в обмен на выслугу. Каждая единица выслуги навсегда добавляет +{sen}% ко всему доходу.',
         'Становится доступной, когда за один период одобрено {min} документов. Чем больше одобрено за всё время, тем больше выслуги, поэтому реорганизуйтесь, когда следующий забег явно пойдёт быстрее.'] },
       perks: { t: 'Льготы за выслугу', x: ['Каждая реорганизация приносит почётные грамоты — по одной за единицу выслуги. На вкладке «Реорганизация» их меняют на постоянные льготы: стартовые отделы, скидки, долгий офлайн, автопокупку.'] },
+      desk: { t: 'Директива и входящие', x: [
+        'Каждый день правление может выпустить директиву: один отдел работает ×2, другой вполсилы. Бывает только одно из двух, а бывает и ничего.',
+        'Каждые {every} мин на стол ложится новый документ, всего помещается {max}. Сверьте его с регламентом на сегодня и одобрите или откажите. Верное решение приносит доход за несколько минут, а серия верных — больше. Ошибка стоит дохода, но только после первой реорганизации и никогда не больше 10% ваших документов. Не уверены — верните документ: ни награды, ни штрафа.'] },
       ach: { t: 'Благодарности', x: ['Достижения за успехи на службе. Каждое навсегда добавляет +{ach}% ко всему доходу. Значок кубка открывает полный реестр.'] },
+    },
+    rules: {
+      weekend: { t: 'Документы, датированные выходными, недействительны.', why: 'датирован {date} — это выходной' },
+      seal: { t: 'На каждом документе должна стоять печать отдела.', why: 'нет печати отдела' },
+      evenPages: { t: 'Число страниц должно быть чётным: печать двусторонняя.', why: '{pages} стр. — нечётное число' },
+      noRed: { t: 'Красные чернила — только для правления. Документы красными чернилами недействительны.', why: 'написан красными чернилами' },
+      twoSigsB: { t: 'Формы с окончанием -B требуют двух подписей.', why: 'у формы {form} только одна подпись' },
+      inkDept: { t: '{dept}: принимаются только синие чернила.', why: '{dept} прислал документ, чернила — {ink}' },
+      stale: { t: 'Документы старше 3 дней просрочены.', why: 'датирован {date} — старше 3 дней' },
+      maxPages: { t: 'Документы длиннее 10 страниц не принимаются.', why: 'в нём {pages} стр.' },
+      future: { t: 'Документы, датированные будущим числом, недействительны.', why: 'датирован {date} — будущим числом' },
     },
     perks: {
       headstart: { name: 'Заранее согласованная мебель', desc: 'Мебель согласовали ещё до основания компании. Она вас ждёт.' },
@@ -1475,6 +1649,9 @@ const I18N = {
       restr10: { name: 'Ветеран реорганизаций', desc: 'Провести 10 реорганизаций' },
       sen100: { name: 'Живая легенда учреждения', desc: 'Набрать 100 выслуги' },
       perksall: { name: 'Все льготы оформлены', desc: 'Выкупить все уровни всех льгот' },
+      inbox1: { name: 'Первая резолюция', desc: 'Принять первое верное решение по входящим' },
+      inbox100: { name: 'Зоркий клерк', desc: 'Принять 100 верных решений по входящим' },
+      streak20: { name: 'Непогрешимый', desc: '20 верных решений по входящим подряд' },
     },
   },
 };
@@ -1492,7 +1669,7 @@ const DEFAULT_SETTINGS = {
   fullscreen: false,     // полный экран (в Telegram включается сам при следующем запуске)
   awayReport: 'always',  // окно возвращения: 'always' | 'long' (от 30 мин) | 'never'
 };
-const DEFAULT_STATS = { signs: 0, playSec: 0, bought: 0, maxAway: 0 };
+const DEFAULT_STATS = { signs: 0, playSec: 0, bought: 0, maxAway: 0, inboxOk: 0, inboxBad: 0, bestStreak: 0 };
 
 /* =====================================================================
    ЗВУКИ — синтезируются через Web Audio API, без файлов.
@@ -1551,6 +1728,11 @@ const SFX = {
   },
   // шорох листа — переключение вкладок
   tab(A, t) { A.hiss(t, { dur: 0.035, gain: 0.08, filter: 'highpass', freq: 2500 }); },
+  // глухое «бззз» — ошибка во входящих
+  error(A, t) {
+    A.tone(t, { freq: 220, type: 'square', dur: 0.13, gain: 0.045 });
+    A.tone(t + 0.15, { freq: 160, type: 'square', dur: 0.22, gain: 0.045 });
+  },
   // щелчок — переключатели
   click(A, t) { A.tone(t, { freq: 1200, type: 'square', dur: 0.025, gain: 0.035 }); },
 };
@@ -1717,8 +1899,23 @@ function migrate(raw) {
   for (const k of Object.keys(s.flags)) if (k.indexOf('canR_') === 0) delete s.flags[k];
   ensureSettings(s);
   for (const k of Object.keys(DEFAULT_STATS)) s.stats[k] = cleanNum(s.stats[k]);
+  // v1.9: входящие и директива
+  const ib = raw.inbox;
+  s.inbox = ib && typeof ib === 'object' ? {
+    count: Math.min(Math.floor(cleanNum(ib.count)), CONFIG.inbox.max),
+    timer: cleanNum(ib.timer), streak: Math.floor(cleanNum(ib.streak)),
+    current: isDoc(ib.current) ? ib.current : null,
+    rules: ib.rules && typeof ib.rules.key === 'string' && Array.isArray(ib.rules.ids) ? ib.rules : null,
+    day: ib.day && typeof ib.day.key === 'string' ? ib.day : null,
+  } : null;
+  const d = raw.directive;
+  s.directive = d && typeof d.key === 'string' ? {
+    key: d.key, plus: DEPT_BY_ID[d.plus] ? d.plus : null, minus: DEPT_BY_ID[d.minus] ? d.minus : null,
+    plusText: Math.floor(cleanNum(d.plusText)), minusText: Math.floor(cleanNum(d.minusText)), noneText: Math.floor(cleanNum(d.noneText)),
+  } : null;
   return s;
 }
+const isDoc = d => !!d && typeof d === 'object' && /^\d{4}-\d\d-\d\d$/.test(d.date) && Array.isArray(d.sigs) && DEPT_BY_ID[d.dept] !== undefined;
 // Неотрицательное конечное число или 0
 function cleanNum(v) { v = Number(v); return isFinite(v) && v > 0 ? v : 0; }
 
@@ -1901,7 +2098,7 @@ function collectRefs(root) {
   root.querySelectorAll('[data-f]').forEach(el => { r[el.dataset.f] = el; });
   return r;
 }
-const refs = { depts: new Map(), upgs: new Map(), perks: new Map() };
+const refs = { depts: new Map(), upgs: new Map(), perks: new Map(), inboxBtn: null };
 
 /* ---------- Применение настроек ---------- */
 function applyStaticTexts() {
@@ -1917,7 +2114,7 @@ function applySettings() {
   if (langChanged) $('memo').textContent = pick(tlist('memos'));
   applyStaticTexts();
   if (S) syncBuyMode();
-  deptKey = upgKey = filedKey = perkKey = '';   // пересобрать карточки на новом языке
+  deptKey = upgKey = filedKey = perkKey = deskKey = '';   // пересобрать карточки на новом языке
   Sound.setVolume();
   if (st.sound && Sound.gestured) Sound.unlock(); else Sound.syncAmbience();
   render();
@@ -2125,6 +2322,7 @@ function showAway(awaySec, countedSec, gained, m) {
 // Начисляем офлайн-доход с учётом лимита и эффективности
 function applyAway(sec) {
   S.stats.maxAway = Math.max(S.stats.maxAway || 0, sec);
+  inboxAccrue(sec);
   const m = getMods(S);
   const counted = Math.min(sec, m.capHours * 3600);
   const gained = advance(S, counted, m.eff);
@@ -2139,6 +2337,7 @@ function checkUnlocks(silent) {
   const notify = (msg, sfx) => { if (silent) return; toast(msg); haptic.success(); Sound.play(sfx); };
   if (!S.flags.upgradesTab && upgradesUnlocked(S)) { S.flags.upgradesTab = true; notify(t('tUpgTab'), 'ring'); }
   if (!S.flags.restructureTab && restructureUnlocked(S)) { S.flags.restructureTab = true; notify(t('tRestrTab'), 'ring'); }
+  unlockInbox(silent);
   DEPARTMENTS.forEach((d, i) => {
     const f = 'seen_' + d.id;
     if (i > 0 && !S.flags[f] && deptVisible(S, d, i)) { S.flags[f] = true; notify(t('tNewDept', { e: d.emoji, name: dName(d) }), 'ring'); }
@@ -2153,13 +2352,14 @@ function checkUnlocks(silent) {
 function buildDepts() {
   const vis = []; let teaser = null;
   DEPARTMENTS.forEach((d, i) => { if (deptVisible(S, d, i)) vis.push(d); else if (!teaser) teaser = d; });
-  const key = vis.map(d => d.id).join(',') + '|' + (teaser ? teaser.id : '');
+  const dir = S.directive;
+  const key = vis.map(d => d.id).join(',') + '|' + (teaser ? teaser.id : '') + '|' + (dir ? dir.key + dir.plus + dir.minus : '');
   if (key === deptKey) return;
   deptKey = key;
   let html = vis.map(d => `
     <div class="card dept" id="d-${d.id}">
       <div class="c-head"><span class="c-emoji">${d.emoji}</span>
-        <div class="c-title"><div class="c-name">${esc(dName(d))}</div><div class="c-form mono">${formStr(d.form)}</div></div>
+        <div class="c-title"><div class="c-name">${esc(dName(d))}${dirChip(d.id)}</div><div class="c-form mono">${formStr(d.form)}</div></div>
         <div class="c-owned mono" data-f="owned"></div></div>
       <div class="c-desc">${esc(dDesc(d))}</div>
       <div class="c-stats mono" data-f="stats"></div>
@@ -2344,6 +2544,7 @@ const HANDBOOK = [
   { id: 'stamps', emoji: '🔏', open: s => hasUpg(s, 'rubberstamp') || s.restructures > 0 },
   { id: 'restr',  emoji: '🔄', open: s => restructureUnlocked(s) },
   { id: 'perks',  emoji: '📜', open: s => s.restructures > 0 },
+  { id: 'desk',   emoji: '📥', open: s => !!s.flags.inboxOpen },
   { id: 'ach',    emoji: '🏆', open: () => true },
 ];
 const hbText = id => (I18N[LANG].hb || {})[id] || I18N.en.hb[id];
@@ -2354,6 +2555,7 @@ function hbVars() {
     cap: CONFIG.offline.baseCapHours, eff: Math.round(CONFIG.offline.baseEfficiency * 100),
     sen: Math.round(CONFIG.prestige.bonusPerPoint * 100), min: fmt(CONFIG.prestige.minRunEarned),
     ach: Math.round(CONFIG.achievementBonus * 100),
+    every: CONFIG.inbox.everyMin, max: CONFIG.inbox.max,
   };
 }
 function showHandbook() {
@@ -2390,6 +2592,268 @@ function autoBuy(dt, m) {
   if (autoTimer > m.autobuy) autoTimer = m.autobuy;
 }
 
+/* =====================================================================
+   ДИРЕКТИВА ДНЯ И ВХОДЯЩИЕ
+   Директива и регламент выбираются по дате (одинаково на всех устройствах),
+   документы — случайно. Всё, что выбрано, хранится в сохранении.
+   ===================================================================== */
+// Ключ дня по местному времени: '2026-11-08'
+function todayKey(d) {
+  d = d || new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+function dateFromKey(k) { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d, 12); }
+function keyDaysAgo(n) { const d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() - n); return todayKey(d); }
+function daysAgo(k) { return Math.round((dateFromKey(todayKey()) - dateFromKey(k)) / 864e5); }
+const isWeekendKey = k => { const w = dateFromKey(k).getDay(); return w === 0 || w === 6; };
+function fmtDay(k, weekday) {
+  const opts = weekday ? { weekday: 'short', day: 'numeric', month: 'long' } : { day: 'numeric', month: 'long' };
+  return dateFromKey(k).toLocaleDateString(LANG === 'ru' ? 'ru-RU' : 'en-GB', opts);
+}
+// Генератор случайных чисел с зерном: для одной даты всегда одна и та же последовательность
+function seededRandom(str) {
+  let a = 2166136261;
+  for (let i = 0; i < str.length; i++) a = Math.imul(a ^ str.charCodeAt(i), 16777619) >>> 0;
+  return () => {
+    a = (a + 0x6D2B79F5) >>> 0;
+    let x = Math.imul(a ^ (a >>> 15), a | 1);
+    x ^= x + Math.imul(x ^ (x >>> 7), x | 61);
+    return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const pickR = (rnd, arr) => arr[Math.floor(rnd() * arr.length)];
+const inboxOpen = () => !!(S && S.flags.inboxOpen && S.inbox);
+const ownedDeptIds = () => DEPARTMENTS.filter(d => owned(S, d.id) > 0).map(d => d.id);
+const curve = k => k / (k + CONFIG.inbox.curve);   // 0 → 1, половина на curve-й реорганизации
+
+/* ---------- Директива дня ---------- */
+function rollDirective(key) {
+  const rnd = seededRandom('directive:' + key), c = CONFIG.directive, pool = ownedDeptIds();
+  const dir = { key, plus: null, minus: null, plusText: Math.floor(rnd() * 1e6), minusText: Math.floor(rnd() * 1e6), noneText: Math.floor(rnd() * 1e6) };
+  if (pool.length && rnd() < c.plusChance) dir.plus = pickR(rnd, pool);
+  const rest = pool.filter(id => id !== dir.plus);
+  if (rest.length && rnd() < c.minusChance) dir.minus = pickR(rnd, rest);
+  return dir;
+}
+
+/* ---------- Регламент: правила проверки документов ----------
+   broken(doc, regs) — нарушает ли документ правило;
+   violate(doc, rnd, regs) — испортить документ так, чтобы правило нарушалось.
+   tier 0 — простые правила с первого дня, tier 1 — добавляются после реорганизаций. */
+function lastWeekendAgo(rnd) {
+  const opts = [0, 1, 2, 3, 4, 5, 6].filter(n => isWeekendKey(keyDaysAgo(n)));
+  return pickR(rnd, opts);
+}
+const INBOX_RULES = [
+  { id: 'weekend',   tier: 0, broken: d => isWeekendKey(d.date),         violate: (d, rnd) => { d.date = keyDaysAgo(lastWeekendAgo(rnd)); } },
+  { id: 'seal',      tier: 0, broken: d => !d.seal,                       violate: d => { d.seal = false; } },
+  { id: 'evenPages', tier: 0, broken: d => d.pages % 2 === 1,             violate: (d, rnd) => { d.pages = pickR(rnd, [3, 5, 7, 9]); } },
+  { id: 'noRed',     tier: 0, broken: d => d.ink === 'red',               violate: d => { d.ink = 'red'; } },
+  { id: 'twoSigsB',  tier: 0, broken: d => d.letter === 'B' && d.sigs.length < 2, violate: d => { d.letter = 'B'; d.sigs = d.sigs.slice(0, 1); } },
+  { id: 'inkDept',   tier: 1, broken: (d, r) => d.dept === r.inkDept && d.ink !== 'blue',
+    violate: (d, rnd, r) => { d.dept = r.inkDept; d.ink = pickR(rnd, ['black', 'green', 'red']); } },
+  { id: 'stale',     tier: 1, broken: d => daysAgo(d.date) > 3,           violate: (d, rnd) => { d.date = keyDaysAgo(4 + Math.floor(rnd() * 3)); } },
+  { id: 'maxPages',  tier: 1, broken: d => d.pages > 10,                  violate: (d, rnd) => { d.pages = pickR(rnd, [12, 14, 16]); } },
+  { id: 'future',    tier: 1, broken: d => daysAgo(d.date) < 0,           violate: (d, rnd) => { d.date = keyDaysAgo(-1 - Math.floor(rnd() * 2)); } },
+];
+const RULE_BY_ID = Object.fromEntries(INBOX_RULES.map(r => [r.id, r]));
+function rulesCount(k) { let n = 0; for (const [from, count] of CONFIG.inbox.rulesByRestructures) if (k >= from) n = count; return n; }
+function rollRules(key) {
+  const k = S.restructures, rnd = seededRandom('rules:' + key + ':' + rulesCount(k));
+  const pool = INBOX_RULES.filter(r => r.tier <= (k >= 1 ? 1 : 0)).map(r => r.id);
+  const ids = [];
+  while (ids.length < rulesCount(k) && pool.length) ids.push(pool.splice(Math.floor(rnd() * pool.length), 1)[0]);
+  const senders = ownedDeptIds();
+  return { key, ids, inkDept: senders.length ? pickR(rnd, senders) : 'approvals' };
+}
+const activeRules = () => S.inbox.rules.ids.map(id => RULE_BY_ID[id]).filter(Boolean);
+
+/* ---------- Документы ---------- */
+function makeDoc() {
+  const regs = S.inbox.rules, rules = activeRules(), rnd = Math.random;
+  const senders = ownedDeptIds(); if (!senders.length) senders.push('intern');
+  const names = [0, 1, 2, 3, 4, 5, 6, 7].sort(() => rnd() - 0.5);
+  const weekdays = [0, 1, 2, 3].filter(n => !isWeekendKey(keyDaysAgo(n)));
+  const d = {
+    form: 10 + Math.floor(rnd() * 90), letter: pickR(rnd, ['A', 'B', 'C', 'D', 'F', 'P', 'R', 'S']),
+    dept: regs.inkDept && senders.includes(regs.inkDept) && rnd() < 0.35 ? regs.inkDept : pickR(rnd, senders),
+    date: keyDaysAgo(weekdays.length ? pickR(rnd, weekdays) : 0),
+    sigs: names.slice(0, 2), ink: 'blue', pages: pickR(rnd, [2, 4, 6, 8, 10]), seal: true,
+    subject: Math.floor(rnd() * 1e6),
+  };
+  if (d.dept !== regs.inkDept && rnd() < 0.4) d.ink = 'black';
+  // «подозрительные» детали, которые сегодняшний регламент разрешает: проверяем, что ни одно правило не нарушено
+  for (const rule of [...INBOX_RULES].sort(() => rnd() - 0.5)) {
+    if (rnd() >= CONFIG.inbox.decoyChance) continue;
+    const copy = JSON.parse(JSON.stringify(d));
+    rule.violate(copy, rnd, regs);
+    if (!rules.some(r => r.broken(copy, regs))) Object.assign(d, copy);
+  }
+  // примерно половина документов — с настоящим нарушением
+  if (rules.length && rnd() < CONFIG.inbox.invalidChance) pickR(rnd, rules).violate(d, rnd, regs);
+  return d;
+}
+const inboxRewardMin = () => CONFIG.inbox.rewardMin + CONFIG.inbox.rewardBonusMax * curve(S.restructures);
+const inboxPenaltyMin = () => CONFIG.inbox.penaltyMax * curve(S.restructures);
+const streakMult = () => 1 + CONFIG.inbox.streakStep * Math.min(S.inbox.streak, CONFIG.inbox.streakMax);
+function inboxReward() { return totalRate(S) * 60 * inboxRewardMin() * streakMult(); }
+function inboxPenalty() { return Math.min(totalRate(S) * 60 * inboxPenaltyMin(), S.docs * CONFIG.inbox.penaltyBalanceCap); }
+
+/* ---------- Ежедневное обновление, накопление, открытие ---------- */
+function ensureDaily() {
+  if (!inboxOpen()) return;
+  const key = todayKey(), ib = S.inbox;
+  if (!S.directive || S.directive.key !== key) { S.directive = rollDirective(key); deptKey = deskKey = ''; }
+  if (!ib.rules || ib.rules.key !== key) ib.rules = rollRules(key);
+  if (!ib.day || ib.day.key !== key) ib.day = { key, ok: 0, bad: 0, earned: 0 };
+}
+// Документы копятся на столе, пока игрок в игре и пока его нет
+function inboxAccrue(sec) {
+  if (!inboxOpen()) return;
+  const ib = S.inbox, step = CONFIG.inbox.everyMin * 60;
+  if (ib.count >= CONFIG.inbox.max) { ib.timer = 0; return; }
+  ib.timer += sec;
+  while (ib.timer >= step && ib.count < CONFIG.inbox.max) { ib.count++; ib.timer -= step; }
+  if (ib.count >= CONFIG.inbox.max) ib.timer = 0;
+}
+function unlockInbox(silent) {
+  if (S.flags.inboxOpen || owned(S, CONFIG.inbox.unlockDept) < 1) return;
+  S.flags.inboxOpen = true;
+  S.inbox = S.inbox || { count: CONFIG.inbox.firstBatch, timer: 0, streak: 0, current: null, rules: null, day: null };
+  ensureDaily();
+  if (!silent) { toast(t('tInboxOpen')); haptic.success(); Sound.play('ring'); }
+}
+function inboxEta() { return CONFIG.inbox.everyMin * 60 - S.inbox.timer; }
+
+/* ---------- Стол на главном экране ---------- */
+let deskKey = '';
+function dirChip(id) {
+  const d = S.directive; if (!d) return '';
+  if (d.plus === id) return `<span class="chip-dir up">${t('chipToday', { m: '×' + CONFIG.directive.plusMult })}</span>`;
+  if (d.minus === id) return `<span class="chip-dir down">${t('chipToday', { m: '−' + Math.round((1 - CONFIG.directive.minusMult) * 100) + '%' })}</span>`;
+  return '';
+}
+function renderDesk() {
+  const open = inboxOpen();
+  $('desk').hidden = !open;
+  if (!open) return;
+  const d = S.directive;
+  const key = LANG + '|' + (d ? [d.key, d.plus, d.minus].join(',') : '');
+  if (key !== deskKey) {
+    deskKey = key;
+    const L = k => tlist(k), line = (cls, mark, text) => `<div class="dl"><b class="${cls}">${mark}</b><span>${esc(text)}</span></div>`;
+    let body = '';
+    if (d && d.plus) body += line('up', '×' + CONFIG.directive.plusMult, dName(DEPT_BY_ID[d.plus]) + ': ' + L('dirPlus')[d.plusText % L('dirPlus').length]);
+    if (d && d.minus) body += line('down', '−' + Math.round((1 - CONFIG.directive.minusMult) * 100) + '%', dName(DEPT_BY_ID[d.minus]) + ': ' + L('dirMinus')[d.minusText % L('dirMinus').length]);
+    if (d && !d.plus && !d.minus) body = `<div class="calm">${esc(L('dirNone')[d.noneText % L('dirNone').length])}</div>`;
+    $('directive').innerHTML = `<div class="dh"><span>📌 ${t('dirTitle', { date: d ? fmtDay(d.key) : '' })}</span><span class="mono">${t('dirForm')}</span></div>${body}`;
+    refs.inboxBtn = collectRefs($('inboxBtn'));
+  }
+  const f = refs.inboxBtn, n = S.inbox.count;
+  $('inboxBtn').classList.toggle('empty', n === 0);
+  setText(f.label, n > 0 ? t('inboxFull') : t('inboxEmpty'));
+  setText(f.cnt, n);
+  setText(f.go, n > 0 ? t('inboxGo') : t('inboxEta', { t: fmtTime(inboxEta()) }));
+}
+
+/* ---------- Окно входящих ---------- */
+let inboxResult = null;   // результат последнего решения (показывается до «Следующий документ»)
+function inkWord(ink) { return t('ink' + ink[0].toUpperCase() + ink.slice(1)); }
+function docHTML(d, verdict) {
+  const names = tlist('names'), subjects = tlist('subjects');
+  const dept = DEPT_BY_ID[d.dept];
+  return `<div class="doc">
+    <div class="dt"><b>${t('form')} ${d.form}-${d.letter}</b><span>${esc(dName(dept))}</span></div>
+    <div class="f"><span>${t('fDate')}</span><span class="mono">${esc(fmtDay(d.date, true))}</span></div>
+    <div class="f"><span>${t('fSigs')}</span><span class="sig ink-${d.ink}">${d.sigs.map(i => esc(names[i % names.length])).join(', ')}</span></div>
+    <div class="f"><span>${t('fInk')}</span><span class="ink-${d.ink}" style="font-weight:600">${inkWord(d.ink)}</span></div>
+    <div class="f"><span>${t('fPages')}</span><span class="mono">${d.pages}</span></div>
+    <div class="f"><span>${t('fSeal')}</span><span>${d.seal ? `<span class="seal">${esc(dName(dept).slice(0, 10).toUpperCase())}</span> ${t('sealYes')}` : t('sealNo')}</span></div>
+    <div class="f"><span>${t('fSubject')}</span><span>${esc(subjects[d.subject % subjects.length])}</span></div>
+    ${verdict ? `<div class="verdict ${verdict === 'yes' ? 'yes' : 'no'}">${verdict === 'yes' ? t('stampApproved') : t('stampDenied')}</div>` : ''}
+  </div>`;
+}
+function regsHTML() {
+  const regs = S.inbox.rules;
+  const rules = activeRules().map((r, i) => {
+    let text = esc(I18N[LANG].rules ? I18N[LANG].rules[r.id].t : I18N.en.rules[r.id].t).replace('{dept}', esc(dName(DEPT_BY_ID[regs.inkDept])));
+    return `<div class="r"><b>§${i + 1}</b> ${text}</div>`;
+  }).join('');
+  return `<div class="regs"><div class="rt">${t('ibRegs', { date: fmtDay(regs.key) })}</div>${rules}</div>`;
+}
+function showInbox() {
+  ensureDaily();
+  const ib = S.inbox, sheet = $('sheet');
+  const streak = ib.streak > 0 ? `<span class="ib-streak">${t('ibStreak', { n: ib.streak, p: Math.round((streakMult() - 1) * 100) })}</span>` : '';
+  const head = `<div class="m-form">${t('ibForm')}</div>
+    <div class="ib-top"><h2>📥 ${t('ibTitle')}${ib.count ? ' · ' + t('ibOnDesk', { n: ib.count }) : ''}</h2>${streak}</div>`;
+  let body;
+  if (inboxResult) {
+    const r = inboxResult, why = (I18N[LANG].rules || I18N.en.rules)[r.rule];
+    const reason = r.rule ? `§${r.ruleNo}: ${esc(why.why.replace('{date}', fmtDay(r.doc.date, true)).replace('{pages}', r.doc.pages)
+      .replace('{form}', r.doc.form + '-' + r.doc.letter).replace('{ink}', inkWord(r.doc.ink)).replace('{dept}', dName(DEPT_BY_ID[r.doc.dept])))}.` : t('ibValid');
+    const money = r.correct ? ` <b>+${fmt(r.amount)}</b>` : (r.amount > 0 ? ` <b>−${fmt(r.amount)}</b>` : ` ${t('ibNoFine')}`);
+    body = regsHTML() + docHTML(r.doc, r.approve ? 'yes' : 'no') +
+      `<div class="ib-result ${r.correct ? '' : 'bad'}">${r.correct ? '✓ <b>' + t('ibOk') + '</b>' : '✗ <b>' + t('ibBad') + '</b>'} ${reason}${money}</div>` +
+      `<div class="m-btns"><button class="btn${ib.count ? '' : ' ghost'}" data-ib="next">${ib.count ? t('ibNext') : t('close')}</button></div>`;
+  } else if (!ib.count) {
+    const day = ib.day || { ok: 0, bad: 0, earned: 0 };
+    body = `<div class="empty-desk"><div class="big">🗂️</div><p>${t('ibEmptyText')}</p>
+      <p class="mono" style="font-size:13px">${t('ibEta', { t: fmtTime(inboxEta()), max: CONFIG.inbox.max })}</p>
+      ${day.ok + day.bad ? `<p style="font-size:13px">${t('ibToday', { ok: day.ok, bad: day.bad, sum: (day.earned >= 0 ? '+' : '−') + fmt(Math.abs(day.earned)) })}</p>` : ''}</div>
+      <div class="m-btns"><button class="btn ghost" data-ib="close">${t('close')}</button></div>`;
+  } else {
+    if (!isDoc(ib.current)) ib.current = makeDoc();
+    const penalty = inboxPenaltyMin() > 0 ? fmt(inboxPenalty()) : null;
+    body = regsHTML() + docHTML(ib.current) +
+      `<div class="ib-actions"><button class="btn danger" data-ib="deny">${t('ibDeny')}</button><button class="btn ghost" data-ib="return">${t('ibReturn')}</button><button class="btn" data-ib="approve">${t('ibApprove')}</button></div>
+      <div class="ib-note">${penalty ? t('ibNote', { r: fmt(inboxReward()), p: penalty }) : t('ibNoteFree', { r: fmt(inboxReward()) })}</div>`;
+  }
+  sheet.classList.remove('stamped');
+  sheet.innerHTML = head + body;
+  $('overlay').classList.add('show');
+  modalKind = 'inbox';
+}
+function decideDoc(approve) {
+  const ib = S.inbox, d = ib.current;
+  if (!isDoc(d)) return;
+  const rules = activeRules(), broken = rules.filter(r => r.broken(d, ib.rules));
+  const valid = broken.length === 0, correct = approve === valid;
+  let amount;
+  if (correct) {
+    amount = inboxReward();
+    S.docs += amount; S.runEarned += amount; S.allTimeEarned += amount;
+    ib.streak++; S.stats.inboxOk++; ib.day.ok++; ib.day.earned += amount;
+    S.stats.bestStreak = Math.max(S.stats.bestStreak, ib.streak);
+  } else {
+    amount = inboxPenalty();
+    S.docs = Math.max(0, S.docs - amount);
+    ib.streak = 0; S.stats.inboxBad++; ib.day.bad++; ib.day.earned -= amount;
+  }
+  ib.count = Math.max(0, ib.count - 1);
+  ib.current = null;
+  inboxResult = { doc: d, approve, correct, amount, rule: broken[0] ? broken[0].id : null, ruleNo: broken[0] ? rules.indexOf(broken[0]) + 1 : 0 };
+  haptic.light(); Sound.play('stamp');
+  setTimeout(() => { if (correct) Sound.play('upgrade'); else { Sound.play('error'); haptic.success(); } }, 220);
+  checkAchievements();
+  render(); save();
+  showInbox();
+}
+$('sheet').addEventListener('click', e => {
+  if (modalKind !== 'inbox') return;
+  const b = e.target.closest('[data-ib]');
+  if (!b) return;
+  switch (b.dataset.ib) {
+    case 'approve': decideDoc(true); break;
+    case 'deny': decideDoc(false); break;
+    case 'return':
+      S.inbox.count = Math.max(0, S.inbox.count - 1); S.inbox.current = null;
+      Sound.play('tab'); render(); save(); showInbox(); break;
+    case 'next': inboxResult = null; Sound.play('tab'); if (S.inbox.count) showInbox(); else closeModal(); break;
+    case 'close': inboxResult = null; closeModal(); break;
+  }
+});
+
 /* ---------- Главная отрисовка ----------
    Шапка и вкладки обновляются всегда, содержимое — только у открытой вкладки. */
 function render() {
@@ -2424,6 +2888,8 @@ function render() {
   const affordable = avail.filter(u => canAfford(S, u)).length;
   const badge = $('upgBadge');
   badge.hidden = affordable === 0; setText(badge, affordable);
+
+  renderDesk();
 
   if (activeTab === 'depts') renderDepts(m, rate);
   else if (activeTab === 'upgs') renderUpgrades(avail, rate, sRate);
@@ -2541,6 +3007,7 @@ document.addEventListener('click', e => {
     case 'settings': Sound.play('click'); showSettings(); break;
     case 'achievements': Sound.play('click'); showAchievements(); break;
     case 'handbook': Sound.play('click'); showHandbook(); break;
+    case 'inbox': Sound.play('click'); inboxResult = null; showInbox(); break;
     case 'buyPerk': {
       const p = PERK_BY_ID[id];
       if (buyPerk(S, id)) { haptic.success(); Sound.play('upgrade'); toast(t('tPerk', { name: pText(p).name })); save(); render(); }
@@ -2654,8 +3121,10 @@ function adoptSave(raw, message) {
   applySettings();
   const away = (Date.now() - (S.lastSeen || Date.now())) / 1000;
   if (away >= CONFIG.offline.minAwaySec) applyAway(away);
-  else if (away > 0) advance(S, away, 1);
+  else if (away > 0) { advance(S, away, 1); inboxAccrue(away); }
   checkUnlocks(true);
+  ensureDaily();
+  inboxResult = null;
   lastTick = Date.now();
   S.lastSeen = lastTick;
   shown.docs = shown.stamps = null;   // счётчик в шапке — сразу к новому значению
@@ -2672,9 +3141,10 @@ function tick() {
   lastTick = now;
   if (dt <= 0) return;
   if (dt >= CONFIG.offline.minAwaySec) applyAway(dt);
-  else { advance(S, dt, 1); S.stats.playSec += dt; autoBuy(dt, getMods(S)); }
+  else { advance(S, dt, 1); S.stats.playSec += dt; autoBuy(dt, getMods(S)); inboxAccrue(dt); }
   S.lastSeen = now;
   checkUnlocks(false);
+  ensureDaily();
   checkAchievements();
   render();
 }
@@ -2711,8 +3181,9 @@ function rotateMemo() {
     applySettings();
     const away = (Date.now() - (S.lastSeen || Date.now())) / 1000;
     if (away >= CONFIG.offline.minAwaySec) applyAway(away);
-    else if (away > 0) advance(S, away, 1);
+    else if (away > 0) { advance(S, away, 1); inboxAccrue(away); }
     checkUnlocks(true);
+    ensureDaily();
   } else {
     S = ensureSettings(freshState());
     LANG = S.settings.lang;
