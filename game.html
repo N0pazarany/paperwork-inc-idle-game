@@ -412,7 +412,7 @@ input.vol:disabled{opacity:.4}
 </main>
 
 <!-- Мини-баланс: виден, когда шапка уехала вверх -->
-<div class="mini" id="mini" aria-hidden="true">
+<div class="mini" id="mini" aria-hidden="true" inert>
   <div class="mini-in">
     <div class="mini-num"><span class="mini-docs" id="miniDocs">0</span><span class="mini-rate" id="miniRate"></span></div>
     <span class="icons"><button class="icon-btn" data-act="handbook" aria-label="Handbook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/><path d="M10 8.2a2 2 0 1 1 2.6 1.9c-.4.2-.6.5-.6.9v.5M12 13.6v.1"/></svg></button><button class="icon-btn" data-act="achievements" aria-label="Achievements"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 6H5a3 3 0 0 0 3 4.5M16 6h3a3 3 0 0 1-3 4.5"/><path d="M12 13v4M9 20h6M10 17h4"/></svg></button><button class="icon-btn" data-act="settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></span>
@@ -441,7 +441,7 @@ input.vol:disabled{opacity:.4}
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.7.1',              // версия игры (показывается в настройках)
+  version: '1.8',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   itchUrl: 'https://adomant.itch.io/paperwork-inc',   // страница на itch.io — появится в настройках
   achievementBonus: 0.01,      // +1% ко всему доходу за каждое достижение
@@ -1002,6 +1002,9 @@ const I18N = {
       haptics: 'Vibration', hapticsHint: 'Works in Telegram only',
       secDisplay: 'Display', memos: 'Office memos', animations: 'Stamp animations',
       fullscreen: 'Full screen', tFsFail: '⚠️ Full screen is not available here',
+      loadingCloud: 'Fetching your records from the Telegram cloud…',
+      tCloudRestored: '☁️ Progress restored from the Telegram cloud',
+      tSynced: '☁️ Progress synced from another device',
       numFormat: 'Number format',
       awayReport: 'Absence report', awayAlways: 'Always', awayLong: '30+ min', awayNever: 'Never',
       secRecords: 'Records', export: 'Export', import: 'Import',
@@ -1244,6 +1247,9 @@ const I18N = {
       haptics: 'Вибрация', hapticsHint: 'Работает только в Telegram',
       secDisplay: 'Отображение', memos: 'Служебные записки', animations: 'Анимации печатей',
       fullscreen: 'Полный экран', tFsFail: '⚠️ Полноэкранный режим здесь недоступен',
+      loadingCloud: 'Запрашиваем ваши записи из облака Telegram…',
+      tCloudRestored: '☁️ Прогресс восстановлен из облака Telegram',
+      tSynced: '☁️ Прогресс синхронизирован с другого устройства',
       numFormat: 'Формат чисел',
       awayReport: 'Акт об отсутствии', awayAlways: 'Всегда', awayLong: '30+ мин', awayNever: 'Никогда',
       secRecords: 'Документация', export: 'Экспорт', import: 'Импорт',
@@ -1578,31 +1584,93 @@ const haptic = {
 
 const SAVE_KEY = 'paperwork_inc_save_v1';   // не менять — иначе старые сохранения не найдутся
 const CLOUD_LIMIT = 4096;                     // лимит Telegram CloudStorage на одно значение (символов)
+/* Синхронизация с облаком Telegram.
+   Правила, которые защищают прогресс:
+   1. В облако пишем только после того, как успешно прочитали его в этом сеансе
+      (и заново — после каждого возвращения в игру). Медленное или недоступное
+      облако никогда не затрёт настоящий прогресс пустой игрой.
+   2. У каждой записи в облаке есть номер версии rev и метка сеанса sid.
+      Перед автосохранением сверяемся: если там более новая версия с другого
+      устройства, подхватываем её вместо того, чтобы затереть.
+   Номер версии не зависит от часов устройства, поэтому разница во времени
+   между телефоном и компьютером ни на что не влияет. */
+const SID = Math.random().toString(36).slice(2, 10);   // метка этого запуска игры
+const CLOUD_WAIT_MS = 8000;                           // сколько ждать ответа облака
 const Store = {
   cloud: IN_TG && tgv('6.9') && !!tg.CloudStorage,
-  // Загружаем и из облака, и из localStorage — берём более свежее
-  load() {
+  everRead: false,   // облако хотя бы раз ответило в этом сеансе
+  writable: false,   // можно писать в облако (после успешной сверки)
+  rev: 0,            // номер последней известной версии в облаке
+  baseSeen: 0,       // lastSeen сохранения, с которого стартовали (для старых записей без rev)
+  syncing: null,
+  readLocal() {
+    try { return JSON.parse(localStorage.getItem(SAVE_KEY)); } catch (e) { return null; }
+  },
+  // { ok: false } — облако не ответило; { ok: true, save } — ответило (save может быть null)
+  readCloud() {
     return new Promise(resolve => {
-      let local = null;
-      try { local = JSON.parse(localStorage.getItem(SAVE_KEY)); } catch (e) {}
-      if (!this.cloud) return resolve(local);
       let done = false;
-      const timer = setTimeout(() => { if (!done) { done = true; resolve(local); } }, 2500);
+      const finish = r => { if (!done) { done = true; clearTimeout(timer); resolve(r); } };
+      const timer = setTimeout(() => finish({ ok: false }), CLOUD_WAIT_MS);
       try {
         tg.CloudStorage.getItem(SAVE_KEY, (err, val) => {
-          if (done) return; done = true; clearTimeout(timer);
-          let cloud = null;
-          if (!err && val) { try { cloud = JSON.parse(val); } catch (e) {} }
-          if (cloud && local) resolve((cloud.lastSeen || 0) >= (local.lastSeen || 0) ? cloud : local);
-          else resolve(cloud || local);
+          if (err) return finish({ ok: false });
+          let save = null;
+          if (val) { try { save = JSON.parse(val); } catch (e) {} }
+          finish({ ok: true, save });
         });
-      } catch (e) { done = true; clearTimeout(timer); resolve(local); }
+      } catch (e) { finish({ ok: false }); }
     });
   },
+  // Какое из двух сохранений новее: сначала по номеру версии, потом по времени
+  newer(a, b) {
+    if ((a.rev || 0) !== (b.rev || 0)) return (a.rev || 0) > (b.rev || 0) ? a : b;
+    return (a.lastSeen || 0) >= (b.lastSeen || 0) ? a : b;
+  },
+  async load() {
+    const local = this.readLocal();
+    if (!this.cloud) return local;
+    const r = await this.readCloud();
+    if (!r.ok) {                       // облако молчит: играем с локальным, в облако не пишем
+      this.baseSeen = (local && local.lastSeen) || 0;
+      this.rev = (local && local.rev) || 0;
+      return local;
+    }
+    this.everRead = this.writable = true;
+    const best = r.save && local ? this.newer(r.save, local) : (r.save || local);
+    this.rev = Math.max((r.save && r.save.rev) || 0, (local && local.rev) || 0);
+    return best;
+  },
+  /* Сверка с облаком. Возвращает сохранение, которое нужно подхватить, или null. */
+  sync() {
+    if (!this.cloud) return Promise.resolve(null);
+    if (this.syncing) return this.syncing;
+    this.syncing = this.readCloud().then(r => {
+      this.syncing = null;
+      if (!r.ok) return null;
+      const c = r.save;
+      let adopt = null;
+      if (c && c.sid !== SID) {
+        if (!this.everRead) {
+          // первое успешное чтение после того, как облако не ответило на старте
+          if ((c.rev || 0) > this.rev || (c.lastSeen || 0) > this.baseSeen) adopt = c;
+        } else if ((c.rev || 0) > this.rev) {
+          adopt = c;                   // другое устройство записало более новую версию
+        }
+      }
+      this.everRead = this.writable = true;
+      this.rev = Math.max(this.rev, (c && c.rev) || 0);
+      return adopt;
+    });
+    return this.syncing;
+  },
   save(state) {
+    const toCloud = this.cloud && this.writable;
+    if (toCloud) state.rev = ++this.rev;
+    state.sid = SID;
     const str = JSON.stringify(state);
     try { localStorage.setItem(SAVE_KEY, str); } catch (e) {}
-    if (!this.cloud) return;
+    if (!toCloud) return;
     // Сверх лимита облако запись не примет — локальная копия всё равно сохранена
     if (str.length > CLOUD_LIMIT) { console.warn('Save is ' + str.length + ' chars, over the CloudStorage limit'); return; }
     try { tg.CloudStorage.setItem(SAVE_KEY, str, err => { if (err) console.warn('CloudStorage:', err); }); } catch (e) {}
@@ -1627,17 +1695,32 @@ function migrate(raw) {
   s.depts = Object.assign({}, raw.depts || {});
   s.upgrades = Array.isArray(raw.upgrades) ? raw.upgrades.filter(id => UPG_BY_ID[id]) : [];
   s.flags = Object.assign({}, raw.flags || {});
-  for (const k of ['docs','stamps','runEarned','stampsEarnedRun','allTimeEarned','seniority','restructures'])
-    if (!isFinite(s[k]) || s[k] < 0) s[k] = 0;
+  // Числа приводим в порядок: мусор, отрицательные значения и строки превращаются в 0,
+  // чтобы испорченное сохранение не сломало расчёты (NaN) навсегда
+  for (const k of ['docs','stamps','runEarned','stampsEarnedRun','allTimeEarned','seniority','restructures','merits','rev','lastSeen'])
+    s[k] = cleanNum(s[k]);
+  for (const id of Object.keys(s.depts)) {
+    if (DEPT_BY_ID[id]) s.depts[id] = Math.floor(cleanNum(s.depts[id])); else delete s.depts[id];
+  }
+  s.upgrades = [...new Set(s.upgrades)];
   // v1.3: грамоты появились позже выслуги — выдаём задним числом
   if (raw.merits == null) s.merits = s.seniority;
-  s.perks = Object.assign({}, raw.perks || {});
-  s.achievements = Array.isArray(raw.achievements) ? raw.achievements.slice() : [];
+  s.perks = {};
+  for (const [id, lvl] of Object.entries(raw.perks || {})) {
+    const p = PERK_BY_ID[id];
+    if (p) s.perks[id] = Math.min(Math.floor(cleanNum(lvl)), p.costs.length);
+  }
+  s.achievements = Array.isArray(raw.achievements) ? [...new Set(raw.achievements)].filter(id => ACHIEVEMENTS.some(a => a.id === id)) : [];
+  if (![1, 10, 'max'].includes(s.buyMode)) s.buyMode = 1;
   // v1.5: отметки canR_0, canR_1… (по одной на реорганизацию) заменены одним числом restrNotified
   if (s.flags['canR_' + s.restructures]) s.flags.restrNotified = s.restructures;
   for (const k of Object.keys(s.flags)) if (k.indexOf('canR_') === 0) delete s.flags[k];
-  return ensureSettings(s);
+  ensureSettings(s);
+  for (const k of Object.keys(DEFAULT_STATS)) s.stats[k] = cleanNum(s.stats[k]);
+  return s;
 }
+// Неотрицательное конечное число или 0
+function cleanNum(v) { v = Number(v); return isFinite(v) && v > 0 ? v : 0; }
 
 /* =====================================================================
    ЗВУКОВОЙ ДВИЖОК
@@ -2543,11 +2626,43 @@ if ('IntersectionObserver' in window) {
     miniOn = !en.isIntersecting;
     document.body.classList.toggle('mini-on', miniOn);
     $('mini').setAttribute('aria-hidden', String(!miniOn));
+    $('mini').inert = !miniOn;   // скрытые кнопки не ловят Tab и клики
   }, { threshold: 0 }).observe($('docs'));
 }
 
 /* ---------- Сохранение ---------- */
 function save() { if (!S) return; S.lastSeen = Date.now(); Store.save(S); }
+
+// Автосохранение: сначала сверяемся с облаком, потом пишем
+async function persist() {
+  if (!S) return;
+  const firstRead = Store.cloud && !Store.everRead;   // облако не ответило на старте и отвечает только сейчас
+  const remote = await Store.sync();
+  if (remote) adoptSave(remote, firstRead ? t('tCloudRestored') : t('tSynced'));
+  save();
+}
+
+// Подхватить сохранение из облака (с другого устройства или после медленного старта).
+// Настройки этого устройства (язык, звук…) остаются свои.
+function adoptSave(raw, message) {
+  const next = migrate(raw);
+  if (!next) return;
+  next.settings = Object.assign({}, S.settings);
+  S = next;
+  if (modalKind) closeModal();
+  activeTab = 'depts';
+  applySettings();
+  const away = (Date.now() - (S.lastSeen || Date.now())) / 1000;
+  if (away >= CONFIG.offline.minAwaySec) applyAway(away);
+  else if (away > 0) advance(S, away, 1);
+  checkUnlocks(true);
+  lastTick = Date.now();
+  S.lastSeen = lastTick;
+  shown.docs = shown.stamps = null;   // счётчик в шапке — сразу к новому значению
+  syncBuyMode();
+  render();
+  toast(message);
+}
 
 /* ---------- Игровой цикл ---------- */
 function tick() {
@@ -2572,6 +2687,8 @@ document.addEventListener('visibilitychange', () => {
   } else {
     if (Sound.ctx && Sound.ctx.state === 'suspended') Sound.ctx.resume().then(() => Sound.syncAmbience(), () => {});
     tick();
+    // пока мы были в фоне, могли поиграть на другом устройстве: до сверки в облако не пишем
+    if (Store.cloud) { Store.writable = false; persist(); }
   }
 });
 window.addEventListener('pagehide', save);
@@ -2586,6 +2703,7 @@ function rotateMemo() {
 
 /* ---------- Старт ---------- */
 (async function start() {
+  if (Store.cloud) { LANG = detectLang(); $('memo').textContent = t('loadingCloud'); }
   const saved = migrate(await Store.load());
   if (saved) {
     S = saved;
@@ -2609,7 +2727,7 @@ function rotateMemo() {
   if (Fullscreen.inTg && S.settings.fullscreen) Fullscreen.set(true);
   setInterval(tick, CONFIG.tickMs);
   requestAnimationFrame(frame);
-  setInterval(save, CONFIG.saveIntervalMs);
+  setInterval(persist, CONFIG.saveIntervalMs);
   setInterval(rotateMemo, 15000);
 })();
 </script>
