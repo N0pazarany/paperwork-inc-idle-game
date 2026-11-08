@@ -58,6 +58,17 @@ html.no-tg{
     --folder:#383226; --tab-idle:#272824; --edge:rgba(0,0,0,.35);
   }
 }
+/* Тема, выбранная в настройках, важнее и Telegram, и системы */
+html.theme-light{
+  --bg:#d9ded3; --card:#fbfaf6; --text:#1e2226; --hint:#676d64;
+  --accent:#2c4a8a; --accent-text:#fff; --link:#2c4a8a; --ink:#b5312a;
+  --folder:#e9d7a6; --tab-idle:#d6d2b8; --edge:rgba(80,60,10,.14);
+}
+html.theme-dark{
+  --bg:#181b19; --card:#25282b; --text:#e8e6df; --hint:#8c9189;
+  --accent:#5b7fcf; --accent-text:#fff; --link:#8eabea; --ink:#e2574c;
+  --folder:#383226; --tab-idle:#272824; --edge:rgba(0,0,0,.35);
+}
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 [hidden]{display:none!important}
@@ -75,6 +86,11 @@ body{
   position:fixed; inset:0; overflow-y:auto; overflow-x:hidden;
   -webkit-overflow-scrolling:touch; overscroll-behavior:contain; scrollbar-width:thin;
 }
+/* Скроллбары в цвет темы, а не белые */
+.scroller,.sheet{scrollbar-color:var(--line-strong) transparent}
+.scroller::-webkit-scrollbar,.sheet::-webkit-scrollbar{width:8px}
+.scroller::-webkit-scrollbar-thumb,.sheet::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:4px}
+.scroller::-webkit-scrollbar-track,.sheet::-webkit-scrollbar-track{background:transparent}
 button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible{outline:2px solid var(--link);outline-offset:2px}
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
@@ -220,6 +236,7 @@ details.filed{margin:4px 0 8px}
 details.filed summary{font-size:13px;font-weight:600;color:var(--hint);padding:8px 4px;cursor:pointer}
 .filed-row{font-size:13.5px;padding:7px 4px;border-bottom:1px dashed var(--line)}
 .filed-row .mono{font-size:11.5px;color:var(--link)}
+.filed-row .mono.lvl{color:var(--hint)}
 
 /* Реорганизация */
 .kv{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:13.5px}
@@ -301,6 +318,7 @@ input.vol:disabled{opacity:.4}
 
 /* ---------- Директива дня и кнопка входящих ---------- */
 :root{ --good:#2f8a55; }
+html.scheme-dark{ --good:#4fb57a; }
 .desk{margin:12px 0 2px;display:flex;flex-direction:column;gap:6px}
 .directive{background:var(--card);border-radius:6px;padding:10px 12px 10px 14px;box-shadow:0 1px 0 var(--edge),0 0 0 1px var(--edge)}
 .directive .dh{font-size:12.5px;color:var(--hint);display:flex;justify-content:space-between;gap:8px}
@@ -458,6 +476,7 @@ input.vol:disabled{opacity:.4}
       <div class="c-desc" data-i18n="shopHint"></div>
     </div>
     <div id="perkList"></div>
+    <div id="perkFiled"></div>
     <div class="section-title" data-i18n="recordsTitle"></div>
     <div class="card">
       <div class="kv"><span data-i18n="rCountL"></span><b id="rCount">0</b></div>
@@ -499,7 +518,7 @@ input.vol:disabled{opacity:.4}
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.9',              // версия игры (показывается в настройках)
+  version: '1.10',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   itchUrl: 'https://adomant.itch.io/paperwork-inc',   // страница на itch.io — появится в настройках
   achievementBonus: 0.01,
@@ -822,6 +841,7 @@ function freshState(prev) {
     lastSeen: now,
     merits: prev ? (prev.merits || 0) : 0,                                     // почётные грамоты — валюта льгот
     perks: prev && prev.perks ? Object.assign({}, prev.perks) : {},            // купленные льготы (уровни)
+    perksOrder: prev && prev.perksOrder ? prev.perksOrder.slice() : [],       // порядок оформления (последняя — в конце)
     achievements: prev && prev.achievements ? prev.achievements.slice() : [],  // полученные достижения
     settings: prev && prev.settings ? Object.assign({}, prev.settings) : null, // настройки переживают реорганизацию
     stats: prev && prev.stats ? Object.assign({}, prev.stats) : null,          // как и личное дело
@@ -997,6 +1017,7 @@ function buyPerk(s, id) {
   s.merits -= cost;
   s.perks = s.perks || {};
   s.perks[id] = perkLevel(s, id) + 1;
+  s.perksOrder = (s.perksOrder || []).filter(x => x !== id).concat(id);
   if (p.effect.type === 'startUpgrade' && !hasUpg(s, p.effect.upgrade)) s.upgrades.push(p.effect.upgrade);
   return true;
 }
@@ -1100,6 +1121,9 @@ const I18N = {
       haptics: 'Vibration', hapticsHint: 'Works in Telegram only',
       secDisplay: 'Display', memos: 'Office memos', animations: 'Stamp animations',
       fullscreen: 'Full screen', tFsFail: '⚠️ Full screen is not available here',
+      theme: 'Theme', themeAuto: 'Auto', themeLight: 'Light', themeDark: 'Dark',
+      themeHintTg: 'Auto follows your Telegram theme', themeHintSys: 'Auto follows your system theme',
+      perksFiled: 'Granted benefits ({n})',
       // директива и входящие
       dirTitle: 'Directive for {date}', dirForm: 'Form 1-D', chipToday: '{m} today',
       inboxFull: 'Documents on your desk', inboxGo: 'Review', inboxEmpty: 'Your desk is clear', inboxEta: 'next ≈ {t}',
@@ -1202,6 +1226,21 @@ const I18N = {
         "A clerk sneezed on a form. The form was ruled legally binding.",
         "The Board met to discuss the agenda for the meeting about the agenda.",
         "IT asked everyone to turn it off and on again. The Board has not come back on.",
+        "The night shift approved the day shift's approvals. The day shift has filed an objection.",
+        "A department requested more paper to print a request for more paper.",
+        "The water cooler was nominated for Employee of the Month. It declined, citing a conflict of interest.",
+        "Procurement ordered a filing cabinet for the filing cabinets.",
+        "Someone left a pen on the photocopier. It has been copied, approved and archived.",
+        "The meeting about your absence was postponed until you returned. Then it was postponed again.",
+        "Accounting balanced the books. They fell over shortly afterwards.",
+        "An intern discovered a shortcut. It was immediately reported to Compliance.",
+        "The out-of-office replies have started replying to each other.",
+        "A memo announcing the end of memos was circulated, reviewed and approved in triplicate.",
+        "The archive cat was appointed Head of Mice. Productivity is up 11%.",
+        "Two committees met by accident in the corridor and formed a third.",
+        "Someone asked what the company actually produces. The question has been minuted.",
+        "The fax machine received a fax from itself. Nobody is sure what it said.",
+        "The quarterly targets were exceeded. New targets were set to make sure it does not happen again.",
       ],
       dirPlus: ['works with redoubled zeal', 'received a new stapler', 'the manager is on holiday', 'found a box of pens that work', 'the coffee machine has been repaired'],
       dirMinus: ['closed for stocktaking', 'away at a mandatory team-building day', 'lost its only stapler', 'the printer has jammed again', 'stuck in a meeting about meetings'],
@@ -1233,6 +1272,16 @@ const I18N = {
         "MEMO: All memos are now to be printed, signed, scanned and printed again.",
         "KITCHEN: The microwave is not a filing cabinet. Again.",
         "BULLETIN: Floor 2 is now open-plan. Floor 2 has requested walls.",
+        "NOTICE: Please do not feed the auditors.",
+        "HR: Smiling in the corridors is permitted between 10:00 and 10:15.",
+        "IT: Have you tried filing a ticket about filing tickets?",
+        "FACILITIES: The emergency exit is for emergencies. Please submit Form 9-E to define an emergency.",
+        "MEMO: The staple shortage is over. Please return the paperclips you used instead.",
+        "LEGAL: This memo is confidential. Please share it with everyone.",
+        "ACCOUNTING: Expense reports must now include a report on the expense of the report.",
+        "BULLETIN: The new org chart is available on request, on paper, in triplicate.",
+        "KITCHEN: The fridge will be cleared on Friday. Everything in it will be filed.",
+        "REMINDER: The suggestion box is not a place for suggestions about the suggestion box.",
       ],
     },
     hb: {
@@ -1385,6 +1434,9 @@ const I18N = {
       haptics: 'Вибрация', hapticsHint: 'Работает только в Telegram',
       secDisplay: 'Отображение', memos: 'Служебные записки', animations: 'Анимации печатей',
       fullscreen: 'Полный экран', tFsFail: '⚠️ Полноэкранный режим здесь недоступен',
+      theme: 'Тема', themeAuto: 'Авто', themeLight: 'Светлая', themeDark: 'Тёмная',
+      themeHintTg: 'Авто — как в Telegram', themeHintSys: 'Авто — как в системе',
+      perksFiled: 'Оформленные льготы ({n})',
       dirTitle: 'Директива на {date}', dirForm: 'Форма 1-Д', chipToday: '{m} сегодня',
       inboxFull: 'На столе документы', inboxGo: 'Разобрать', inboxEmpty: 'Стол пуст', inboxEta: 'следующий ≈ {t}',
       ibForm: 'Форма 0-3 · Входящая корреспонденция', ibTitle: 'Входящие', ibOnDesk: 'на столе: {n}',
@@ -1482,6 +1534,21 @@ const I18N = {
         "Клерк чихнул на бланк. Бланк признан имеющим юридическую силу.",
         "Правление собралось, чтобы обсудить повестку совещания о повестке.",
         "ИТ-отдел попросил всех выключить и включить снова. Правление пока не включилось.",
+        "Ночная смена одобрила одобрения дневной смены. Дневная смена подала возражение.",
+        "Отдел запросил бумагу, чтобы распечатать заявку на бумагу.",
+        "Кулер выдвинули на звание «Сотрудник месяца». Он отказался, сославшись на конфликт интересов.",
+        "Отдел закупок заказал картотеку для картотек.",
+        "Кто-то забыл ручку на ксероксе. Её скопировали, одобрили и сдали в архив.",
+        "Совещание о вашем отсутствии перенесли до вашего возвращения. А потом перенесли ещё раз.",
+        "Бухгалтерия свела баланс. Вскоре он упал.",
+        "Стажёр нашёл способ сделать всё быстрее. О нём немедленно доложили в отдел соответствия.",
+        "Автоответы «Нахожусь вне офиса» начали отвечать друг другу.",
+        "Записку об отмене служебных записок разослали, рассмотрели и утвердили в трёх экземплярах.",
+        "Архивного кота назначили начальником по мышам. Производительность выросла на 11%.",
+        "Два комитета случайно встретились в коридоре и образовали третий.",
+        "Кто-то спросил, что вообще производит компания. Вопрос занесён в протокол.",
+        "Факс получил факс от самого себя. Никто не уверен, что там было написано.",
+        "Квартальные цели перевыполнены. Установлены новые цели, чтобы такое больше не повторилось.",
       ],
       dirPlus: ['работает с удвоенным рвением', 'получил новый степлер', 'начальник в отпуске', 'нашёл коробку пишущих ручек', 'починили кофемашину'],
       dirMinus: ['закрыт на инвентаризацию', 'на обязательном тимбилдинге', 'потерял единственный степлер', 'снова зажевало принтер', 'застрял на совещании о совещаниях'],
@@ -1513,6 +1580,16 @@ const I18N = {
         "СЛУЖЕБНАЯ ЗАПИСКА: Все записки теперь печатать, подписывать, сканировать и печатать снова.",
         "КУХНЯ: Микроволновка — не картотека. Снова.",
         "БЮЛЛЕТЕНЬ: 2-й этаж переведён в опенспейс. 2-й этаж просит стены.",
+        "ОБЪЯВЛЕНИЕ: Просьба не кормить аудиторов.",
+        "ОТДЕЛ КАДРОВ: Улыбаться в коридорах разрешено с 10:00 до 10:15.",
+        "ИТ-ОТДЕЛ: Вы пробовали подать заявку о подаче заявок?",
+        "ХОЗЧАСТЬ: Запасный выход — для чрезвычайных ситуаций. Определение ЧС подаётся по форме 9-Е.",
+        "СЛУЖЕБНАЯ ЗАПИСКА: Дефицит скоб от степлера закончен. Просьба вернуть скрепки, которыми вы их заменяли.",
+        "ЮРИСТЫ: Эта записка конфиденциальна. Просьба переслать её всем.",
+        "БУХГАЛТЕРИЯ: К авансовым отчётам теперь прилагается отчёт о расходах на отчёт.",
+        "БЮЛЛЕТЕНЬ: Новая оргструктура предоставляется по запросу, на бумаге, в трёх экземплярах.",
+        "КУХНЯ: В пятницу холодильник будет очищен. Всё содержимое будет подшито.",
+        "НАПОМИНАНИЕ: Ящик для предложений — не место для предложений о ящике для предложений.",
       ],
     },
     depts: {
@@ -1668,6 +1745,7 @@ const DEFAULT_SETTINGS = {
   numFormat: 'short',    // 'short' = 1.2M, 'sci' = 1.20e6
   fullscreen: false,     // полный экран (в Telegram включается сам при следующем запуске)
   awayReport: 'always',  // окно возвращения: 'always' | 'long' (от 30 мин) | 'never'
+  theme: 'auto',         // 'auto' — как в Telegram или системе, 'light', 'dark'
 };
 const DEFAULT_STATS = { signs: 0, playSec: 0, bought: 0, maxAway: 0, inboxOk: 0, inboxBad: 0, bestStreak: 0 };
 
@@ -1888,6 +1966,7 @@ function migrate(raw) {
   // v1.3: грамоты появились позже выслуги — выдаём задним числом
   if (raw.merits == null) s.merits = s.seniority;
   s.perks = {};
+  s.perksOrder = Array.isArray(raw.perksOrder) ? [...new Set(raw.perksOrder)].filter(id => PERK_BY_ID[id]) : [];
   for (const [id, lvl] of Object.entries(raw.perks || {})) {
     const p = PERK_BY_ID[id];
     if (p) s.perks[id] = Math.min(Math.floor(cleanNum(lvl)), p.costs.length);
@@ -2077,7 +2156,7 @@ const $ = id => document.getElementById(id);
 let S = null;                 // текущее состояние
 let activeTab = 'depts';
 let lastTick = Date.now();
-let deptKey = '', upgKey = '', filedKey = '', perkKey = '', filedOpen = false;
+let deptKey = '', upgKey = '', filedKey = '', perkKey = '', filedOpen = false, perkFiledKey = '', perkFiledOpen = false;
 let autoTimer = 0;
 let modalKind = null;         // null | 'modal' | 'settings'
 
@@ -2110,11 +2189,12 @@ function applySettings() {
   const langChanged = LANG !== st.lang;
   LANG = st.lang; NUMFMT = st.numFormat;
   document.documentElement.classList.toggle('no-anim', !st.animations);
+  applyTheme();
   $('memo').hidden = !st.memos;
   if (langChanged) $('memo').textContent = pick(tlist('memos'));
   applyStaticTexts();
   if (S) syncBuyMode();
-  deptKey = upgKey = filedKey = perkKey = deskKey = '';   // пересобрать карточки на новом языке
+  deptKey = upgKey = filedKey = perkKey = deskKey = perkFiledKey = '';   // пересобрать карточки на новом языке
   Sound.setVolume();
   if (st.sound && Sound.gestured) Sound.unlock(); else Sound.syncAmbience();
   render();
@@ -2168,6 +2248,7 @@ function showSettings() {
     ${row(t('haptics'), sw('haptics'), IN_TG ? '' : t('hapticsHint'))}
     <div class="set-sec">${t('secDisplay')}</div>
     ${row(t('memos'), sw('memos'))}
+    ${row(t('theme'), seg('theme', [['auto', t('themeAuto')], ['light', t('themeLight')], ['dark', t('themeDark')]]), IN_TG ? t('themeHintTg') : t('themeHintSys'))}
     ${row(t('animations'), sw('animations'))}
     ${Fullscreen.available() ? row(t('fullscreen'), `<button class="switch ${Fullscreen.active() ? 'on' : ''}" data-set-act="fullscreen" aria-pressed="${Fullscreen.active()}"></button>`) : ''}
     ${row(t('numFormat'), seg('numFormat', [['short', '1.2M'], ['sci', '1.20e6']]))}
@@ -2244,6 +2325,31 @@ const Fullscreen = {
   failed() { if (S) S.settings.fullscreen = false; toast(t('tFsFail')); this.changed(); },
   changed() { if (modalKind === 'settings') showSettings(); },   // обновить переключатель
 };
+/* ---------- Тема ----------
+   'auto': в Telegram — тема Telegram, в браузере — системная.
+   'light' / 'dark': собственные «бумажные» палитры игры. */
+function colorScheme() {
+  const th = S ? S.settings.theme : 'auto';
+  if (th === 'light' || th === 'dark') return th;
+  if (IN_TG) return tg.colorScheme === 'dark' ? 'dark' : 'light';
+  return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+function applyTheme() {
+  const html = document.documentElement, th = S ? S.settings.theme : 'auto', scheme = colorScheme();
+  html.classList.toggle('theme-light', th === 'light');
+  html.classList.toggle('theme-dark', th === 'dark');
+  html.classList.toggle('scheme-dark', scheme === 'dark');
+  html.style.colorScheme = scheme;   // браузер красит скроллбары и поля ввода под схему
+  // В Telegram шапку и фон окна красим под выбранную тему (в «Авто» — цвета самого Telegram)
+  if (IN_TG && tgv('6.1')) {
+    const bg = th === 'auto' ? 'bg_color' : getComputedStyle(html).getPropertyValue('--bg').trim();
+    try { tg.setBackgroundColor(bg); } catch (e) {}
+    try { tg.setHeaderColor(th === 'auto' || !tgv('6.9') ? 'bg_color' : bg); } catch (e) {}
+  }
+}
+if (IN_TG) { try { tg.onEvent('themeChanged', applyTheme); } catch (e) {} }
+if (window.matchMedia) { try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme); } catch (e) {} }
+
 if (Fullscreen.inTg) {
   tg.onEvent('fullscreenChanged', () => Fullscreen.changed());
   tg.onEvent('fullscreenFailed', e => { if (!e || e.error !== 'ALREADY_FULLSCREEN') Fullscreen.failed(); });
@@ -2435,7 +2541,7 @@ function renderUpgrades(avail, rate, sRate) {
   const fk = S.upgrades.join(',');
   if (fk !== filedKey) {
     filedKey = fk;
-    const bought = S.upgrades.map(id => UPG_BY_ID[id]).filter(Boolean);
+    const bought = S.upgrades.map(id => UPG_BY_ID[id]).filter(Boolean).reverse();   // новые сверху
     $('upgFiled').innerHTML = bought.length ? `<details class="filed" ${filedOpen ? 'open' : ''}><summary>${t('filed', { n: bought.length })}</summary>` +
       bought.map(u => `<div class="filed-row">${u.emoji} ${esc(uName(u))}<br><span class="mono">✓ ${esc(effectText(u))}</span></div>`).join('') + '</details>' : '';
     const det = $('upgFiled').querySelector('details');
@@ -2506,6 +2612,19 @@ function renderPerks() {
     setDisabled(f.btn, !ok);
     setText(f.bl, maxed ? '✅ ' + t('maxed') : ok ? t('grant') : t('needMerits'));
     setText(f.bs, maxed ? '' : '📜 ' + cost);
+  }
+  // Оформленные льготы — список как у купленных улучшений, последние сверху
+  const order = (S.perksOrder || []).filter(id => perkLevel(S, id) > 0);
+  PERKS.forEach(p => { if (perkLevel(S, p.id) > 0 && !order.includes(p.id)) order.unshift(p.id); });   // старые сохранения без порядка
+  const granted = order.slice().reverse().map(id => PERK_BY_ID[id]);
+  const fk = LANG + '|' + granted.map(p => p.id + perkLevel(S, p.id)).join(',');
+  if (fk !== perkFiledKey) {
+    perkFiledKey = fk;
+    $('perkFiled').innerHTML = granted.length ? `<details class="filed" ${perkFiledOpen ? 'open' : ''}><summary>${t('perksFiled', { n: granted.length })}</summary>` +
+      granted.map(p => { const L = perkLevel(S, p.id);
+        return `<div class="filed-row">${p.emoji} ${esc(pText(p).name)} <span class="mono lvl">${t('level', { l: L, max: p.costs.length })}</span><br><span class="mono">✓ ${esc(perkEffect(p, L))}</span></div>`; }).join('') + '</details>' : '';
+    const det = $('perkFiled').querySelector('details');
+    if (det) det.addEventListener('toggle', () => { perkFiledOpen = det.open; });
   }
 }
 

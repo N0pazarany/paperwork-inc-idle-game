@@ -49,7 +49,7 @@
 - **Два языка:** английский и русский. При первом запуске язык выбирается по профилю Telegram, сменить его можно в настройках.
 - **Звуки:** синтезируются прямо в браузере, без файлов. Удар печати, звонок, кассовый аппарат, шредер; по желанию — тихий фоновый гул офиса.
 - **Удержание кнопки покупки:** держите кнопку отдела, и он будет покупаться подряд, пока хватает документов.
-- **Настройки ⚙️:** язык, звук и громкость, шум офиса, вибрация, служебные записки, анимации, полный экран, формат чисел, окно возвращения, экспорт и импорт сохранения, личное дело со статистикой, полный сброс.
+- **Настройки ⚙️:** язык, звук и громкость, шум офиса, вибрация, служебные записки, тема (авто, светлая, тёмная), анимации, полный экран, формат чисел, окно возвращения, экспорт и импорт сохранения, личное дело со статистикой, полный сброс.
 
 ---
 
@@ -92,7 +92,7 @@ python3 -m http.server 8000
 Вне Telegram игра работает так же, только:
 - сохранение идёт в `localStorage` вместо CloudStorage;
 - виброотклика нет;
-- цвета берутся из встроенной «бумажной» палитры, светлой или тёмной по настройкам системы.
+- цвета берутся из встроенной «бумажной» палитры, светлой или тёмной по настройкам системы (тему можно выбрать и вручную).
 
 ### Читы для теста
 
@@ -200,7 +200,7 @@ It's an idle game, not a clicker. Income accrues on its own, even while the game
 - **Two languages:** English and Russian. Picked from the Telegram profile on first launch, switchable in settings.
 - **Sound:** synthesized in the browser, no audio files. Stamp thud, desk bell, cash register, shredder, and an optional quiet office hum.
 - **Hold to buy:** hold a department's buy button to keep buying while you can afford it.
-- **Settings ⚙️:** language, sound and volume, office ambience, vibration, memos, animations, full screen, number format, absence report, save export/import, personnel file with stats, hard reset.
+- **Settings ⚙️:** language, sound and volume, office ambience, vibration, memos, theme (auto, light, dark), animations, full screen, number format, absence report, save export/import, personnel file with stats, hard reset.
 
 ## Deployment
 
@@ -239,7 +239,7 @@ python3 -m http.server 8000
 Outside Telegram the game works the same, except:
 - saves go to `localStorage` instead of CloudStorage;
 - there is no haptic feedback;
-- colors come from the built-in paper palette, light or dark depending on system settings.
+- colors come from the built-in paper palette, light or dark depending on system settings (or picked manually in settings).
 
 ### Test cheats
 
