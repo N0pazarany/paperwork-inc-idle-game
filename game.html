@@ -61,12 +61,19 @@ html.no-tg{
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 [hidden]{display:none!important}
-html,body{margin:0;padding:0}
+/* Прокручивается не сама страница, а контейнер .scroller внутри неё.
+   Так игра листается везде: и в Telegram, и во встроенной рамке itch.io,
+   даже если рамке запрещена прокрутка (scrolling="no"). */
+html,body{margin:0;padding:0;height:100%;overflow:hidden}
 body{
   background:var(--bg); color:var(--text);
   font:400 15px/1.45 var(--sans);
-  min-height:100vh; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none;
-  overscroll-behavior:none; -webkit-font-smoothing:antialiased;
+  -webkit-user-select:none; user-select:none; -webkit-touch-callout:none;
+  -webkit-font-smoothing:antialiased;
+}
+.scroller{
+  position:fixed; inset:0; overflow-y:auto; overflow-x:hidden;
+  -webkit-overflow-scrolling:touch; overscroll-behavior:contain; scrollbar-width:thin;
 }
 button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible{outline:2px solid var(--link);outline-offset:2px}
@@ -325,6 +332,7 @@ input.vol:disabled{opacity:.4}
 </style>
 </head>
 <body>
+<main class="scroller" id="scroller">
 <div class="wrap">
 
   <!-- Шапка: главные цифры -->
@@ -401,6 +409,7 @@ input.vol:disabled{opacity:.4}
     </div>
   </section>
 </div>
+</main>
 
 <!-- Мини-баланс: виден, когда шапка уехала вверх -->
 <div class="mini" id="mini" aria-hidden="true">
@@ -432,7 +441,7 @@ input.vol:disabled{opacity:.4}
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.7',              // версия игры (показывается в настройках)
+  version: '1.7.1',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   itchUrl: 'https://adomant.itch.io/paperwork-inc',   // страница на itch.io — появится в настройках
   achievementBonus: 0.01,      // +1% ко всему доходу за каждое достижение
@@ -2443,7 +2452,7 @@ document.addEventListener('click', e => {
     case 'sign': onSign(tEl); break;
     case 'buyDept': if (hold.fired) { hold.fired = false; break; } onBuyDept(id); break;
     case 'buyUpg': onBuyUpg(id); break;
-    case 'tab': if (activeTab !== id) Sound.play('tab'); activeTab = id; window.scrollTo({ top: 0 }); render(); break;
+    case 'tab': if (activeTab !== id) Sound.play('tab'); activeTab = id; $('scroller').scrollTo({ top: 0 }); render(); break;
     case 'mode': S.buyMode = id === 'max' ? 'max' : +id; syncBuyMode(); haptic.light(); Sound.play('click'); render(); break;
     case 'restructure': onRestructure(); break;
     case 'settings': Sound.play('click'); showSettings(); break;
