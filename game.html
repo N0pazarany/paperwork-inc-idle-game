@@ -34,6 +34,9 @@
   --sans: "Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   --mono: "Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --mini-h: 50px;
+  /* в полноэкранном режиме Telegram кладёт свои кнопки поверх страницы — отступаем от них.
+     Переменные выставляет telegram-web-app.js; вне полноэкранного режима они равны 0 */
+  --safe-top: calc(var(--tg-safe-area-inset-top, 0px) + var(--tg-content-safe-area-inset-top, 0px));
 }
 @supports (color: color-mix(in srgb, red, blue)) {
   :root{
@@ -69,7 +72,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible{outline:2px solid var(--link);outline-offset:2px}
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 .hint{color:var(--hint)}
-.wrap{max-width:520px;margin:0 auto;padding:12px 12px calc(28px + env(safe-area-inset-bottom))}
+.wrap{max-width:520px;margin:0 auto;padding:calc(12px + var(--safe-top)) 12px calc(28px + env(safe-area-inset-bottom))}
 /* Настройка «Анимации печатей: выкл» */
 html.no-anim *, html.no-anim *::before, html.no-anim *::after{animation:none!important;transition:none!important}
 html.no-anim .stamp-anim, html.no-anim .float-num{display:none}
@@ -112,7 +115,7 @@ html.no-anim .stamp-anim, html.no-anim .float-num{display:none}
 
 /* ---------- Мини-баланс: появляется сверху, когда шапка ушла за экран ---------- */
 .mini{
-  position:fixed; top:0; left:0; right:0; z-index:15; height:var(--mini-h);
+  position:fixed; top:0; left:0; right:0; z-index:15; height:calc(var(--mini-h) + var(--safe-top)); padding-top:var(--safe-top);
   background:var(--bg); transform:translateY(-102%); transition:transform .18s ease-out;
 }
 .mini-in{max-width:520px;height:100%;margin:0 auto;padding:0 12px 0 16px;display:flex;align-items:center;gap:10px}
@@ -128,11 +131,11 @@ body.mini-on .mini{transform:none}
 
 /* ---------- Папка: вкладки + содержимое — одно целое ---------- */
 .tabs{
-  position:sticky; top:0; z-index:5; display:flex; gap:4px; padding-top:8px; margin-top:8px;
+  position:sticky; top:var(--safe-top); z-index:5; display:flex; gap:4px; padding-top:8px; margin-top:8px;
   background:var(--bg); transition:top .18s ease-out;
   box-shadow:0 8px 0 var(--folder);            /* полоса папки под вкладками: карточки уезжают под неё */
 }
-body.mini-on .tabs{top:var(--mini-h)}
+body.mini-on .tabs{top:calc(var(--mini-h) + var(--safe-top))}
 .tab{
   flex:1 1 auto; min-width:0; border:0; border-radius:10px 10px 0 0;
   background:var(--tab-idle); color:var(--hint); padding:10px 8px 9px;
@@ -429,7 +432,7 @@ input.vol:disabled{opacity:.4}
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.5.1',              // версия игры (показывается в настройках)
+  version: '1.6',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   achievementBonus: 0.01,      // +1% ко всему доходу за каждое достижение
   // Апгрейды «по количеству»: появляются у каждого отдела на 50/100/200 штук
@@ -909,6 +912,7 @@ const I18N = {
       ambience: 'Office ambience', ambienceHint: 'A quiet office hum',
       haptics: 'Vibration', hapticsHint: 'Works in Telegram only',
       secDisplay: 'Display', memos: 'Office memos', animations: 'Stamp animations',
+      fullscreen: 'Full screen', tFsFail: '⚠️ Full screen is not available here',
       numFormat: 'Number format',
       awayReport: 'Absence report', awayAlways: 'Always', awayLong: '30+ min', awayNever: 'Never',
       secRecords: 'Records', export: 'Export', import: 'Import',
@@ -1114,6 +1118,7 @@ const I18N = {
       ambience: 'Шум офиса', ambienceHint: 'Тихий гул офиса',
       haptics: 'Вибрация', hapticsHint: 'Работает только в Telegram',
       secDisplay: 'Отображение', memos: 'Служебные записки', animations: 'Анимации печатей',
+      fullscreen: 'Полный экран', tFsFail: '⚠️ Полноэкранный режим здесь недоступен',
       numFormat: 'Формат чисел',
       awayReport: 'Акт об отсутствии', awayAlways: 'Всегда', awayLong: '30+ мин', awayNever: 'Никогда',
       secRecords: 'Документация', export: 'Экспорт', import: 'Импорт',
@@ -1294,6 +1299,7 @@ const DEFAULT_SETTINGS = {
   memos: true,           // бегущие служебные записки
   animations: true,      // анимации печатей
   numFormat: 'short',    // 'short' = 1.2M, 'sci' = 1.20e6
+  fullscreen: false,     // полный экран (в Telegram включается сам при следующем запуске)
   awayReport: 'always',  // окно возвращения: 'always' | 'long' (от 30 мин) | 'never'
 };
 const DEFAULT_STATS = { signs: 0, playSec: 0, bought: 0, maxAway: 0 };
@@ -1699,6 +1705,7 @@ function showSettings() {
     <div class="set-sec">${t('secDisplay')}</div>
     ${row(t('memos'), sw('memos'))}
     ${row(t('animations'), sw('animations'))}
+    ${Fullscreen.available() ? row(t('fullscreen'), `<button class="switch ${Fullscreen.active() ? 'on' : ''}" data-set-act="fullscreen" aria-pressed="${Fullscreen.active()}"></button>`) : ''}
     ${row(t('numFormat'), seg('numFormat', [['short', '1.2M'], ['sci', '1.20e6']]))}
     ${row(t('awayReport'), seg('awayReport', [['always', t('awayAlways')], ['long', t('awayLong')], ['never', t('awayNever')]]))}
     <div class="set-sec">${t('secRecords')}</div>
@@ -1734,6 +1741,7 @@ $('sheet').addEventListener('click', e => {
       case 'import': showImport(); break;
       case 'reset': onReset(); break;
       case 'repo': e.preventDefault(); openExternal(CONFIG.repoUrl); break;
+      case 'fullscreen': S.settings.fullscreen = !Fullscreen.active(); Fullscreen.set(S.settings.fullscreen); save(); break;
     }
     return;
   }
@@ -1753,6 +1761,30 @@ $('sheet').addEventListener('change', e => {
 });
 
 // Внешняя ссылка: в Telegram открываем во встроенном/внешнем браузере
+/* ---------- Полноэкранный режим ----------
+   В Telegram — requestFullscreen из Bot API 8.0 (на старых клиентах пункта нет),
+   в обычном браузере и на itch.io — стандартный Fullscreen API. */
+const Fullscreen = {
+  inTg: IN_TG && tgv('8.0'),
+  available() { return this.inTg || (!IN_TG && !!document.fullscreenEnabled); },
+  active() { return this.inTg ? !!tg.isFullscreen : !!document.fullscreenElement; },
+  set(on) {
+    if (on === this.active()) return;
+    try {
+      if (this.inTg) { if (on) tg.requestFullscreen(); else tg.exitFullscreen(); }
+      else if (on) document.documentElement.requestFullscreen().catch(() => this.failed());
+      else document.exitFullscreen();
+    } catch (e) { this.failed(); }
+  },
+  failed() { if (S) S.settings.fullscreen = false; toast(t('tFsFail')); this.changed(); },
+  changed() { if (modalKind === 'settings') showSettings(); },   // обновить переключатель
+};
+if (Fullscreen.inTg) {
+  tg.onEvent('fullscreenChanged', () => Fullscreen.changed());
+  tg.onEvent('fullscreenFailed', e => { if (!e || e.error !== 'ALREADY_FULLSCREEN') Fullscreen.failed(); });
+}
+document.addEventListener('fullscreenchange', () => Fullscreen.changed());
+
 function openExternal(url) {
   if (!url) return;
   if (IN_TG && tg.openLink) { try { tg.openLink(url); return; } catch (e) {} }
@@ -2389,6 +2421,7 @@ function rotateMemo() {
   S.lastSeen = lastTick;
   syncBuyMode();
   render();
+  if (Fullscreen.inTg && S.settings.fullscreen) Fullscreen.set(true);
   setInterval(tick, CONFIG.tickMs);
   requestAnimationFrame(frame);
   setInterval(save, CONFIG.saveIntervalMs);
