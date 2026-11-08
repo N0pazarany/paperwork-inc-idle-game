@@ -432,8 +432,9 @@ input.vol:disabled{opacity:.4}
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.6',              // версия игры (показывается в настройках)
+  version: '1.6.1',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
+  itchUrl: 'https://adomant.itch.io/paperwork-inc',   // страница на itch.io — появится в настройках
   achievementBonus: 0.01,      // +1% ко всему доходу за каждое достижение
   // Апгрейды «по количеству»: появляются у каждого отдела на 50/100/200 штук
   // cost = база отдела × 1.15^at × costUnits
@@ -926,7 +927,7 @@ const I18N = {
       copy: 'Copy code', tCopied: '📋 Code copied', tCopyFail: 'Select the code and copy it manually',
       importTitle: 'Import save', importBody: 'Paste a save code below. Current progress will be replaced.',
       importBtn: 'Import', tImported: '✅ Records restored', tImportBad: '⚠️ Code not recognised',
-      sourceCode: 'Source code on GitHub',
+      sourceCode: 'Source code on GitHub', itchPage: 'Page on itch.io',
       // апгрейды по количеству ({dept} — название отдела)
       tier_t50_name: '{dept}: Laminated Procedures',
       tier_t50_desc: 'Every procedure is now laminated, so it can no longer be changed. Work has never been simpler.',
@@ -1132,7 +1133,7 @@ const I18N = {
       copy: 'Скопировать код', tCopied: '📋 Код скопирован', tCopyFail: 'Выделите код и скопируйте вручную',
       importTitle: 'Импорт сохранения', importBody: 'Вставьте код сохранения. Текущий прогресс будет заменён.',
       importBtn: 'Импортировать', tImported: '✅ Записи восстановлены', tImportBad: '⚠️ Код не распознан',
-      sourceCode: 'Исходный код на GitHub',
+      sourceCode: 'Исходный код на GitHub', itchPage: 'Страница на itch.io',
       tier_t50_name: '{dept}: заламинированные регламенты',
       tier_t50_desc: 'Все регламенты заламинированы, и менять их больше нельзя. Работать ещё никогда не было так просто.',
       tier_t100_name: '{dept}: юбилейная табличка',
@@ -1723,7 +1724,7 @@ function showSettings() {
     ${kv(t('restrCount'), S.restructures)}
     <div class="set-sec">${t('secDanger')}</div>
     <div style="margin-top:8px"><button class="btn danger" data-set-act="reset"><span>${t('reset')}</span><span class="sub">🗑️</span></button></div>
-    <div class="credit mono">Paperwork Inc. v${CONFIG.version} · ${t('credit')}${CONFIG.repoUrl ? `<br><a href="#" data-set-act="repo">💻 ${t('sourceCode')}</a>` : ''}</div>
+    <div class="credit mono">Paperwork Inc. v${CONFIG.version} · ${t('credit')}${CONFIG.itchUrl ? `<br><a href="#" data-set-act="itch">🕹️ ${t('itchPage')}</a>` : ''}${CONFIG.repoUrl ? `<br><a href="#" data-set-act="repo">💻 ${t('sourceCode')}</a>` : ''}</div>
     <div class="m-btns"><button class="btn" data-set-act="close">${t('close')}</button></div>`;
   $('overlay').classList.add('show');
   modalKind = 'settings';
@@ -1741,6 +1742,7 @@ $('sheet').addEventListener('click', e => {
       case 'import': showImport(); break;
       case 'reset': onReset(); break;
       case 'repo': e.preventDefault(); openExternal(CONFIG.repoUrl); break;
+      case 'itch': e.preventDefault(); openExternal(CONFIG.itchUrl); break;
       case 'fullscreen': S.settings.fullscreen = !Fullscreen.active(); Fullscreen.set(S.settings.fullscreen); save(); break;
     }
     return;

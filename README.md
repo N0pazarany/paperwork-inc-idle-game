@@ -11,6 +11,7 @@
 🤖 Игра сделана с помощью **Claude Opus 5.5** от Anthropic: код, баланс и тексты.
 
 **▶️ Играть в Telegram:** [@paperwork_inc_bot](https://t.me/paperwork_inc_bot)
+**🕹️ На itch.io:** [adomant.itch.io/paperwork-inc](https://adomant.itch.io/paperwork-inc)
 **🌐 В браузере:** [https://n0pazarany.github.io/paperwork-inc-idle-game/](https://n0pazarany.github.io/paperwork-inc-idle-game/)
 
 ---
@@ -66,6 +67,10 @@
 4. Если нужна кнопка в чате с ботом, настройте её так: `/mybots` → бот → **Bot Settings → Menu Button** → тот же URL.
 
 После каждого пуша в `main` GitHub Pages обновляется сам, перенастраивать бота не нужно.
+
+### 3. itch.io (автоматически)
+
+Workflow `.github/workflows/itch.yml` при каждом изменении `game.html` в `main` загружает игру на itch.io через [butler](https://itch.io/docs/butler/) в канал `html5`. Нужен секрет репозитория `BUTLER_API_KEY` (itch.io → Settings → API keys). Запустить вручную: вкладка **Actions** → **Deploy to itch.io** → **Run workflow**.
 
 ---
 
@@ -157,6 +162,7 @@ The whole game is a single `game.html`: no build step, no frameworks, no images.
 🤖 Made with **Claude Opus 5.5** by Anthropic: code, balancing and writing.
 
 **▶️ Play in Telegram:** [@paperwork_inc_bot](https://t.me/paperwork_inc_bot)
+**🕹️ On itch.io:** [adomant.itch.io/paperwork-inc](https://adomant.itch.io/paperwork-inc)
 **🌐 In a browser:** [https://n0pazarany.github.io/paperwork-inc-idle-game/](https://n0pazarany.github.io/paperwork-inc-idle-game/)
 
 ## How to play
@@ -208,6 +214,10 @@ It's an idle game, not a clicker. Income accrues on its own, even while the game
 4. For a button in the bot chat: `/mybots` → your bot → **Bot Settings → Menu Button** → the same URL.
 
 GitHub Pages redeploys on every push to `main`; the bot needs no changes.
+
+### 3. itch.io (automatic)
+
+The `.github/workflows/itch.yml` workflow uploads the game to itch.io with [butler](https://itch.io/docs/butler/) (channel `html5`) whenever `game.html` changes on `main`. It needs a `BUTLER_API_KEY` repository secret (itch.io → Settings → API keys). To run it by hand: **Actions** → **Deploy to itch.io** → **Run workflow**.
 
 ## Development
 

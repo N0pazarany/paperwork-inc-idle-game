@@ -1,0 +1,40 @@
+# Автоматическая заливка игры на itch.io при каждом изменении game.html в main.
+# Нужен секрет репозитория BUTLER_API_KEY (itch.io → Settings → API keys).
+# Можно запустить и вручную: вкладка Actions → Deploy to itch.io → Run workflow.
+name: Deploy to itch.io
+
+on:
+  push:
+    branches: [main]
+    paths: [game.html]
+  workflow_dispatch:
+
+concurrency:
+  group: itch-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare build
+        run: |
+          mkdir -p build
+          cp game.html build/index.html
+          VERSION=$(grep -oP "version: '\K[0-9.]+" game.html | head -1)
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "Game version: $VERSION"
+
+      - name: Install butler
+        run: |
+          curl -fsSL -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
+          unzip -q butler.zip -d butler-bin
+          chmod +x butler-bin/butler
+          ./butler-bin/butler -V
+
+      - name: Push to itch.io
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+        run: ./butler-bin/butler push build adomant/paperwork-inc:html5 --userversion "$VERSION"
