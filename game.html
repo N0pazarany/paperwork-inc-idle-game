@@ -429,7 +429,7 @@ input.vol:disabled{opacity:.4}
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.5',              // версия игры (показывается в настройках)
+  version: '1.5.1',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   achievementBonus: 0.01,      // +1% ко всему доходу за каждое достижение
   // Апгрейды «по количеству»: появляются у каждого отдела на 50/100/200 штук
@@ -906,7 +906,7 @@ const I18N = {
       settingsTitle: 'Preferences', settingsForm: 'Form 0-S · Personal preferences',
       secGeneral: 'General', language: 'Language',
       secSound: 'Sound & feedback', sound: 'Sound effects', volume: 'Volume',
-      ambience: 'Office ambience', ambienceHint: 'Quiet hum and a ticking clock',
+      ambience: 'Office ambience', ambienceHint: 'A quiet office hum',
       haptics: 'Vibration', hapticsHint: 'Works in Telegram only',
       secDisplay: 'Display', memos: 'Office memos', animations: 'Stamp animations',
       numFormat: 'Number format',
@@ -1111,7 +1111,7 @@ const I18N = {
       settingsTitle: 'Настройки', settingsForm: 'Форма 0-Н · Личные настройки',
       secGeneral: 'Общие', language: 'Язык',
       secSound: 'Звук и отклик', sound: 'Звуковые эффекты', volume: 'Громкость',
-      ambience: 'Шум офиса', ambienceHint: 'Тихий гул и тиканье часов',
+      ambience: 'Шум офиса', ambienceHint: 'Тихий гул офиса',
       haptics: 'Вибрация', hapticsHint: 'Работает только в Telegram',
       secDisplay: 'Отображение', memos: 'Служебные записки', animations: 'Анимации печатей',
       numFormat: 'Формат чисел',
@@ -1509,7 +1509,7 @@ const Sound = {
     s.connect(f); f.connect(g); g.connect(this.master);
     s.start(t, Math.random() * 1.5, dur + 0.1);
   },
-  // Фоновый шум офиса: низкий гул + тиканье часов
+  // Фоновый шум офиса: тихий низкий гул
   syncAmbience() {
     const want = !!(S && S.settings.sound && S.settings.ambience && !document.hidden && this.ctx && this.ctx.state === 'running');
     if (want && !this.amb) {
@@ -1518,15 +1518,9 @@ const Sound = {
       f.type = 'lowpass'; f.frequency.value = 220;
       g.gain.value = 0.05;
       src.connect(f); f.connect(g); g.connect(this.master); src.start();
-      let tick = false;
-      const timer = setInterval(() => {
-        tick = !tick;
-        try { this.tone(c.currentTime + 0.01, { freq: tick ? 2600 : 2200, dur: 0.012, gain: 0.025, attack: 0.001 }); } catch (e) {}
-      }, 1000);
-      this.amb = { src, timer };
+      this.amb = src;
     } else if (!want && this.amb) {
-      try { this.amb.src.stop(); } catch (e) {}
-      clearInterval(this.amb.timer);
+      try { this.amb.stop(); } catch (e) {}
       this.amb = null;
     }
   },
