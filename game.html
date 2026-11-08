@@ -237,6 +237,7 @@ details.filed summary{font-size:13px;font-weight:600;color:var(--hint);padding:8
 .filed-row{font-size:13.5px;padding:7px 4px;border-bottom:1px dashed var(--line)}
 .filed-row .mono{font-size:11.5px;color:var(--link)}
 .filed-row .mono.lvl{color:var(--hint)}
+.filed-row .reg{float:right;margin-left:10px;line-height:1.6}
 
 /* Реорганизация */
 .kv{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:13.5px}
@@ -518,7 +519,7 @@ html.scheme-dark{ --good:#4fb57a; }
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.10',              // версия игры (показывается в настройках)
+  version: '1.10.1',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   itchUrl: 'https://adomant.itch.io/paperwork-inc',   // страница на itch.io — появится в настройках
   achievementBonus: 0.01,
@@ -1123,7 +1124,7 @@ const I18N = {
       fullscreen: 'Full screen', tFsFail: '⚠️ Full screen is not available here',
       theme: 'Theme', themeAuto: 'Auto', themeLight: 'Light', themeDark: 'Dark',
       themeHintTg: 'Auto follows your Telegram theme', themeHintSys: 'Auto follows your system theme',
-      perksFiled: 'Granted benefits ({n})',
+      perksFiled: 'Granted benefits ({n})', regNo: 'Reg. No. {n}',
       // директива и входящие
       dirTitle: 'Directive for {date}', dirForm: 'Form 1-D', chipToday: '{m} today',
       inboxFull: 'Documents on your desk', inboxGo: 'Review', inboxEmpty: 'Your desk is clear', inboxEta: 'next ≈ {t}',
@@ -1436,7 +1437,7 @@ const I18N = {
       fullscreen: 'Полный экран', tFsFail: '⚠️ Полноэкранный режим здесь недоступен',
       theme: 'Тема', themeAuto: 'Авто', themeLight: 'Светлая', themeDark: 'Тёмная',
       themeHintTg: 'Авто — как в Telegram', themeHintSys: 'Авто — как в системе',
-      perksFiled: 'Оформленные льготы ({n})',
+      perksFiled: 'Оформленные льготы ({n})', regNo: 'рег. № {n}',
       dirTitle: 'Директива на {date}', dirForm: 'Форма 1-Д', chipToday: '{m} сегодня',
       inboxFull: 'На столе документы', inboxGo: 'Разобрать', inboxEmpty: 'Стол пуст', inboxEta: 'следующий ≈ {t}',
       ibForm: 'Форма 0-3 · Входящая корреспонденция', ibTitle: 'Входящие', ibOnDesk: 'на столе: {n}',
@@ -2541,9 +2542,10 @@ function renderUpgrades(avail, rate, sRate) {
   const fk = S.upgrades.join(',');
   if (fk !== filedKey) {
     filedKey = fk;
-    const bought = S.upgrades.map(id => UPG_BY_ID[id]).filter(Boolean).reverse();   // новые сверху
+    // Рег. № — порядковый номер покупки в текущем периоде (список и так хранится по порядку). Новые сверху.
+    const bought = S.upgrades.map((id, i) => [UPG_BY_ID[id], i + 1]).filter(x => x[0]).reverse();
     $('upgFiled').innerHTML = bought.length ? `<details class="filed" ${filedOpen ? 'open' : ''}><summary>${t('filed', { n: bought.length })}</summary>` +
-      bought.map(u => `<div class="filed-row">${u.emoji} ${esc(uName(u))}<br><span class="mono">✓ ${esc(effectText(u))}</span></div>`).join('') + '</details>' : '';
+      bought.map(([u, n]) => `<div class="filed-row"><span class="mono lvl reg">${t('regNo', { n })}</span>${u.emoji} ${esc(uName(u))}<br><span class="mono">✓ ${esc(effectText(u))}</span></div>`).join('') + '</details>' : '';
     const det = $('upgFiled').querySelector('details');
     if (det) det.addEventListener('toggle', () => { filedOpen = det.open; });
   }
