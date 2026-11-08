@@ -82,11 +82,14 @@ html.no-anim .stamp-anim, html.no-anim .float-num{display:none}
 .docs-label::first-letter{text-transform:uppercase}
 .icons{display:flex;gap:6px;flex:none}
 .icon-btn{
+  position:relative;
   width:38px; height:38px; border:0; border-radius:10px; padding:0;
   background:var(--chip); color:var(--text); display:grid; place-items:center;
 }
 .icon-btn svg{width:20px;height:20px}
 .icon-btn:active{transform:scale(.94)}
+/* красная точка: в справочнике есть непрочитанный раздел */
+.icon-btn.dot::after{content:"";position:absolute;top:5px;right:5px;width:8px;height:8px;border-radius:50%;background:var(--ink);box-shadow:0 0 0 2px var(--bg)}
 .docs{font:700 46px/1.05 var(--mono);letter-spacing:-.03em;margin-top:2px;font-variant-numeric:tabular-nums}
 .rate{font:500 15px var(--mono);color:var(--link);margin-top:2px}
 .subres{display:flex;gap:4px 16px;flex-wrap:wrap;margin-top:8px;font-size:13.5px}
@@ -286,6 +289,17 @@ input.vol:disabled{opacity:.4}
 .ach.locked .an{color:var(--hint)}
 .ach .ok{margin-left:auto;color:var(--ink);font:700 11px var(--mono);letter-spacing:.06em;border:2px solid var(--ink);border-radius:3px;padding:1px 5px;transform:rotate(-8deg);flex:none}
 
+/* ---------- Справочник ---------- */
+.hb{display:flex;gap:12px;padding:12px 0;border-bottom:1px dashed var(--line)}
+.hb:last-child{border-bottom:0}
+.hb .he{font-size:22px;width:30px;text-align:center;flex:none;line-height:1.2}
+.hb .ht{font-weight:600;font-size:15px;margin-bottom:3px}
+.hb .hx{font-size:14px;line-height:1.5}
+.hb .hx p{margin:0 0 6px}
+.hb.locked .he{filter:grayscale(1);opacity:.4}
+.hb.locked .ht .rbar{background:var(--text);color:transparent;border-radius:2px;padding:0 4px;opacity:.75}
+.hb.locked .hx{color:var(--hint)}
+
 /* ---------- Тост ---------- */
 .toast{
   position:fixed; left:50%; bottom:calc(18px + env(safe-area-inset-bottom)); z-index:30;
@@ -314,7 +328,7 @@ input.vol:disabled{opacity:.4}
   <header class="hdr">
     <div class="hdr-top">
       <span class="docs-label" data-i18n="docsLabel"></span>
-      <span class="icons"><button class="icon-btn" data-act="achievements" aria-label="Achievements"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 6H5a3 3 0 0 0 3 4.5M16 6h3a3 3 0 0 1-3 4.5"/><path d="M12 13v4M9 20h6M10 17h4"/></svg></button><button class="icon-btn" data-act="settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></span>
+      <span class="icons"><button class="icon-btn" data-act="handbook" aria-label="Handbook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/><path d="M10 8.2a2 2 0 1 1 2.6 1.9c-.4.2-.6.5-.6.9v.5M12 13.6v.1"/></svg></button><button class="icon-btn" data-act="achievements" aria-label="Achievements"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 6H5a3 3 0 0 0 3 4.5M16 6h3a3 3 0 0 1-3 4.5"/><path d="M12 13v4M9 20h6M10 17h4"/></svg></button><button class="icon-btn" data-act="settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></span>
     </div>
     <div class="docs" id="docs">0</div>
     <div class="rate" id="rate">+0</div>
@@ -389,7 +403,7 @@ input.vol:disabled{opacity:.4}
 <div class="mini" id="mini" aria-hidden="true">
   <div class="mini-in">
     <div class="mini-num"><span class="mini-docs" id="miniDocs">0</span><span class="mini-rate" id="miniRate"></span></div>
-    <span class="icons"><button class="icon-btn" data-act="achievements" aria-label="Achievements"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 6H5a3 3 0 0 0 3 4.5M16 6h3a3 3 0 0 1-3 4.5"/><path d="M12 13v4M9 20h6M10 17h4"/></svg></button><button class="icon-btn" data-act="settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></span>
+    <span class="icons"><button class="icon-btn" data-act="handbook" aria-label="Handbook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/><path d="M10 8.2a2 2 0 1 1 2.6 1.9c-.4.2-.6.5-.6.9v.5M12 13.6v.1"/></svg></button><button class="icon-btn" data-act="achievements" aria-label="Achievements"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 6H5a3 3 0 0 0 3 4.5M16 6h3a3 3 0 0 1-3 4.5"/><path d="M12 13v4M9 20h6M10 17h4"/></svg></button><button class="icon-btn" data-act="settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></span>
   </div>
 </div>
 
@@ -415,7 +429,7 @@ input.vol:disabled{opacity:.4}
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.4.1',              // версия игры (показывается в настройках)
+  version: '1.5',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   achievementBonus: 0.01,      // +1% ко всему доходу за каждое достижение
   // Апгрейды «по количеству»: появляются у каждого отдела на 50/100/200 штук
@@ -818,7 +832,6 @@ const I18N = {
   en: {
     name: 'English',
     ui: {
-      ledger: 'Form 0-0 · Ledger',
       docsLabel: 'documents approved',
       perSec: '/ sec', perS: '/s',
       stampsWord: 'stamps',
@@ -930,12 +943,17 @@ const I18N = {
       achTitle: 'Registry of Commendations', achForm: 'Form 1000-X · Personnel achievements',
       achSummary: '{n} of {total} · +{p}% to all income',
       tAch: '🏆 Commendation: {name} (+{p}% income)',
+      tAchMany: '🏆 {n} new commendations (+{p}% income)',
+      // справочник
+      hbTitle: 'Employee Handbook', hbForm: 'Form 0-2 · Read before signing',
+      hbLocked: 'Classified. This section is declassified when you get there.',
     },
     lists: {
       intro: [
         'Congratulations. Following a thorough review of no candidates, you have been appointed <b>Director of Paperwork Inc.</b>',
         'Your mandate: approve documents, so we can open departments, which approve more documents.',
         'There are no departments yet. Kindly begin by signing something yourself.',
+        'Questions? The Employee Handbook is the book icon in the top right corner.',
       ],
       jokes: [
         'Accounting spent the morning reconciling the stapler inventory. It is off by one stapler.',
@@ -974,6 +992,20 @@ const I18N = {
         'NOTICE: The quiet room is closed due to noise complaints.',
         'REMINDER: Deadlines are approaching. Deadlines are always approaching.',
       ],
+    },
+    hb: {
+      docs: { t: 'Documents', x: ['Documents are the main currency. Departments approve them every second, on their own. The Sign manually button is only there to afford the first desk.'] },
+      depts: { t: 'Departments', x: [
+        'Each department approves documents per second. Every purchase raises its price by {growth}%, and every {every} units of one department multiply its output by {msMult}.',
+        'The % on a card is its share of your income. Hold a buy button to keep buying; ×10 and MAX buy in bulk.'] },
+      away: { t: 'While you are away', x: ['The company keeps working when the game is closed. At first, records cover {cap} h of absence at {eff}% of normal income; upgrades and benefits extend both. Spend everything before you leave and come back a few times a day.'] },
+      upgs: { t: 'Upgrades', x: ['One-time purchases: output multipliers, discounts, longer offline records. Only upgrades you can nearly afford are listed. The red badge on the tab shows how many you can buy right now.'] },
+      stamps: { t: 'Stamps', x: ['Every department you own presses stamps. Spend them on the advanced upgrades marked 🔏.'] },
+      restr: { t: 'Restructuring', x: [
+        'Resets documents, departments, upgrades and stamps in exchange for Seniority. Each point adds +{sen}% to all income, permanently.',
+        'Becomes available once you approve {min} documents in one period. The more you have approved in total, the more Seniority you get, so restructure when the next run will clearly go faster.'] },
+      perks: { t: 'Tenure Benefits', x: ['Each restructuring also grants Merits, one per Seniority point. Spend them on permanent benefits on the Restructuring tab: starting departments, discounts, longer offline, auto-buying.'] },
+      ach: { t: 'Commendations', x: ['Achievements for milestones. Each one adds +{ach}% to all income, permanently. The trophy icon opens the full registry.'] },
     },
     perks: {
       headstart: { name: 'Pre-Approved Furniture', desc: 'The furniture was approved before the company existed. It has been waiting for you.' },
@@ -1014,7 +1046,6 @@ const I18N = {
   ru: {
     name: 'Русский',
     ui: {
-      ledger: 'Форма 0-0 · Реестр',
       docsLabel: 'документов одобрено',
       perSec: '/ сек', perS: '/с',
       stampsWord: 'печатей',
@@ -1114,12 +1145,16 @@ const I18N = {
       achTitle: 'Реестр благодарностей', achForm: 'Форма 1000-Х · Достижения сотрудника',
       achSummary: '{n} из {total} · +{p}% ко всему доходу',
       tAch: '🏆 Благодарность: {name} (+{p}% к доходу)',
+      tAchMany: '🏆 Новых благодарностей: {n} (+{p}% к доходу)',
+      hbTitle: 'Памятка сотрудника', hbForm: 'Форма 0-2 · Ознакомиться до подписания',
+      hbLocked: 'Секретно. Раздел рассекретят, когда вы до него доберётесь.',
     },
     lists: {
       intro: [
         'Поздравляем. По итогам тщательного рассмотрения ни одного кандидата вы назначены <b>директором Paperwork Inc.</b>',
         'Ваша задача: одобрять документы, чтобы открывать отделы, которые одобряют ещё больше документов.',
         'Отделов пока нет. Просим начать с того, чтобы подписать что-нибудь лично.',
+        'Есть вопросы? Памятка сотрудника — значок книги справа вверху.',
       ],
       jokes: [
         'Бухгалтерия всё утро сверяла учёт степлеров. Не хватает одного степлера.',
@@ -1197,6 +1232,20 @@ const I18N = {
       sleepwalk: { name: 'Регламент о лунатизме', desc: 'Сотрудникам разрешено одобрять документы во сне при условии предварительной подачи формы 0-Z.' },
       pneumatic: { name: 'Пневмопочта между отделами', desc: 'Документы теперь летают между этажами со скоростью сорок километров в час. Некоторые прибывают уже одобренными.' },
       lapelpin: { name: 'Значок за выслугу лет', desc: 'Свидетельствует о годах службы. Или хотя бы о годах присутствия.' },
+    },
+    hb: {
+      docs: { t: 'Документы', x: ['Документы — основная валюта. Отделы одобряют их каждую секунду сами. Кнопка «Подписать вручную» нужна только для того, чтобы накопить на первый стол.'] },
+      depts: { t: 'Отделы', x: [
+        'Каждый отдел одобряет документы в секунду. С каждой покупкой его цена растёт на {growth}%, а каждые {every} шт. одного отдела умножают его выработку на {msMult}.',
+        'Процент на карточке — доля отдела в вашем доходе. Удерживайте кнопку покупки, чтобы покупать подряд; ×10 и MAX покупают пачкой.'] },
+      away: { t: 'Пока вас нет', x: ['Компания работает, даже когда игра закрыта. Сначала учитывается до {cap} ч отсутствия с эффективностью {eff}% от обычного дохода; улучшения и льготы расширяют и то и другое. Тратьте всё перед уходом и заглядывайте несколько раз в день.'] },
+      upgs: { t: 'Улучшения', x: ['Разовые покупки: множители выработки, скидки, более долгий офлайн. Показываются только те, на которые почти хватает. Красный значок на вкладке — сколько можно купить прямо сейчас.'] },
+      stamps: { t: 'Печати', x: ['Каждый ваш отдел ставит печати. Их тратят на продвинутые улучшения, отмеченные 🔏.'] },
+      restr: { t: 'Реорганизация', x: [
+        'Обнуляет документы, отделы, улучшения и печати в обмен на выслугу. Каждая единица выслуги навсегда добавляет +{sen}% ко всему доходу.',
+        'Становится доступной, когда за один период одобрено {min} документов. Чем больше одобрено за всё время, тем больше выслуги, поэтому реорганизуйтесь, когда следующий забег явно пойдёт быстрее.'] },
+      perks: { t: 'Льготы за выслугу', x: ['Каждая реорганизация приносит почётные грамоты — по одной за единицу выслуги. На вкладке «Реорганизация» их меняют на постоянные льготы: стартовые отделы, скидки, долгий офлайн, автопокупку.'] },
+      ach: { t: 'Благодарности', x: ['Достижения за успехи на службе. Каждое навсегда добавляет +{ach}% ко всему доходу. Значок кубка открывает полный реестр.'] },
     },
     perks: {
       headstart: { name: 'Заранее согласованная мебель', desc: 'Мебель согласовали ещё до основания компании. Она вас ждёт.' },
@@ -1338,6 +1387,7 @@ const haptic = {
 };
 
 const SAVE_KEY = 'paperwork_inc_save_v1';   // не менять — иначе старые сохранения не найдутся
+const CLOUD_LIMIT = 4096;                     // лимит Telegram CloudStorage на одно значение (символов)
 const Store = {
   cloud: IN_TG && tgv('6.9') && !!tg.CloudStorage,
   // Загружаем и из облака, и из localStorage — берём более свежее
@@ -1362,7 +1412,10 @@ const Store = {
   save(state) {
     const str = JSON.stringify(state);
     try { localStorage.setItem(SAVE_KEY, str); } catch (e) {}
-    if (this.cloud) { try { tg.CloudStorage.setItem(SAVE_KEY, str, () => {}); } catch (e) {} }
+    if (!this.cloud) return;
+    // Сверх лимита облако запись не примет — локальная копия всё равно сохранена
+    if (str.length > CLOUD_LIMIT) { console.warn('Save is ' + str.length + ' chars, over the CloudStorage limit'); return; }
+    try { tg.CloudStorage.setItem(SAVE_KEY, str, err => { if (err) console.warn('CloudStorage:', err); }); } catch (e) {}
   },
   wipe() {
     try { localStorage.removeItem(SAVE_KEY); } catch (e) {}
@@ -1390,6 +1443,9 @@ function migrate(raw) {
   if (raw.merits == null) s.merits = s.seniority;
   s.perks = Object.assign({}, raw.perks || {});
   s.achievements = Array.isArray(raw.achievements) ? raw.achievements.slice() : [];
+  // v1.5: отметки canR_0, canR_1… (по одной на реорганизацию) заменены одним числом restrNotified
+  if (s.flags['canR_' + s.restructures]) s.flags.restrNotified = s.restructures;
+  for (const k of Object.keys(s.flags)) if (k.indexOf('canR_') === 0) delete s.flags[k];
   return ensureSettings(s);
 }
 
@@ -1497,31 +1553,23 @@ const pText = p => (I18N[LANG].perks || {})[p.id] || I18N.en.perks[p.id];
 const aText = a => (I18N[LANG].ach || {})[a.id] || I18N.en.ach[a.id];
 const formStr = f => f.replace(/^Form/, t('form'));
 
-function fmt(n) {
+// Числа: 1.2K, 3.4M, 5.6B, 7.8T, дальше научная запись.
+// precise — больше знаков (для счётчика в шапке): 1.234K, 12.34K, 123.4K
+const UNITS = ['K', 'M', 'B', 'T'];
+function fmtNum(n, precise) {
   if (!isFinite(n)) return '∞';
-  if (n < 0) return '-' + fmt(-n);
-  if (n < 10) return (Math.floor(n * 10) / 10).toFixed(n % 1 === 0 ? 0 : 1);
+  if (n < 0) return '-' + fmtNum(-n, precise);
+  if (n < 10) return n % 1 === 0 ? String(n) : (Math.floor(n * 10) / 10).toFixed(1);
   if (n < 1000) return String(Math.floor(n));
-  if (NUMFMT === 'sci') return n.toExponential(2).replace('e+', 'e');
-  const units = ['K', 'M', 'B', 'T'];
   const e = Math.floor(Math.log10(n) / 3);
-  if (e > units.length) return n.toExponential(2).replace('e+', 'e');
+  if (NUMFMT === 'sci' || e > UNITS.length) return n.toExponential(precise ? 3 : 2).replace('e+', 'e');
   const v = n / Math.pow(1000, e);
-  return (v < 100 ? (Math.floor(v * 10) / 10).toFixed(1) : String(Math.floor(v))) + units[e - 1];
-}
-// Формат с большей точностью для шапки: 1.234K, 12.34K, 123.4K — чтобы рост был виден
-function fmtPrecise(n) {
-  if (!isFinite(n)) return '∞';
-  if (n < 1000) return n < 10 ? (n % 1 === 0 ? String(n) : (Math.floor(n * 10) / 10).toFixed(1)) : String(Math.floor(n));
-  if (NUMFMT === 'sci') return Number(n).toExponential(3).replace('e+', 'e');
-  const units = ['K', 'M', 'B', 'T'];
-  const e = Math.floor(Math.log10(n) / 3);
-  if (e > units.length) return Number(n).toExponential(3).replace('e+', 'e');
-  const v = n / Math.pow(1000, e);
-  const dec = v < 10 ? 3 : v < 100 ? 2 : 1;
+  const dec = precise ? (v < 10 ? 3 : v < 100 ? 2 : 1) : (v < 100 ? 1 : 0);
   const p = Math.pow(10, dec);
-  return (Math.floor(v * p) / p).toFixed(dec) + units[e - 1];
+  return (Math.floor(v * p) / p).toFixed(dec) + UNITS[e - 1];
 }
+const fmt = n => fmtNum(n, false);
+const fmtPrecise = n => fmtNum(n, true);
 function fmtRate(n) { return n > 0 && n < 10 ? (Math.round(n * 100) / 100).toString() : fmt(n); }
 function fmtTime(sec) {
   if (!isFinite(sec)) return '∞';
@@ -1569,6 +1617,25 @@ let deptKey = '', upgKey = '', filedKey = '', perkKey = '', filedOpen = false;
 let autoTimer = 0;
 let modalKind = null;         // null | 'modal' | 'settings'
 
+/* ---------- Точечные обновления DOM ----------
+   Экран обновляется 4 раза в секунду, счётчик в шапке — каждый кадр.
+   Пишем в DOM только то, что действительно изменилось, а ссылки на
+   изменяемые элементы карточек собираем один раз при сборке списка. */
+const lastText = new WeakMap();
+function setText(el, v) {
+  v = String(v);
+  if (lastText.get(el) !== v) { lastText.set(el, v); el.textContent = v; }
+}
+function setDisabled(el, v) { if (el.disabled !== v) el.disabled = v; }
+function setWidth(el, v) { if (el.style.width !== v) el.style.width = v; }
+// Элементы карточки с атрибутом data-f="имя" → { имя: элемент }
+function collectRefs(root) {
+  const r = {};
+  root.querySelectorAll('[data-f]').forEach(el => { r[el.dataset.f] = el; });
+  return r;
+}
+const refs = { depts: new Map(), upgs: new Map(), perks: new Map() };
+
 /* ---------- Применение настроек ---------- */
 function applyStaticTexts() {
   document.documentElement.lang = LANG;
@@ -1582,6 +1649,7 @@ function applySettings() {
   $('memo').hidden = !st.memos;
   if (langChanged) $('memo').textContent = pick(tlist('memos'));
   applyStaticTexts();
+  if (S) syncBuyMode();
   deptKey = upgKey = filedKey = perkKey = '';   // пересобрать карточки на новом языке
   Sound.setVolume();
   if (st.sound && Sound.gestured) Sound.unlock(); else Sound.syncAmbience();
@@ -1781,8 +1849,9 @@ function checkUnlocks(silent) {
     const f = 'seen_' + d.id;
     if (i > 0 && !S.flags[f] && deptVisible(S, d, i)) { S.flags[f] = true; notify(t('tNewDept', { e: d.emoji, name: dName(d) }), 'ring'); }
   });
-  if (canRestructure(S) && !S.flags['canR_' + S.restructures]) {
-    S.flags['canR_' + S.restructures] = true; notify(t('tCanRestr'), 'milestone');
+  // restrNotified — номер реорганизации, о доступности которой уже сообщили
+  if (canRestructure(S) && !(S.flags.restrNotified >= S.restructures)) {
+    S.flags.restrNotified = S.restructures; notify(t('tCanRestr'), 'milestone');
   }
 }
 
@@ -1801,7 +1870,7 @@ function buildDepts() {
       <div class="c-desc">${esc(dDesc(d))}</div>
       <div class="c-stats mono" data-f="stats"></div>
       <div class="ms"><div class="ms-bar"><i data-f="bar"></i></div><span class="mono" data-f="ms"></span></div>
-      <button class="btn" data-act="buyDept" data-id="${d.id}"><span data-f="bl"></span><span class="sub mono" data-f="bs"></span></button>
+      <button class="btn" data-act="buyDept" data-id="${d.id}" data-f="btn"><span data-f="bl"></span><span class="sub mono" data-f="bs"></span></button>
     </div>`).join('');
   if (teaser) html += `
     <div class="card redacted" id="d-teaser">
@@ -1811,41 +1880,40 @@ function buildDepts() {
       <div class="c-desc">${t('clearance', { n: fmt(teaser.baseCost * CONFIG.reveal.deptAtFraction) })}</div>
     </div>`;
   $('deptList').innerHTML = html;
+  refs.depts.clear();
+  vis.forEach(d => refs.depts.set(d.id, collectRefs($('d-' + d.id))));
 }
 
 function renderDepts(m, rate) {
   buildDepts();
   const every = CONFIG.milestones.every;
-  for (const d of DEPARTMENTS) {
-    const card = $('d-' + d.id); if (!card) continue;
-    const c = owned(S, d.id);
-    const f = name => card.querySelector('[data-f="' + name + '"]');
-    f('owned').textContent = '×' + c;
+  for (const [id, f] of refs.depts) {
+    const d = DEPT_BY_ID[id], c = owned(S, id);
     const total = deptRate(S, d, m);
     const each = c > 0 ? total / c : deptRateAt(d, 1, m);
-    f('stats').textContent = c > 0
+    setText(f.owned, '×' + c);
+    setText(f.stats, c > 0
       ? t('each', { v: fmtRate(each) }) + ' · ' + t('total', { v: fmtRate(total) }) + (rate > 0 ? ` · ${Math.round(total / rate * 100)}%` : '')
-      : t('each', { v: fmtRate(each) });
-    const nextMs = (Math.floor(c / every) + 1) * every;
-    f('bar').style.width = ((c % every) / every * 100) + '%';
-    f('ms').textContent = t('milestone', { c, next: nextMs, m: CONFIG.milestones.mult });
+      : t('each', { v: fmtRate(each) }));
+    setWidth(f.bar, ((c % every) / every * 100) + '%');
+    setText(f.ms, t('milestone', { c, next: (Math.floor(c / every) + 1) * every, m: CONFIG.milestones.mult }));
     // кнопка покупки
-    let n = S.buyMode === 'max' ? maxBuy(S, d, m) : S.buyMode;
-    if (n < 1) n = 1;
+    const n = Math.max(1, S.buyMode === 'max' ? maxBuy(S, d, m) : S.buyMode);
     const cost = deptCost(S, d, n, m);
-    const btn = card.querySelector('[data-act="buyDept"]');
     const ok = S.docs >= cost;
-    btn.disabled = !ok;
-    f('bl').textContent = ok ? t('acquire', { n }) : '⏳ ' + t('pending') + (rate > 0 ? ' · ' + fmtTime((cost - S.docs) / rate) : '');
-    f('bs').textContent = '📄 ' + fmt(cost);
+    setDisabled(f.btn, !ok);
+    setText(f.bl, ok ? t('acquire', { n }) : '⏳ ' + t('pending') + (rate > 0 ? ' · ' + fmtTime((cost - S.docs) / rate) : ''));
+    setText(f.bs, '📄 ' + fmt(cost));
   }
-  document.querySelectorAll('.po button').forEach(b => b.classList.toggle('on', String(S.buyMode) === b.dataset.id));
 }
 
 /* ---------- Улучшения ---------- */
-function renderUpgrades(m, rate, sRate) {
-  const avail = UPGRADES.filter(u => !hasUpg(S, u.id) && upgVisible(S, u, m))
+// Видимые и ещё не купленные: сначала за документы, затем за печати, по цене
+function visibleUpgrades(m) {
+  return UPGRADES.filter(u => !hasUpg(S, u.id) && upgVisible(S, u, m))
     .sort((a, b) => (a.currency === b.currency ? a.cost - b.cost : a.currency === 'docs' ? -1 : 1));
+}
+function renderUpgrades(avail, rate, sRate) {
   const key = avail.map(u => u.id).join(',');
   if (key !== upgKey) {
     upgKey = key;
@@ -1855,18 +1923,19 @@ function renderUpgrades(m, rate, sRate) {
           <div class="c-title"><div class="c-name">${esc(uName(u))}</div><div class="c-form mono">${upgForm(u)}</div></div></div>
         <div class="c-desc">${esc(uDesc(u))}</div>
         <div class="effect mono">▸ ${esc(effectText(u))}</div>
-        <button class="btn" data-act="buyUpg" data-id="${u.id}"><span data-f="bl"></span><span class="sub mono" data-f="bs"></span></button>
+        <button class="btn" data-act="buyUpg" data-id="${u.id}" data-f="btn"><span data-f="bl"></span><span class="sub mono" data-f="bs"></span></button>
       </div>`).join('') : `<div class="empty">${t('noUpgrades')}</div>`;
+    refs.upgs.clear();
+    avail.forEach(u => refs.upgs.set(u.id, collectRefs($('u-' + u.id))));
   }
-  let affordable = 0;
   for (const u of avail) {
-    const card = $('u-' + u.id); if (!card) continue;
+    const f = refs.upgs.get(u.id); if (!f) continue;
     const have = u.currency === 'stamps' ? S.stamps : S.docs;
     const r = u.currency === 'stamps' ? sRate : rate;
-    const ok = have >= u.cost; if (ok) affordable++;
-    card.querySelector('[data-act="buyUpg"]').disabled = !ok;
-    card.querySelector('[data-f="bl"]').textContent = ok ? t('approveReq') : '⏳ ' + t('pending') + (r > 0 ? ' · ' + fmtTime((u.cost - have) / r) : '');
-    card.querySelector('[data-f="bs"]').textContent = curIcon(u) + ' ' + fmt(u.cost);
+    const ok = have >= u.cost;
+    setDisabled(f.btn, !ok);
+    setText(f.bl, ok ? t('approveReq') : '⏳ ' + t('pending') + (r > 0 ? ' · ' + fmtTime((u.cost - have) / r) : ''));
+    setText(f.bs, curIcon(u) + ' ' + fmt(u.cost));
   }
   // Список купленных
   const fk = S.upgrades.join(',');
@@ -1878,30 +1947,27 @@ function renderUpgrades(m, rate, sRate) {
     const det = $('upgFiled').querySelector('details');
     if (det) det.addEventListener('toggle', () => { filedOpen = det.open; });
   }
-  const badge = $('upgBadge');
-  badge.hidden = affordable === 0; badge.textContent = affordable;
 }
 
 /* ---------- Реорганизация ---------- */
 function renderRestructure(m) {
-  const gain = seniorityGain(S);
-  $('rDesc').textContent = t('rDesc', { bonus: Math.round(m.senPer * 100) });
-  $('rSen').textContent = fmt(S.seniority);
-  $('rBonus').textContent = '+' + Math.round(S.seniority * m.senPer * 100) + '%';
-  $('rRun').textContent = fmt(S.runEarned);
-  $('rAll').textContent = fmt(S.allTimeEarned);
-  $('rNext').textContent = fmt(nextSeniorityAt(S));
-  $('rGain').textContent = '+' + fmt(gain) + ' 🎖️';
+  setText($('rDesc'), t('rDesc', { bonus: Math.round(m.senPer * 100) }));
+  setText($('rSen'), fmt(S.seniority));
+  setText($('rBonus'), '+' + Math.round(S.seniority * m.senPer * 100) + '%');
+  setText($('rRun'), fmt(S.runEarned));
+  setText($('rAll'), fmt(S.allTimeEarned));
+  setText($('rNext'), fmt(nextSeniorityAt(S)));
+  setText($('rGain'), '+' + fmt(seniorityGain(S)) + ' 🎖️');
   const p = Math.min(1, S.runEarned / CONFIG.prestige.minRunEarned);
-  $('rProg').style.width = (p * 100) + '%';
-  $('rProgText').textContent = t('rProg', { a: fmt(S.runEarned), b: fmt(CONFIG.prestige.minRunEarned) });
+  setWidth($('rProg'), (p * 100) + '%');
+  setText($('rProgText'), t('rProg', { a: fmt(S.runEarned), b: fmt(CONFIG.prestige.minRunEarned) }));
   const can = canRestructure(S);
-  $('rBtn').disabled = !can;
-  $('rBtn').firstElementChild.textContent = can ? t('rFile') : (p < 1 ? t('rInsufficient') : t('rAwaiting'));
-  $('rCount').textContent = S.restructures;
-  $('rCap').textContent = m.capHours + t('tH');
-  $('rEff').textContent = pct(m.eff);
-  $('rOwned').textContent = totalOwned(S);
+  setDisabled($('rBtn'), !can);
+  setText($('rBtn').firstElementChild, can ? t('rFile') : (p < 1 ? t('rInsufficient') : t('rAwaiting')));
+  setText($('rCount'), S.restructures);
+  setText($('rCap'), m.capHours + t('tH'));
+  setText($('rEff'), pct(m.eff));
+  setText($('rOwned'), totalOwned(S));
 }
 
 /* ---------- Льготы за выслугу ---------- */
@@ -1920,7 +1986,7 @@ function perkEffect(p, L) {
   return '';
 }
 function renderPerks() {
-  $('merits').textContent = fmt(S.merits || 0);
+  setText($('merits'), fmt(S.merits || 0));
   const key = PERKS.map(p => perkLevel(S, p.id)).join(',') + '|' + (S.flags.autobuyOff ? 0 : 1);
   if (key !== perkKey) {
     perkKey = key;
@@ -1934,16 +2000,18 @@ function renderPerks() {
         <div class="c-desc">${esc(pText(p).desc)}</div>
         <div class="effect mono">▸ ${esc(perkEffect(p, next))}</div>
         ${auto}
-        <button class="btn" data-act="buyPerk" data-id="${p.id}"><span data-f="bl"></span><span class="sub mono" data-f="bs"></span></button>
+        <button class="btn" data-act="buyPerk" data-id="${p.id}" data-f="btn"><span data-f="bl"></span><span class="sub mono" data-f="bs"></span></button>
       </div>`;
     }).join('');
+    refs.perks.clear();
+    PERKS.forEach(p => refs.perks.set(p.id, collectRefs($('p-' + p.id))));
   }
   for (const p of PERKS) {
-    const card = $('p-' + p.id); if (!card) continue;
+    const f = refs.perks.get(p.id);
     const cost = perkCost(S, p), maxed = !isFinite(cost), ok = !maxed && (S.merits || 0) >= cost;
-    card.querySelector('[data-act="buyPerk"]').disabled = !ok;
-    card.querySelector('[data-f="bl"]').textContent = maxed ? '✅ ' + t('maxed') : ok ? t('grant') : t('needMerits');
-    card.querySelector('[data-f="bs"]').textContent = maxed ? '' : '📜 ' + cost;
+    setDisabled(f.btn, !ok);
+    setText(f.bl, maxed ? '✅ ' + t('maxed') : ok ? t('grant') : t('needMerits'));
+    setText(f.bs, maxed ? '' : '📜 ' + cost);
   }
 }
 
@@ -1964,8 +2032,49 @@ function showAchievements() {
 }
 function checkAchievements() {
   const got = updateAchievements(S);
-  got.forEach(a => toast(t('tAch', { name: aText(a).name, p: Math.round(CONFIG.achievementBonus * 100) })));
-  if (got.length) { haptic.success(); Sound.play('milestone'); }
+  if (!got.length) return;
+  // несколько сразу (например, после офлайна) — одно уведомление вместо очереди тостов
+  const p = Math.round(CONFIG.achievementBonus * 100);
+  toast(got.length === 1 ? t('tAch', { name: aText(got[0]).name, p }) : t('tAchMany', { n: got.length, p: p * got.length }));
+  haptic.success(); Sound.play('milestone');
+}
+
+/* ---------- Справочник (памятка сотрудника) ----------
+   Разделы о ещё не открытых механиках засекречены — без спойлеров.
+   Красная точка на кнопке: рассекречен раздел, который игрок ещё не видел. */
+const HANDBOOK = [
+  { id: 'docs',   emoji: '📄', open: () => true },
+  { id: 'depts',  emoji: '🗄️', open: () => true },
+  { id: 'away',   emoji: '📬', open: () => true },
+  { id: 'upgs',   emoji: '📎', open: s => upgradesUnlocked(s) },
+  { id: 'stamps', emoji: '🔏', open: s => hasUpg(s, 'rubberstamp') || s.restructures > 0 },
+  { id: 'restr',  emoji: '🔄', open: s => restructureUnlocked(s) },
+  { id: 'perks',  emoji: '📜', open: s => s.restructures > 0 },
+  { id: 'ach',    emoji: '🏆', open: () => true },
+];
+const hbText = id => (I18N[LANG].hb || {})[id] || I18N.en.hb[id];
+function hbOpenCount() { return HANDBOOK.filter(h => h.open(S)).length; }
+function hbVars() {
+  return {
+    growth: Math.round((CONFIG.costGrowth - 1) * 100), every: CONFIG.milestones.every, msMult: '×' + CONFIG.milestones.mult,
+    cap: CONFIG.offline.baseCapHours, eff: Math.round(CONFIG.offline.baseEfficiency * 100),
+    sen: Math.round(CONFIG.prestige.bonusPerPoint * 100), min: fmt(CONFIG.prestige.minRunEarned),
+    ach: Math.round(CONFIG.achievementBonus * 100),
+  };
+}
+function showHandbook() {
+  const vars = hbVars();
+  const fill = str => esc(str).replace(/\{(\w+)\}/g, (m, k) => (vars[k] != null ? vars[k] : m));
+  const body = HANDBOOK.map(h => {
+    const tx = hbText(h.id);
+    if (!h.open(S)) return `<div class="hb locked"><span class="he">🔒</span><div>
+      <div class="ht"><span class="rbar">${'X'.repeat(tx.t.length)}</span></div><div class="hx">${t('hbLocked')}</div></div></div>`;
+    return `<div class="hb"><span class="he">${h.emoji}</span><div>
+      <div class="ht">${esc(tx.t)}</div><div class="hx">${tx.x.map(p => `<p>${fill(p)}</p>`).join('')}</div></div></div>`;
+  }).join('');
+  S.flags.hbSeen = hbOpenCount();
+  showModal({ form: t('hbForm'), title: t('hbTitle'), body, buttons: [{ label: t('close') }] });
+  render();
 }
 
 // Автоматические заявки: покупаем самый дешёвый доступный отдел
@@ -1987,33 +2096,44 @@ function autoBuy(dt, m) {
   if (autoTimer > m.autobuy) autoTimer = m.autobuy;
 }
 
-/* ---------- Главная отрисовка ---------- */
+/* ---------- Главная отрисовка ----------
+   Шапка и вкладки обновляются всегда, содержимое — только у открытой вкладки. */
 function render() {
   const m = getMods(S);
   const rate = totalRate(S, m), sRate = stampRate(S, m);
   curRate = rate; curSRate = sRate;   // для плавного счётчика в шапке
-  $('rate').textContent = '+' + fmtRate(rate) + ' ' + t('perSec');
-  $('miniRate').textContent = '+' + fmtRate(rate) + t('perS');
+  setText($('rate'), '+' + fmtRate(rate) + ' ' + t('perSec'));
+  setText($('miniRate'), '+' + fmtRate(rate) + t('perS'));
   $('stampsLine').hidden = !m.stampsOn;
-  if (m.stampsOn) { $('stampRate').textContent = '+' + fmtRate(sRate) + t('perS'); }
+  if (m.stampsOn) setText($('stampRate'), '+' + fmtRate(sRate) + t('perS'));
   $('senLine').hidden = S.seniority <= 0;
-  if (S.seniority > 0) { $('sen').textContent = fmt(S.seniority); $('senBonus').textContent = '+' + Math.round(S.seniority * m.senPer * 100) + '%'; }
+  if (S.seniority > 0) { setText($('sen'), fmt(S.seniority)); setText($('senBonus'), '+' + Math.round(S.seniority * m.senPer * 100) + '%'); }
   // Кнопка ручной подписи уходит на второй план после первой покупки
   $('signBtn').classList.toggle('minor', totalOwned(S) > 0);
+  // Точка на кнопке справочника
+  const hbNew = hbOpenCount() > (S.flags.hbSeen || 0);
+  document.querySelectorAll('[data-act="handbook"]').forEach(b => b.classList.toggle('dot', hbNew));
 
   // Вкладки
   const locks = { depts: false, upgs: !upgradesUnlocked(S), restr: !restructureUnlocked(S) };
+  if (locks[activeTab]) activeTab = 'depts';
   document.querySelectorAll('.tab').forEach(tb => {
     const id = tb.dataset.id;
-    tb.disabled = locks[id];
-    tb.querySelector('.t-ico').textContent = locks[id] ? '🔒 ' : '';
+    setDisabled(tb, locks[id]);
+    setText(tb.querySelector('.t-ico'), locks[id] ? '🔒 ' : '');
     tb.classList.toggle('active', id === activeTab);
   });
   document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'p-' + activeTab));
 
-  renderDepts(m, rate);
-  renderUpgrades(m, rate, sRate);
-  if (activeTab === 'restr') { renderRestructure(m); renderPerks(); }
+  // Значок на вкладке улучшений нужен всегда, сами карточки — только когда вкладка открыта
+  const avail = visibleUpgrades(m);
+  const affordable = avail.filter(u => canAfford(S, u)).length;
+  const badge = $('upgBadge');
+  badge.hidden = affordable === 0; setText(badge, affordable);
+
+  if (activeTab === 'depts') renderDepts(m, rate);
+  else if (activeTab === 'upgs') renderUpgrades(avail, rate, sRate);
+  else { renderRestructure(m); renderPerks(); }
 }
 
 /* ---------- Эффект печати на карточке ---------- */
@@ -2096,7 +2216,7 @@ function onReset() {
           Store.wipe(); S = ensureSettings(freshState()); S.settings = keep;
           deptKey = upgKey = filedKey = perkKey = ''; activeTab = 'depts';
           Sound.play('shredder');
-          save(); render(); showIntro();
+          syncBuyMode(); save(); render(); showIntro();
         } },
       { label: t('cancel'), ghost: true, onClick: showSettings },
     ],
@@ -2106,6 +2226,10 @@ function showIntro() {
   showModal({ form: t('introForm'), title: '🗂️ ' + t('introTitle'), stamp: t('stampHired'),
     body: tlist('intro').map(p => `<p>${p}</p>`).join(''),
     buttons: [{ label: t('introBtn'), onClick: () => Sound.play('stamp') }] });
+}
+
+function syncBuyMode() {
+  document.querySelectorAll('.po button').forEach(b => b.classList.toggle('on', String(S.buyMode) === b.dataset.id));
 }
 
 // Один обработчик кликов на всё (делегирование)
@@ -2118,10 +2242,11 @@ document.addEventListener('click', e => {
     case 'buyDept': if (hold.fired) { hold.fired = false; break; } onBuyDept(id); break;
     case 'buyUpg': onBuyUpg(id); break;
     case 'tab': if (activeTab !== id) Sound.play('tab'); activeTab = id; window.scrollTo({ top: 0 }); render(); break;
-    case 'mode': S.buyMode = id === 'max' ? 'max' : +id; haptic.light(); Sound.play('click'); render(); break;
+    case 'mode': S.buyMode = id === 'max' ? 'max' : +id; syncBuyMode(); haptic.light(); Sound.play('click'); render(); break;
     case 'restructure': onRestructure(); break;
     case 'settings': Sound.play('click'); showSettings(); break;
     case 'achievements': Sound.play('click'); showAchievements(); break;
+    case 'handbook': Sound.play('click'); showHandbook(); break;
     case 'buyPerk': {
       const p = PERK_BY_ID[id];
       if (buyPerk(S, id)) { haptic.success(); Sound.play('upgrade'); toast(t('tPerk', { name: pText(p).name })); save(); render(); }
@@ -2155,11 +2280,11 @@ function frame(now) {
     const since = Math.min(0.5, Math.max(0, (Date.now() - lastTick) / 1000));
     shown.docs = easeTo(shown.docs, S.docs + curRate * since, curRate, dt);
     const docsStr = fmtPrecise(shown.docs);
-    $('docs').textContent = docsStr;
-    if (miniOn) $('miniDocs').textContent = docsStr;
+    setText($('docs'), docsStr);
+    if (miniOn) setText($('miniDocs'), docsStr);
     if (curSRate > 0 || S.stamps > 0) {
       shown.stamps = easeTo(shown.stamps, S.stamps + curSRate * since, curSRate, dt);
-      $('stamps').textContent = fmtPrecise(shown.stamps);
+      setText($('stamps'), fmtPrecise(shown.stamps));
     }
   }
   lastFrame = now;
@@ -2268,6 +2393,7 @@ function rotateMemo() {
   $('memo').textContent = pick(tlist('memos'));
   lastTick = Date.now();
   S.lastSeen = lastTick;
+  syncBuyMode();
   render();
   setInterval(tick, CONFIG.tickMs);
   requestAnimationFrame(frame);
