@@ -534,7 +534,7 @@ html.scheme-dark{ --good:#4fb57a; }
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.12.1',              // версия игры (показывается в настройках)
+  version: '1.12.2',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   itchUrl: 'https://adomant.itch.io/paperwork-inc',   // страница на itch.io — появится в настройках
   achievementBonus: 0.01,
@@ -2738,7 +2738,7 @@ function renderDepts(m, rate) {
     const add = S.buyMode === 1 ? 0 : want;
     setWidth(f.bar, (filled * 100) + '%');
     setWidth(f.ghost, (Math.min(1 - filled, add / every) * 100) + '%');
-    setText(f.ms, t('milestone', { c, next: (Math.floor(c / every) + 1) * every, m: CONFIG.milestones.mult }) + (add ? '  +' + add : ''));
+    setText(f.ms, t('milestone', { c, next: (Math.floor(c / every) + 1) * every, m: CONFIG.milestones.mult }));
     const cost = deptCost(S, d, n, m);
     const ok = S.docs >= cost;
     setDisabled(f.btn, !ok);
