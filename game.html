@@ -172,7 +172,15 @@ body.mini-on .tabs{top:calc(var(--mini-h) + var(--safe-top))}
 .tab.active{background:var(--folder);color:var(--text)}
 .tab:disabled{opacity:.55;cursor:default}
 .t-ico:empty{display:none}
+/* узкие экраны: четыре кнопки в шапке и строка «Заявка» помещаются */
+.docs-label{min-width:0;overflow-wrap:anywhere}
+.po button{white-space:nowrap}
 @media (max-width:359px){
+  .icons{gap:5px}
+  .icon-btn,.mini .icon-btn{width:34px;height:34px}
+  .mini-in{gap:6px;padding:0 8px 0 12px}
+  .po{gap:4px;font-size:12px}
+  .po button{padding:5px 7px}
   .tabs{gap:3px}
   .tab{padding:9px 4px 8px;font-size:12px;letter-spacing:-.01em}
   .tab .badge{margin-left:3px}
@@ -319,6 +327,13 @@ input.vol:disabled{opacity:.4}
 
 /* ---------- Достижения ---------- */
 .ach-sum{font:500 12.5px var(--mono);color:var(--hint);margin:-4px 0 10px}
+.ach .rbar{background:var(--hint);color:transparent;border-radius:2px;opacity:.5}
+/* личное дело: строка отдела с долей дохода */
+.st-dept{display:grid;grid-template-columns:1fr auto 44px;gap:2px 10px;align-items:baseline;padding:7px 0 6px;border-bottom:1px dashed var(--line);font-size:13.5px}
+.st-dept .sd-n{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.st-dept b{font-size:13px;font-weight:600} .st-dept .sd-p{text-align:right;color:var(--hint);font-size:12.5px}
+.sd-bar{grid-column:1 / -1;height:3px;background:var(--line);border-radius:2px;overflow:hidden}
+.sd-bar i{display:block;height:100%;background:var(--link)}
 .ach{display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px dashed var(--line)}
 .ach .ae{font-size:22px;width:30px;text-align:center;flex:none}
 .ach .an{font-weight:600;font-size:14.5px}
@@ -371,6 +386,13 @@ html.scheme-dark{ --good:#4fb57a; }
 @keyframes verdictIn{from{opacity:0;transform:translate(-50%,-50%) rotate(-12deg) scale(2.2)}to{opacity:1;transform:translate(-50%,-50%) rotate(-12deg) scale(1)}}
 .verdict.no{color:#b5312a;border-color:#b5312a} .verdict.yes{color:#2c4a8a;border-color:#2c4a8a}
 .ib-actions{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;margin-top:14px}
+/* таймер документа: прилипает к верху окна, чтобы был виден при прокрутке */
+.ib-timer{position:sticky;top:-20px;z-index:2;display:flex;align-items:center;gap:10px;background:var(--card);padding:8px 0 6px;margin:-4px 0 0}
+.ib-timer .bar{flex:1;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.ib-timer .bar i{display:block;height:100%;width:100%;background:var(--link);border-radius:3px}
+.ib-timer span{font:700 14px var(--mono);min-width:34px;text-align:right;font-variant-numeric:tabular-nums}
+.ib-timer.hurry .bar i{background:var(--ink)} .ib-timer.hurry span{color:var(--ink)}
+.doc .blank{color:#9a9f97;letter-spacing:.2em}
 .ib-actions .btn{justify-content:center}
 .ib-note{font:400 12px/1.5 var(--mono);color:var(--hint);text-align:center;margin-top:10px}
 .ib-result{margin-top:12px;border-left:3px solid var(--good);padding:7px 10px;font-size:14px;background:rgba(47,138,85,.09);border-radius:0 6px 6px 0;line-height:1.45}
@@ -420,7 +442,7 @@ html.scheme-dark{ --good:#4fb57a; }
   <header class="hdr">
     <div class="hdr-top">
       <span class="docs-label" data-i18n="docsLabel"></span>
-      <span class="icons"><button class="icon-btn" data-act="handbook" aria-label="Handbook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/><path d="M10 8.2a2 2 0 1 1 2.6 1.9c-.4.2-.6.5-.6.9v.5M12 13.6v.1"/></svg></button><button class="icon-btn" data-act="achievements" aria-label="Achievements"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 6H5a3 3 0 0 0 3 4.5M16 6h3a3 3 0 0 1-3 4.5"/><path d="M12 13v4M9 20h6M10 17h4"/></svg></button><button class="icon-btn" data-act="settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></span>
+      <span class="icons"><button class="icon-btn" data-act="handbook" aria-label="Handbook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/><path d="M10 8.2a2 2 0 1 1 2.6 1.9c-.4.2-.6.5-.6.9v.5M12 13.6v.1"/></svg></button><button class="icon-btn" data-act="achievements" aria-label="Achievements"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 6H5a3 3 0 0 0 3 4.5M16 6h3a3 3 0 0 1-3 4.5"/><path d="M12 13v4M9 20h6M10 17h4"/></svg></button><button class="icon-btn" data-act="stats" aria-label="Statistics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20h18"/><path d="M6 16v-5M11 16V5M16 16v-8M21 16v-3"/></svg></button><button class="icon-btn" data-act="settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></span>
     </div>
     <div class="docs" id="docs">0</div>
     <div class="rate" id="rate">+0</div>
@@ -508,7 +530,7 @@ html.scheme-dark{ --good:#4fb57a; }
       <div class="mini-main"><span class="mini-docs" id="miniDocs">0</span><span class="mini-rate" id="miniRate"></span></div>
       <div class="mini-sub" id="miniSub" hidden><span id="miniStampsW" hidden>🔏 <b id="miniStamps">0</b></span><span id="miniMeritsW" hidden>📜 <b id="miniMerits">0</b></span></div>
     </div>
-    <span class="icons"><button class="icon-btn" data-act="handbook" aria-label="Handbook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/><path d="M10 8.2a2 2 0 1 1 2.6 1.9c-.4.2-.6.5-.6.9v.5M12 13.6v.1"/></svg></button><button class="icon-btn" data-act="achievements" aria-label="Achievements"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 6H5a3 3 0 0 0 3 4.5M16 6h3a3 3 0 0 1-3 4.5"/><path d="M12 13v4M9 20h6M10 17h4"/></svg></button><button class="icon-btn" data-act="settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></span>
+    <span class="icons"><button class="icon-btn" data-act="handbook" aria-label="Handbook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/><path d="M10 8.2a2 2 0 1 1 2.6 1.9c-.4.2-.6.5-.6.9v.5M12 13.6v.1"/></svg></button><button class="icon-btn" data-act="achievements" aria-label="Achievements"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 6H5a3 3 0 0 0 3 4.5M16 6h3a3 3 0 0 1-3 4.5"/><path d="M12 13v4M9 20h6M10 17h4"/></svg></button><button class="icon-btn" data-act="stats" aria-label="Statistics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20h18"/><path d="M6 16v-5M11 16V5M16 16v-8M21 16v-3"/></svg></button><button class="icon-btn" data-act="settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></span>
   </div>
 </div>
 
@@ -534,7 +556,7 @@ html.scheme-dark{ --good:#4fb57a; }
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.13',              // версия игры (показывается в настройках)
+  version: '1.14',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   itchUrl: 'https://adomant.itch.io/paperwork-inc',   // страница на itch.io — появится в настройках
   achievementBonus: 0.01,
@@ -553,7 +575,10 @@ const CONFIG = {
     streakStep: 0.1, streakMax: 10,   // +10% к награде за каждое верное решение подряд, до +100%
     invalidChance: 0.5,          // доля документов с нарушением регламента
     decoyChance: 0.45,           // шанс «подозрительной» детали, которую сегодняшний регламент разрешает
-    rulesByRestructures: [[0, 2], [1, 3], [3, 4]],   // сколько правил в регламенте: [от реорганизаций, правил]
+    rulesByRestructures: [[0, 2], [1, 3], [3, 4], [6, 5], [10, 6]],   // сколько правил в регламенте: [от реорганизаций, правил]
+    tier1At: 1, tier2At: 5,      // с какой реорганизации в регламент попадают правила посложнее
+    // время на один документ (секунд): [от реорганизаций, секунд]. Если не успели — это ошибка
+    secondsByRestructures: [[0, 30], [1, 25], [3, 22], [5, 20], [8, 18], [12, 15]],
   },      // +1% ко всему доходу за каждое достижение
   // Апгрейды «по количеству»: появляются у каждого отдела на 50/100/200 штук
   // cost = база отдела × 1.15^at × costUnits
@@ -830,6 +855,23 @@ const ACHIEVEMENTS = [
   { id:'inbox1',   emoji:'📥', check: s => stt(s).inboxOk >= 1 },
   { id:'inbox100', emoji:'🧐', check: s => stt(s).inboxOk >= 100 },
   { id:'streak20', emoji:'🎯', check: s => stt(s).bestStreak >= 20 },
+  // --- v1.14
+  { id:'inbox500',  emoji:'🗃️', check: s => stt(s).inboxOk >= 500 },
+  { id:'streak50',  emoji:'🏹', check: s => stt(s).bestStreak >= 50 },
+  { id:'cleanday',  emoji:'🧼', check: s => !!(s.inbox && s.inbox.day && s.inbox.day.ok >= 8 && !s.inbox.day.bad) },
+  { id:'every100',  emoji:'🏢', check: s => DEPARTMENTS.every(d => owned(s, d.id) >= 100) },
+  { id:'docs1e21',  emoji:'🌌', check: s => s.allTimeEarned >= 1e21 },
+  { id:'rate1q',    emoji:'🚀', check: (s, r) => r >= 1e15 },
+  { id:'restr25',   emoji:'♻️', check: s => s.restructures >= 25 },
+  { id:'bought10k', emoji:'🛒', check: s => stt(s).bought >= 1e4 },
+  { id:'play50h',   emoji:'🕰️', check: s => stt(s).playSec >= 50 * 3600 },
+  // Скрытые: в реестре засекречены до получения. check: () => false — выдаются по событию (grantAch)
+  { id:'lastsec',   emoji:'⏱️', hidden: true, check: () => false },
+  { id:'night',     emoji:'🌙', hidden: true, check: () => false },
+  { id:'noupg',     emoji:'🧘', hidden: true, check: () => false },
+  { id:'away7d',    emoji:'🏝️', hidden: true, check: s => stt(s).maxAway >= 7 * 86400 },
+  { id:'fri13',     emoji:'📅', hidden: true, check: () => { const d = new Date(); return d.getDate() === 13 && d.getDay() === 5; } },
+  { id:'ret10',     emoji:'↩️', hidden: true, check: s => !!(s.inbox && s.inbox.day && s.inbox.day.ret >= 10) },
 ];
 
 /* ---------- Справочники ---------- */
@@ -1117,9 +1159,9 @@ const I18N = {
       rcWarn: 'All documents, departments, stamps and upgrades will be shredded. Seniority, settings and corporate records are kept.',
       rcBtn: 'Restructure the company', cancel: 'Defer to next quarter',
       // полный сброс
-      resetTitle: 'Shred all records?', resetForm: 'Form 404 · Irreversible', stampVoid: 'VOID',
-      resetBody: 'Everything goes into the shredder, including Seniority. There is no appeals process. There is not even an appeals form.',
-      resetBtn: 'Shred everything',
+      resetTitle: 'Delete your save?', resetForm: 'Form 404 · Irreversible', stampVoid: 'VOID',
+      resetBody: 'All progress will be deleted, including Seniority and benefits. Settings are kept. This cannot be undone.',
+      resetBtn: 'Delete save',
       // уведомления
       tUpgTab: '📎 Procurement has opened. Upgrades tab unlocked.',
       tRestrTab: '🔄 The Board mentions "restructuring". Tab unlocked.',
@@ -1165,6 +1207,18 @@ const I18N = {
       tInboxOpen: '📥 The in-tray is open: the first documents have landed on your desk.',
       loadingCloud: 'Fetching your records from the Telegram cloud…',
       tCloudRestored: '☁️ Progress restored from the Telegram cloud',
+      stForm: 'Form 1-L · Personnel file', stTitle: 'Personnel file',
+      stGeneral: 'General', stSessions: 'Visits to the office', stMaxAway: 'Longest absence',
+      stIncome: 'Documents', stRunEarned: 'Approved this period', stRate: 'Current output', stPeak: 'Best output', stOffline: 'Earned while away',
+      stDepts: 'Departments', stOwnedNow: 'On staff now',
+      stUpgs: 'Upgrades and stamps', stUpgBought: 'Upgrades bought, all time', stUpgNow: 'Upgrades this period', stStamps: 'Stamps pressed, all time',
+      stRestr: 'Restructuring', stMerits: 'Merits received, all time', stPerks: 'Benefit levels', stRunTime: 'Current period', stBestRun: 'Fastest period',
+      stInbox: 'In-tray', stDecided: 'Documents decided', stAccuracy: 'Correct decisions', stMistakes: 'Mistakes', stTimeouts: 'Ran out of time',
+      stReturned: 'Returned', stBestStreak: 'Best streak', stInboxEarned: 'Earned in rewards', stInboxLost: 'Lost in fines',
+      stAch: 'Received', stNote: 'Some counters were introduced in version 1.14 and count from then on.',
+      fCopy: 'Copy', copyYes: 'copy', copyNo: 'original', stampLate: 'OVERDUE', secShort: 's',
+      ibTimeout: 'Time ran out.',
+      achHidden: 'Classified. Details will be released upon completion.',
       tSynced: '☁️ Progress synced from another device',
       tTabSynced: '🗂️ Progress picked up from your other tab',
       tabsForm: 'Form 2-T · Duplicate access', tabsTitle: 'Open in another tab', tabsBtn: 'Play here',
@@ -1176,7 +1230,7 @@ const I18N = {
       storageCloud: 'Progress is saved to the Telegram cloud.', storageLocal: 'Progress is saved in this browser.',
       secStats: 'Personnel file', since: 'In office since', played: 'Time in office', signs: 'Manual signatures',
       bought: 'Departments acquired', lifetime: 'Documents, all time', restrCount: 'Restructurings',
-      secDanger: 'Shredder', reset: 'Shred all records (hard reset)',
+      secDanger: 'Danger zone', reset: 'Delete save (all progress)',
       close: 'Close', back: 'Back', credit: 'Made with Claude Opus 5.5',
       exportTitle: 'Export save', exportBody: 'Copy this code and keep it somewhere safe. Paste it into Import on another device.',
       copy: 'Copy code', tCopied: '📋 Code copied', tCopyFail: 'Select the code and copy it manually',
@@ -1298,9 +1352,9 @@ const I18N = {
         "The new filing system is so efficient that nobody can find the old filing system.",
         "A clerk was praised for thinking outside the box. He has been issued a new, slightly larger box.",
       ],
-      dirPlus: ['works with redoubled zeal', 'received a new stapler', 'the manager is on holiday', 'found a box of pens that work', 'the coffee machine has been repaired'],
-      dirMinus: ['closed for stocktaking', 'away at a mandatory team-building day', 'lost its only stapler', 'the printer has jammed again', 'stuck in a meeting about meetings'],
-      dirNone: ['No special instructions today. Carry on.', 'The Board is in session. No directive has been agreed upon.', 'Today is an ordinary day, as approved.'],
+      dirPlus: ['works with redoubled zeal', 'received a new stapler', 'the manager is on holiday', 'found a box of pens that work', 'the coffee machine has been repaired', "was promised a window seat", "had its forms pre-stamped overnight", "is trying to impress the auditors", "found the lost meeting room", "has a new intern who reads everything", "got the good chairs", "was mentioned favourably in a memo", "is fuelled by a birthday cake", "has the only working printer", "skipped the morning meeting by mistake"],
+      dirMinus: ['closed for stocktaking', 'away at a mandatory team-building day', 'lost its only stapler', 'the printer has jammed again', 'stuck in a meeting about meetings', "is moving to another floor", "is waiting for a signature from itself", "has run out of the right forms", "is on a fire drill that will not end", "is filling in its timesheets", "is being audited", "has lost the key to the filing cabinet", "is in mandatory compliance training", "is arguing about the thermostat", "is reorganising its folders by colour"],
+      dirNone: ['No special instructions today. Carry on.', 'The Board is in session. No directive has been agreed upon.', 'Today is an ordinary day, as approved.', "The directive has been drafted, but not yet approved. Proceed as usual.", "All departments are equally important today. Officially.", "Today’s directive was misfiled. Work as you see fit, within regulations."],
       names: ['A. Pilts', 'M. Stapleton', 'V. Formby', 'E. Inksworth', 'D. Ledger', 'O. Quorum', 'N. Carbon', 'S. Docket'],
       subjects: ['On the procurement of paperclips', 'Request to submit a request', 'Minutes of the previous minutes', 'On moving the meeting',
         'Coffee machine incident report', 'Approval of the approval schedule', 'Inventory of the inventory', 'Leave application (retroactive)'],
@@ -1408,6 +1462,7 @@ const I18N = {
       desk: { t: 'Directive and in-tray', x: [
         'Every day the Board may issue a directive: one department works ×2, another at half speed. Some days bring only one of them, some bring neither.',
         'A new document lands in your in-tray every {every} min, up to {max}. Check it against today\'s regulations and approve or deny it. A correct decision pays a few minutes of income, more with a streak. A mistake costs income, but only after your first restructuring, and never more than 10% of your documents. Not sure? Return it: no reward, no fine.'] },
+      timer: { t: 'Time limit', x: ['Each document in the in-tray has a time limit: {t0} s at first, down to {t1} s after many restructurings. If time runs out, it counts as a mistake. The clock only runs while the document is on screen.'] },
       ach: { t: 'Commendations', x: ['Achievements for milestones. Each one adds +{ach}% to all income, permanently. The trophy icon opens the full registry.'] },
     },
     rules: {
@@ -1420,6 +1475,14 @@ const I18N = {
       stale: { t: 'Documents older than 3 days have expired.', why: 'dated {date}, more than 3 days ago' },
       maxPages: { t: 'Documents longer than 10 pages are not accepted.', why: 'it has {pages} pages' },
       future: { t: 'Documents dated in the future are void.', why: 'dated {date}, in the future' },
+      copy: { t: "Copies are not accepted. Originals only.", why: "it is a copy" },
+      blank: { t: "All fields must be filled in.", why: "the subject is left blank" },
+      sealMatch: { t: "The seal must belong to the department that sent the document.", why: "sent by {dept}, but the seal is from {seal}" },
+      dupSig: { t: "No one may sign the same document twice.", why: "{name} signed it twice" },
+      formBand: { t: "Forms numbered 90 to 99 have been withdrawn.", why: "form {form} has been withdrawn" },
+      subjectBan: { t: "Documents on “{subject}” are not being considered today.", why: "its subject is “{subject}”" },
+      signerBan: { t: "{name} is on leave. Their signatures are not valid.", why: "it is signed by {name}" },
+      seriesDept: { t: "Series R forms may only be submitted by {sdept}.", why: "form {form} came from {dept}" },
     },
     perks: {
       headstart: { name: 'Pre-Approved Furniture', desc: 'The furniture was approved before the company existed. It has been waiting for you.' },
@@ -1468,6 +1531,21 @@ const I18N = {
       inbox1: { name: 'First Ruling', desc: 'Make your first correct in-tray decision' },
       inbox100: { name: 'Eagle-Eyed Clerk', desc: 'Make 100 correct in-tray decisions' },
       streak20: { name: 'Infallible', desc: 'Make 20 correct in-tray decisions in a row' },
+      inbox500: { name: "Senior Reviewer", desc: "Make 500 correct in-tray decisions" },
+      streak50: { name: "Spotless Record", desc: "Make 50 correct in-tray decisions in a row" },
+      cleanday: { name: "Clean Desk Policy", desc: "Decide 8 documents in one day without a single mistake" },
+      every100: { name: "Conglomerate", desc: "Own 100 of every department" },
+      docs1e21: { name: "Paper Universe", desc: "Approve 1e21 documents in total" },
+      rate1q: { name: "Speed of Paper", desc: "Reach 1e15 documents per second" },
+      restr25: { name: "Permanent Reorganisation", desc: "Restructure 25 times" },
+      bought10k: { name: "Bulk Procurement", desc: "Acquire 10,000 departments in total" },
+      play50h: { name: "Long Service", desc: "Spend 50 hours in office" },
+      lastsec: { name: "Just in Time", desc: "Make a correct in-tray decision with one second left" },
+      night: { name: "Night Shift", desc: "Decide a document between midnight and 5 a.m." },
+      noupg: { name: "Minimalist", desc: "Restructure without buying a single upgrade that period" },
+      away7d: { name: "Extended Leave", desc: "Come back after more than a week away" },
+      fri13: { name: "Unlucky Number", desc: "Show up for work on Friday the 13th" },
+      ret10: { name: "Return to Sender", desc: "Return 10 documents in one day" },
     },
   },
 
@@ -1520,9 +1598,9 @@ const I18N = {
       rcTotal: 'Итого выслуга: <b class="mono">{t}</b> → <b class="mono">+{p}%</b> ко всему доходу навсегда.',
       rcWarn: 'Все документы, отделы, печати и улучшения будут уничтожены. Выслуга, настройки и корпоративный учёт сохранятся.',
       rcBtn: 'Реорганизовать компанию', cancel: 'Отложить до следующего квартала',
-      resetTitle: 'Уничтожить все записи?', resetForm: 'Форма 404 · Безвозвратно', stampVoid: 'АННУЛИРОВАНО',
-      resetBody: 'В шредер отправится всё, включая выслугу. Порядка обжалования нет. Нет даже бланка для обжалования.',
-      resetBtn: 'Уничтожить всё',
+      resetTitle: 'Удалить сохранение?', resetForm: 'Форма 404 · Безвозвратно', stampVoid: 'АННУЛИРОВАНО',
+      resetBody: 'Весь прогресс будет удалён, включая выслугу и льготы. Настройки останутся. Отменить это нельзя.',
+      resetBtn: 'Удалить сохранение',
       tUpgTab: '📎 Открыт отдел закупок. Доступна вкладка «Улучшения».',
       tRestrTab: '🔄 Правление обмолвилось о «реорганизации». Вкладка открыта.',
       tNewDept: '{e} Новый отдел допущен к приобретению: {name}',
@@ -1564,6 +1642,18 @@ const I18N = {
       tInboxOpen: '📥 Открыты входящие: на стол легли первые документы.',
       loadingCloud: 'Запрашиваем ваши записи из облака Telegram…',
       tCloudRestored: '☁️ Прогресс восстановлен из облака Telegram',
+      stForm: 'Форма 1-Л · Личное дело', stTitle: 'Личное дело',
+      stGeneral: 'Общее', stSessions: 'Заходов в офис', stMaxAway: 'Самая долгая отлучка',
+      stIncome: 'Документы', stRunEarned: 'Одобрено за период', stRate: 'Сейчас в секунду', stPeak: 'Лучшее в секунду', stOffline: 'Получено в отсутствие',
+      stDepts: 'Отделы', stOwnedNow: 'Сейчас в штате',
+      stUpgs: 'Улучшения и печати', stUpgBought: 'Куплено улучшений за всё время', stUpgNow: 'Улучшений в этом периоде', stStamps: 'Печатей поставлено за всё время',
+      stRestr: 'Реорганизации', stMerits: 'Грамот получено за всё время', stPerks: 'Уровней льгот', stRunTime: 'Текущий период', stBestRun: 'Самый быстрый период',
+      stInbox: 'Входящие', stDecided: 'Решено документов', stAccuracy: 'Верных решений', stMistakes: 'Ошибок', stTimeouts: 'Не успели по времени',
+      stReturned: 'Возвращено', stBestStreak: 'Лучшая серия', stInboxEarned: 'Получено наград', stInboxLost: 'Потеряно на штрафах',
+      stAch: 'Получено', stNote: 'Некоторые счётчики появились в версии 1.14 и считаются с неё.',
+      fCopy: 'Экземпляр', copyYes: 'копия', copyNo: 'оригинал', stampLate: 'ПРОСРОЧЕНО', secShort: 'с',
+      ibTimeout: 'Время вышло.',
+      achHidden: 'Засекречено. Подробности — по факту выполнения.',
       tSynced: '☁️ Прогресс синхронизирован с другого устройства',
       tTabSynced: '🗂️ Прогресс подхвачен из другой вкладки',
       tabsForm: 'Форма 2-В · Повторный доступ', tabsTitle: 'Игра открыта в другой вкладке', tabsBtn: 'Играть здесь',
@@ -1575,7 +1665,7 @@ const I18N = {
       storageCloud: 'Прогресс сохраняется в облаке Telegram.', storageLocal: 'Прогресс сохраняется в этом браузере.',
       secStats: 'Личное дело', since: 'В должности с', played: 'Время в офисе', signs: 'Подписей вручную',
       bought: 'Отделов приобретено', lifetime: 'Документов за всё время', restrCount: 'Реорганизаций',
-      secDanger: 'Шредер', reset: 'Уничтожить все записи (полный сброс)',
+      secDanger: 'Опасная зона', reset: 'Удалить сохранение (весь прогресс)',
       close: 'Закрыть', back: 'Назад', credit: 'Сделано с помощью Claude Opus 5.5',
       exportTitle: 'Экспорт сохранения', exportBody: 'Скопируйте этот код и сохраните его. На другом устройстве вставьте его в «Импорт».',
       copy: 'Скопировать код', tCopied: '📋 Код скопирован', tCopyFail: 'Выделите код и скопируйте вручную',
@@ -1693,9 +1783,9 @@ const I18N = {
         "Новая система хранения настолько эффективна, что старую систему хранения никто не может найти.",
         "Сотрудника похвалили за мышление вне рамок. Ему выделили новые рамки, пошире.",
       ],
-      dirPlus: ['работает с удвоенным рвением', 'получил новый степлер', 'начальник в отпуске', 'нашёл коробку пишущих ручек', 'починили кофемашину'],
-      dirMinus: ['закрыт на инвентаризацию', 'на обязательном тимбилдинге', 'потерял единственный степлер', 'снова зажевало принтер', 'застрял на совещании о совещаниях'],
-      dirNone: ['Особых указаний нет. Продолжайте.', 'Правление заседает. Директиву пока не согласовали.', 'Сегодня обычный день, как и было утверждено.'],
+      dirPlus: ['работает с удвоенным рвением', 'получил новый степлер', 'начальник в отпуске', 'нашёл коробку пишущих ручек', 'починили кофемашину', "пообещали место у окна", "получил бланки, проштампованные за ночь", "старается понравиться аудиторам", "нашёл потерянную переговорную", "взял стажёра, который всё читает", "достались хорошие стулья", "похвалили в служебной записке", "подкрепился тортом в честь дня рождения", "достался единственный рабочий принтер", "по ошибке пропустил утреннее совещание"],
+      dirMinus: ['закрыт на инвентаризацию', 'на обязательном тимбилдинге', 'потерял единственный степлер', 'снова зажевало принтер', 'застрял на совещании о совещаниях', "переезжает на другой этаж", "ждёт подписи от самого себя", "израсходовал нужные бланки", "на учебной тревоге, которая не кончается", "заполняет табели учёта времени", "проходит аудит", "потерял ключ от картотеки", "на обязательном обучении по соответствию", "спорит о температуре кондиционера", "перекладывает папки по цвету"],
+      dirNone: ['Особых указаний нет. Продолжайте.', 'Правление заседает. Директиву пока не согласовали.', 'Сегодня обычный день, как и было утверждено.', "Директива подготовлена, но ещё не утверждена. Работаем как обычно.", "Сегодня все отделы одинаково важны. Официально.", "Директиву на сегодня подшили не туда. Работайте по своему усмотрению, в рамках регламента."],
       names: ['А. Пыльцов', 'М. Скрепкина', 'В. Бланков', 'Е. Чернилина', 'Д. Реестров', 'О. Кворумов', 'Н. Копиркина', 'С. Делопроизводов'],
       subjects: ['О закупке скрепок', 'Заявка на подачу заявки', 'Протокол предыдущего протокола', 'О переносе совещания',
         'Акт о происшествии с кофемашиной', 'Утверждение графика утверждений', 'Инвентаризация инвентаря', 'Заявление на отпуск (задним числом)'],
@@ -1865,6 +1955,7 @@ const I18N = {
       desk: { t: 'Директива и входящие', x: [
         'Каждый день правление может выпустить директиву: один отдел работает ×2, другой вполсилы. Бывает только одно из двух, а бывает и ничего.',
         'Каждые {every} мин на стол ложится новый документ, всего помещается {max}. Сверьте его с регламентом на сегодня и одобрите или откажите. Верное решение приносит доход за несколько минут, а серия верных — больше. Ошибка стоит дохода, но только после первой реорганизации и никогда не больше 10% ваших документов. Не уверены — верните документ: ни награды, ни штрафа.'] },
+      timer: { t: 'Время на документ', x: ['На каждый документ во входящих даётся время: сначала {t0} с, после многих реорганизаций — до {t1} с. Не успели — это ошибка. Время идёт, только пока документ открыт на экране.'] },
       ach: { t: 'Благодарности', x: ['Достижения за успехи на службе. Каждое навсегда добавляет +{ach}% ко всему доходу. Значок кубка открывает полный реестр.'] },
     },
     rules: {
@@ -1877,6 +1968,14 @@ const I18N = {
       stale: { t: 'Документы старше 3 дней просрочены.', why: 'датирован {date} — старше 3 дней' },
       maxPages: { t: 'Документы длиннее 10 страниц не принимаются.', why: 'в нём {pages} стр.' },
       future: { t: 'Документы, датированные будущим числом, недействительны.', why: 'датирован {date} — будущим числом' },
+      copy: { t: "Копии не принимаются, только оригиналы.", why: "это копия" },
+      blank: { t: "Все поля должны быть заполнены.", why: "не заполнен предмет" },
+      sealMatch: { t: "Печать должна принадлежать отделу, который прислал документ.", why: "отправитель — {dept}, а печать — {seal}" },
+      dupSig: { t: "Один человек не может подписать документ дважды.", why: "{name} подписал дважды" },
+      formBand: { t: "Формы с номерами от 90 до 99 отозваны.", why: "форма {form} отозвана" },
+      subjectBan: { t: "Документы с предметом «{subject}» сегодня не рассматриваются.", why: "предмет — «{subject}»" },
+      signerBan: { t: "{name} в отпуске — эти подписи недействительны.", why: "стоит подпись: {name}" },
+      seriesDept: { t: "Формы серии R вправе подавать только: {sdept}.", why: "форма {form} пришла от: {dept}" },
     },
     perks: {
       headstart: { name: 'Заранее согласованная мебель', desc: 'Мебель согласовали ещё до основания компании. Она вас ждёт.' },
@@ -1925,6 +2024,21 @@ const I18N = {
       inbox1: { name: 'Первая резолюция', desc: 'Принять первое верное решение по входящим' },
       inbox100: { name: 'Зоркий клерк', desc: 'Принять 100 верных решений по входящим' },
       streak20: { name: 'Непогрешимый', desc: '20 верных решений по входящим подряд' },
+      inbox500: { name: "Старший рецензент", desc: "500 верных решений по входящим" },
+      streak50: { name: "Безупречный послужной список", desc: "50 верных решений по входящим подряд" },
+      cleanday: { name: "Политика чистого стола", desc: "Разобрать за день 8 документов без единой ошибки" },
+      every100: { name: "Конгломерат", desc: "По 100 штук каждого отдела" },
+      docs1e21: { name: "Бумажная вселенная", desc: "Одобрить 1e21 документов за всё время" },
+      rate1q: { name: "Скорость бумаги", desc: "Достичь 1e15 документов в секунду" },
+      restr25: { name: "Перманентная реорганизация", desc: "Провести 25 реорганизаций" },
+      bought10k: { name: "Оптовые закупки", desc: "Приобрести 10 000 отделов за всё время" },
+      play50h: { name: "Выслуга лет", desc: "Провести в офисе 50 часов" },
+      lastsec: { name: "В последний момент", desc: "Верное решение по входящим, когда осталась одна секунда" },
+      night: { name: "Ночная смена", desc: "Разобрать документ между полуночью и пятью утра" },
+      noupg: { name: "Минималист", desc: "Провести реорганизацию, не купив за период ни одного улучшения" },
+      away7d: { name: "Длительный отпуск", desc: "Вернуться после отсутствия дольше недели" },
+      fri13: { name: "Несчастливое число", desc: "Выйти на работу в пятницу, 13-е" },
+      ret10: { name: "Вернуть отправителю", desc: "Вернуть 10 документов за один день" },
     },
   },
 };
@@ -1943,7 +2057,10 @@ const DEFAULT_SETTINGS = {
   awayReport: 'always',  // окно возвращения: 'always' | 'long' (от 30 мин) | 'never'
   theme: 'auto',         // 'auto' — как в Telegram или системе, 'light', 'dark'
 };
-const DEFAULT_STATS = { signs: 0, playSec: 0, bought: 0, maxAway: 0, inboxOk: 0, inboxBad: 0, bestStreak: 0 };
+const DEFAULT_STATS = { signs: 0, playSec: 0, bought: 0, maxAway: 0, inboxOk: 0, inboxBad: 0, bestStreak: 0,
+  // v1.14 — считаются с момента обновления
+  sessions: 0, peakRate: 0, offlineEarned: 0, upgBought: 0, stampsEarned: 0, bestRunSec: 0,
+  inboxReturned: 0, inboxTimeout: 0, inboxEarned: 0, inboxLost: 0 };
 
 /* =====================================================================
    ЗВУКИ — синтезируются через Web Audio API, без файлов.
@@ -2002,6 +2119,7 @@ const SFX = {
   },
   // шорох листа — переключение вкладок
   tab(A, t) { A.hiss(t, { dur: 0.035, gain: 0.08, filter: 'highpass', freq: 2500 }); },
+  tick(A, t) { A.tone(t, { freq: 950, type: 'square', dur: 0.018, gain: 0.03 }); },
   // глухое «бззз» — ошибка во входящих
   error(A, t) {
     A.tone(t, { freq: 220, type: 'square', dur: 0.13, gain: 0.045 });
@@ -2079,7 +2197,9 @@ const SAVE_ORDER = {
     'docs1k', 'docs1m', 'docs1b', 'docs1t', 'docs1q', 'rate1k', 'rate1m', 'rate1b', 'sign100', 'intern50',
     'total100', 'total500', 'every', 'hundred', 'upg10', 'upg25', 'stamps1k', 'away8', 'play1h', 'restr1', 'restr5',
     'sen25', 'docs1e18', 'rate1t', 'sign1000', 'total1000', 'every25', 'stamps1m', 'upg50', 'play10h', 'restr10',
-    'sen100', 'perksall', 'inbox1', 'inbox100', 'streak20',
+    'sen100', 'perksall', 'inbox1', 'inbox100', 'streak20', 'inbox500',
+    'streak50', 'cleanday', 'every100', 'docs1e21', 'rate1q', 'restr25', 'bought10k', 'play50h', 'lastsec', 'night', 'noupg',
+    'away7d', 'fri13', 'ret10',
   ],
 };
 // Короткие имена полей. Все начинаются с заглавной буквы: обычные поля игры пишутся
@@ -2088,6 +2208,10 @@ const PACK_KEYS = {
   docs: 'A', stamps: 'B', runEarned: 'C', stampsEarnedRun: 'E', allTimeEarned: 'F', seniority: 'G', restructures: 'H',
   depts: 'I', upgrades: 'J', flags: 'K', buyMode: 'L', created: 'M', runStarted: 'N', lastSeen: 'O', merits: 'P',
   perks: 'Q', perksOrder: 'R', achievements: 'S', settings: 'T', stats: 'U', inbox: 'V', directive: 'W', rev: 'X', sid: 'Y',
+  // v1.14: личное дело, входящие (только дописывать, значения не должны повторяться)
+  sessions: 'Sn', peakRate: 'Pr', offlineEarned: 'Oe', upgBought: 'Ub', stampsEarned: 'Sm', bestRunSec: 'Br',
+  inboxReturned: 'Ir', inboxTimeout: 'It', inboxEarned: 'Ie', inboxLost: 'Il',
+  legacySeen: 'Ls', left: 'Lt', copy: 'Cp', sealDept: 'Sd', ret: 'Rd', banSubject: 'Bj', banSigner: 'Bn', seriesDept: 'Sr',
   // настройки
   lang: 'La', sound: 'So', volume: 'Vo', ambience: 'Am', haptics: 'Ha', memos: 'Me', animations: 'An',
   numFormat: 'Nf', fullscreen: 'Fs', awayReport: 'Ar', theme: 'Th',
@@ -2210,14 +2334,19 @@ const Store = {
   rev: 0,            // номер последней известной версии в облаке
   baseSeen: 0,       // lastSeen сохранения, с которого стартовали (для старых записей без rev)
   syncing: null,
-  // Сначала новое сжатое сохранение; если его ещё нет — старое (до версии 1.13).
-  // Если на этом же устройстве после обновления успела поработать старая версия игры
-  // (например, из кэша браузера), её запись свежее — берём её, чтобы не потерять.
+  /* Сначала новое сжатое сохранение; если его ещё нет — старое (до версии 1.13).
+     legacySeen — отметка времени старой записи на момент перехода на новый формат; она хранится
+     в новом сохранении. Если старая запись с тех пор изменилась, значит, на этом устройстве успела
+     поиграть старая версия игры (например, из кэша браузера) — берём её, чтобы не потерять.
+     Сравниваем старую запись саму с собой, а не с часами, поэтому перевод часов ничего не путает. */
+  legacySeen: 0,
   readLocal() {
     const get = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
     const v2 = parseSave(get(SAVE_KEY2)), v1 = parseSave(get(SAVE_KEY));
-    if (v2 && v1 && cleanNum(v1.lastSeen) > cleanNum(v2.lastSeen)) return v1;
-    return v2 || v1;
+    const seen1 = v1 ? cleanNum(v1.lastSeen) : 0;
+    if (v1 && (!v2 || (v2.legacySeen != null && seen1 > cleanNum(v2.legacySeen)))) { this.legacySeen = seen1; return v1; }
+    this.legacySeen = v2 && v2.legacySeen != null ? cleanNum(v2.legacySeen) : seen1;
+    return v2;
   },
   // { ok: false } — облако не ответило; { ok: true, save } — ответило (save может быть null)
   readCloud() {
@@ -2288,6 +2417,7 @@ const Store = {
     const toCloud = this.cloud && this.writable;
     if (toCloud) state.rev = ++this.rev;
     state.sid = SID;
+    state.legacySeen = this.legacySeen;
     const str = JSON.stringify(packSave(state));
     try { localStorage.setItem(SAVE_KEY2, str); } catch (e) {}
     if (!toCloud) return;
@@ -2662,13 +2792,6 @@ function showSettings() {
       <button class="btn ghost" data-set-act="export">📤 ${t('export')}</button>
       <button class="btn ghost" data-set-act="import">📥 ${t('import')}</button>
     </div>
-    <div class="set-sec">${t('secStats')}</div>
-    ${kv(t('since'), since)}
-    ${kv(t('played'), fmtTime(S.stats.playSec))}
-    ${kv(t('signs'), fmt(S.stats.signs))}
-    ${kv(t('bought'), fmt(S.stats.bought))}
-    ${kv(t('lifetime'), fmt(S.allTimeEarned))}
-    ${kv(t('restrCount'), S.restructures)}
     <div class="set-sec">${t('secDanger')}</div>
     <div style="margin-top:8px"><button class="btn danger" data-set-act="reset"><span>${t('reset')}</span><span class="sub">🗑️</span></button></div>
     <div class="credit mono">Paperwork Inc. v${CONFIG.version} · ${t('credit')}${CONFIG.itchUrl ? `<br><a href="#" data-set-act="itch">🕹️ ${t('itchPage')}</a>` : ''}${CONFIG.repoUrl ? `<br><a href="#" data-set-act="repo">💻 ${t('sourceCode')}</a>` : ''}</div>
@@ -2811,6 +2934,50 @@ function showImport() {
   });
 }
 
+/* ---------- Личное дело: подробная статистика ----------
+   Счётчики из S.stats; то, что можно вычислить из состояния, считаем на лету. */
+function showStats() {
+  const st = S.stats, m = getMods(S), rate = totalRate(S, m);
+  const kv = (k, v) => `<div class="kv"><span>${k}</span><b>${v}</b></div>`;
+  const sec = title => `<div class="set-sec">${title}</div>`;
+  const na = '—';
+  const since = new Date(S.created || Date.now()).toLocaleDateString(LANG === 'ru' ? 'ru-RU' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  const runSec = (Date.now() - (S.runStarted || Date.now())) / 1000;
+  let html = sec(t('stGeneral')) +
+    kv(t('since'), since) + kv(t('played'), fmtTime(st.playSec)) + kv(t('stSessions'), fmt(st.sessions)) +
+    kv(t('stMaxAway'), st.maxAway ? fmtTime(st.maxAway) : na);
+  html += sec(t('stIncome')) +
+    kv(t('lifetime'), fmt(S.allTimeEarned)) + kv(t('stRunEarned'), fmt(S.runEarned)) +
+    kv(t('stRate'), fmtRate(rate) + t('perS')) + kv(t('stPeak'), fmtRate(Math.max(st.peakRate, rate)) + t('perS')) +
+    kv(t('stOffline'), fmt(st.offlineEarned)) + kv(t('signs'), fmt(st.signs));
+  // отделы: количество и доля в доходе
+  const owned_ = DEPARTMENTS.filter(d => owned(S, d.id) > 0);
+  html += sec(t('stDepts')) + kv(t('bought'), fmt(st.bought)) + kv(t('stOwnedNow'), fmt(totalOwned(S)));
+  html += owned_.map(d => {
+    const share = rate > 0 ? deptRate(S, d, m) / rate : 0;
+    return `<div class="st-dept"><span class="sd-n">${d.emoji} ${esc(dName(d))}</span><b class="mono">×${fmt(owned(S, d.id))}</b>
+      <span class="sd-p mono">${Math.round(share * 100)}%</span><div class="sd-bar"><i style="width:${(share * 100).toFixed(1)}%"></i></div></div>`;
+  }).join('');
+  html += sec(t('stUpgs')) + kv(t('stUpgBought'), fmt(st.upgBought)) + kv(t('stUpgNow'), S.upgrades.length + ' / ' + UPGRADES.length);
+  if (m.stampsOn || st.stampsEarned > 0) html += kv(t('stStamps'), fmt(st.stampsEarned + (S.stampsEarnedRun || 0)));
+  if (S.restructures > 0) {
+    const lv = PERKS.reduce((a, p) => a + perkLevel(S, p.id), 0), lvMax = PERKS.reduce((a, p) => a + p.costs.length, 0);
+    html += sec(t('stRestr')) + kv(t('restrCount'), fmt(S.restructures)) + kv(t('seniority'), fmt(S.seniority)) +
+      kv(t('stMerits'), fmt(S.seniority)) + kv(t('stPerks'), lv + ' / ' + lvMax) +
+      kv(t('stRunTime'), fmtTime(runSec)) + kv(t('stBestRun'), st.bestRunSec ? fmtTime(st.bestRunSec) : na);
+  }
+  if (inboxOpen()) {
+    const dec = st.inboxOk + st.inboxBad;
+    html += sec(t('stInbox')) + kv(t('stDecided'), fmt(dec)) + kv(t('stAccuracy'), dec ? Math.round(st.inboxOk / dec * 100) + '%' : na) +
+      kv(t('stMistakes'), fmt(st.inboxBad)) + kv(t('stTimeouts'), fmt(st.inboxTimeout)) + kv(t('stReturned'), fmt(st.inboxReturned)) +
+      kv(t('stBestStreak'), fmt(st.bestStreak)) + kv(t('stInboxEarned'), '+' + fmt(st.inboxEarned)) + kv(t('stInboxLost'), (st.inboxLost ? '−' : '') + fmt(st.inboxLost));
+  }
+  const got = (S.achievements || []).length;
+  html += sec(t('achTitle')) + kv(t('stAch'), got + ' / ' + ACHIEVEMENTS.length + ' · +' + Math.round(got * CONFIG.achievementBonus * 100) + '%');
+  html += `<p class="hint" style="font-size:12px;margin:12px 0 0">${t('stNote')}</p>`;
+  showModal({ form: t('stForm'), title: '📊 ' + t('stTitle'), body: html, buttons: [{ label: t('close') }] });
+}
+
 /* ---------- Окно «пока вас не было» ---------- */
 function showAway(awaySec, countedSec, gained, m) {
   const capped = awaySec > countedSec + 1;
@@ -2836,6 +3003,7 @@ function applyAway(sec) {
   const m = getMods(S);
   const counted = Math.min(sec, m.capHours * 3600);
   const gained = advance(S, counted, m.eff);
+  S.stats.offlineEarned += gained.docs;
   checkUnlocks(true);
   const mode = S.settings.awayReport;
   if (mode === 'always' || (mode === 'long' && sec >= 1800)) showAway(sec, counted, gained, m);
@@ -3040,9 +3208,9 @@ function renderPerks() {
 function showAchievements() {
   const got = S.achievements || [];
   const list = ACHIEVEMENTS.map(a => {
-    const has = got.indexOf(a.id) !== -1, tx = aText(a);
-    return `<div class="ach ${has ? '' : 'locked'}"><span class="ae">${a.emoji}</span>
-      <div><div class="an">${esc(tx.name)}</div><div class="ad">${esc(tx.desc)}</div></div>
+    const has = got.indexOf(a.id) !== -1, secret = a.hidden && !has, tx = aText(a);
+    return `<div class="ach ${has ? '' : 'locked'}"><span class="ae">${secret ? '🔒' : a.emoji}</span>
+      <div><div class="an">${secret ? '<span class="rbar">XXXXXXXXXXXX</span>' : esc(tx.name)}</div><div class="ad">${secret ? t('achHidden') : esc(tx.desc)}</div></div>
       ${has ? `<span class="ok">${t('stampApproved')}</span>` : ''}</div>`;
   }).join('');
   showModal({
@@ -3050,6 +3218,13 @@ function showAchievements() {
     body: `<div class="ach-sum">${t('achSummary', { n: got.length, total: ACHIEVEMENTS.length, p: Math.round(got.length * CONFIG.achievementBonus * 100) })}</div>${list}`,
     buttons: [{ label: t('close') }],
   });
+}
+// Выдать благодарность за событие (скрытые достижения, которые нельзя проверить по состоянию)
+function grantAch(id) {
+  if (!S || S.achievements.indexOf(id) !== -1 || !ACHIEVEMENTS.some(a => a.id === id)) return;
+  S.achievements.push(id);
+  toast(t('tAch', { name: aText(ACHIEVEMENTS.find(a => a.id === id)).name, p: Math.round(CONFIG.achievementBonus * 100) }));
+  haptic.success(); Sound.play('milestone');
 }
 function checkAchievements() {
   const got = updateAchievements(S);
@@ -3072,6 +3247,7 @@ const HANDBOOK = [
   { id: 'restr',  emoji: '🔄', open: s => restructureUnlocked(s) },
   { id: 'perks',  emoji: '📜', open: s => s.restructures > 0 },
   { id: 'desk',   emoji: '📥', open: s => !!s.flags.inboxOpen },
+  { id: 'timer',  emoji: '⏱️', open: s => !!s.flags.inboxOpen },
   { id: 'ach',    emoji: '🏆', open: () => true },
 ];
 const hbText = id => (I18N[LANG].hb || {})[id] || I18N.en.hb[id];
@@ -3083,6 +3259,7 @@ function hbVars() {
     sen: Math.round(CONFIG.prestige.bonusPerPoint * 100), min: fmt(CONFIG.prestige.minRunEarned),
     ach: Math.round(CONFIG.achievementBonus * 100),
     every: CONFIG.inbox.everyMin, max: CONFIG.inbox.max,
+    t0: CONFIG.inbox.secondsByRestructures[0][1], t1: CONFIG.inbox.secondsByRestructures.slice(-1)[0][1],
   };
 }
 function showHandbook() {
@@ -3166,7 +3343,10 @@ function rollDirective(key) {
 /* ---------- Регламент: правила проверки документов ----------
    broken(doc, regs) — нарушает ли документ правило;
    violate(doc, rnd, regs) — испортить документ так, чтобы правило нарушалось.
-   tier 0 — простые правила с первого дня, tier 1 — добавляются после реорганизаций. */
+   tier 0 — простые правила с первого дня, tier 1 — после первой реорганизации, tier 2 — после пятой.
+   Поля документа: subject < 0 — тема не заполнена; copy — копия; sealDept — чья печать (null — того же отдела). */
+const docNames = () => tlist('names').length, docSubjects = () => tlist('subjects').length;
+const sealOf = d => (d.sealDept && DEPT_BY_ID[d.sealDept] ? d.sealDept : d.dept);
 function lastWeekendAgo(rnd) {
   const opts = [0, 1, 2, 3, 4, 5, 6].filter(n => isWeekendKey(keyDaysAgo(n)));
   return pickR(rnd, opts);
@@ -3182,16 +3362,43 @@ const INBOX_RULES = [
   { id: 'stale',     tier: 1, broken: d => daysAgo(d.date) > 3,           violate: (d, rnd) => { d.date = keyDaysAgo(4 + Math.floor(rnd() * 3)); } },
   { id: 'maxPages',  tier: 1, broken: d => d.pages > 10,                  violate: (d, rnd) => { d.pages = pickR(rnd, [12, 14, 16]); } },
   { id: 'future',    tier: 1, broken: d => daysAgo(d.date) < 0,           violate: (d, rnd) => { d.date = keyDaysAgo(-1 - Math.floor(rnd() * 2)); } },
+  // v1.14
+  { id: 'copy',      tier: 0, broken: d => !!d.copy,                      violate: d => { d.copy = true; } },
+  { id: 'blank',     tier: 0, broken: d => d.subject < 0,                 violate: d => { d.subject = -1; } },
+  { id: 'sealMatch', tier: 1, broken: d => !!d.seal && sealOf(d) !== d.dept,
+    violate: (d, rnd) => {
+      const others = DEPARTMENTS.filter((x, i) => x.id !== d.dept && (owned(S, x.id) > 0 || i < 4)).map(x => x.id);
+      d.seal = true; d.sealDept = pickR(rnd, others);
+    } },
+  { id: 'dupSig',    tier: 1, broken: d => d.sigs.length > 1 && d.sigs[0] % docNames() === d.sigs[1] % docNames(),
+    violate: d => { d.sigs = [d.sigs[0], d.sigs[0]]; } },
+  { id: 'formBand',  tier: 1, broken: d => d.form >= 90,                  violate: (d, rnd) => { d.form = 90 + Math.floor(rnd() * 10); } },
+  { id: 'subjectBan', tier: 2, broken: (d, r) => r.banSubject != null && d.subject >= 0 && d.subject % docSubjects() === r.banSubject,
+    violate: (d, rnd, r) => { if (r.banSubject != null) d.subject = r.banSubject; } },
+  { id: 'signerBan', tier: 2, broken: (d, r) => r.banSigner != null && d.sigs.some(i => i % docNames() === r.banSigner),
+    violate: (d, rnd, r) => { if (r.banSigner != null) d.sigs[d.sigs.length - 1] = r.banSigner; } },
+  { id: 'seriesDept', tier: 2, broken: (d, r) => !!r.seriesDept && d.letter === 'R' && d.dept !== r.seriesDept,
+    violate: (d, rnd, r) => {
+      const others = ownedDeptIds().filter(id => id !== r.seriesDept);
+      if (!r.seriesDept || !others.length) return;
+      d.letter = 'R'; d.dept = pickR(rnd, others); d.sealDept = null;
+    } },
 ];
 const RULE_BY_ID = Object.fromEntries(INBOX_RULES.map(r => [r.id, r]));
 function rulesCount(k) { let n = 0; for (const [from, count] of CONFIG.inbox.rulesByRestructures) if (k >= from) n = count; return n; }
 function rollRules(key) {
   const k = S.restructures, rnd = seededRandom('rules:' + key + ':' + rulesCount(k));
-  const pool = INBOX_RULES.filter(r => r.tier <= (k >= 1 ? 1 : 0)).map(r => r.id);
+  const tier = k >= CONFIG.inbox.tier2At ? 2 : k >= CONFIG.inbox.tier1At ? 1 : 0;
+  const pool = INBOX_RULES.filter(r => r.tier <= tier).map(r => r.id);
   const ids = [];
   while (ids.length < rulesCount(k) && pool.length) ids.push(pool.splice(Math.floor(rnd() * pool.length), 1)[0]);
   const senders = ownedDeptIds();
-  return { key, ids, inkDept: senders.length ? pickR(rnd, senders) : 'approvals' };
+  const regs = { key, ids, inkDept: senders.length ? pickR(rnd, senders) : 'approvals' };
+  // v1.14: запрещённая тема, сотрудник в отпуске, отдел для серии R (бросаем после старых — прежние дни не меняются)
+  regs.banSubject = Math.floor(rnd() * docSubjects());
+  regs.banSigner = Math.floor(rnd() * docNames());
+  regs.seriesDept = senders.length ? pickR(rnd, senders) : 'approvals';
+  return regs;
 }
 const activeRules = () => S.inbox.rules.ids.map(id => RULE_BY_ID[id]).filter(Boolean);
 
@@ -3199,14 +3406,16 @@ const activeRules = () => S.inbox.rules.ids.map(id => RULE_BY_ID[id]).filter(Boo
 function makeDoc() {
   const regs = S.inbox.rules, rules = activeRules(), rnd = Math.random;
   const senders = ownedDeptIds(); if (!senders.length) senders.push('intern');
-  const names = [0, 1, 2, 3, 4, 5, 6, 7].sort(() => rnd() - 0.5);
+  // Исходный документ без нарушений: номер до 89, серия не R, подписи и тема — не запрещённые сегодня
+  const names = [...Array(docNames()).keys()].filter(i => i !== regs.banSigner).sort(() => rnd() - 0.5);
+  const subjects = [...Array(docSubjects()).keys()].filter(i => i !== regs.banSubject);
   const weekdays = [0, 1, 2, 3].filter(n => !isWeekendKey(keyDaysAgo(n)));
   const d = {
-    form: 10 + Math.floor(rnd() * 90), letter: pickR(rnd, ['A', 'B', 'C', 'D', 'F', 'P', 'R', 'S']),
+    form: 10 + Math.floor(rnd() * 80), letter: pickR(rnd, ['A', 'B', 'C', 'D', 'F', 'P', 'S']),
     dept: regs.inkDept && senders.includes(regs.inkDept) && rnd() < 0.35 ? regs.inkDept : pickR(rnd, senders),
     date: keyDaysAgo(weekdays.length ? pickR(rnd, weekdays) : 0),
     sigs: names.slice(0, 2), ink: 'blue', pages: pickR(rnd, [2, 4, 6, 8, 10]), seal: true,
-    subject: Math.floor(rnd() * 1e6),
+    subject: pickR(rnd, subjects), copy: false, sealDept: null,
   };
   if (d.dept !== regs.inkDept && rnd() < 0.4) d.ink = 'black';
   // «подозрительные» детали, которые сегодняшний регламент разрешает: проверяем, что ни одно правило не нарушено
@@ -3295,15 +3504,20 @@ function docHTML(d, verdict) {
     <div class="f"><span>${t('fSigs')}</span><span class="sig ink-${d.ink}">${d.sigs.map(i => esc(names[i % names.length])).join(', ')}</span></div>
     <div class="f"><span>${t('fInk')}</span><span class="ink-${d.ink}" style="font-weight:600">${inkWord(d.ink)}</span></div>
     <div class="f"><span>${t('fPages')}</span><span class="mono">${d.pages}</span></div>
-    <div class="f"><span>${t('fSeal')}</span><span>${d.seal ? `<span class="seal">${esc(dName(dept).slice(0, 10).toUpperCase())}</span> ${t('sealYes')}` : t('sealNo')}</span></div>
-    <div class="f"><span>${t('fSubject')}</span><span>${esc(subjects[d.subject % subjects.length])}</span></div>
-    ${verdict ? `<div class="verdict ${verdict === 'yes' ? 'yes' : 'no'}">${verdict === 'yes' ? t('stampApproved') : t('stampDenied')}</div>` : ''}
+    <div class="f"><span>${t('fSeal')}</span><span>${d.seal ? `<span class="seal">${esc(dName(DEPT_BY_ID[sealOf(d)]).slice(0, 10).toUpperCase())}</span> ${esc(dName(DEPT_BY_ID[sealOf(d)]))}` : t('sealNo')}</span></div>
+    <div class="f"><span>${t('fCopy')}</span><span>${d.copy ? t('copyYes') : t('copyNo')}</span></div>
+    <div class="f"><span>${t('fSubject')}</span><span>${d.subject < 0 ? '<span class="blank">—</span>' : esc(subjects[d.subject % subjects.length])}</span></div>
+    ${verdict ? `<div class="verdict ${verdict === 'yes' ? 'yes' : 'no'}">${verdict === 'yes' ? t('stampApproved') : verdict === 'late' ? t('stampLate') : t('stampDenied')}</div>` : ''}
   </div>`;
 }
 function regsHTML() {
   const regs = S.inbox.rules;
   const rules = activeRules().map((r, i) => {
-    let text = esc(I18N[LANG].rules ? I18N[LANG].rules[r.id].t : I18N.en.rules[r.id].t).replace('{dept}', esc(dName(DEPT_BY_ID[regs.inkDept])));
+    let text = esc((I18N[LANG].rules || I18N.en.rules)[r.id].t)
+      .replace('{dept}', esc(dName(DEPT_BY_ID[regs.inkDept])))
+      .replace('{sdept}', esc(dName(DEPT_BY_ID[regs.seriesDept] || DEPARTMENTS[0])))
+      .replace('{subject}', esc(tlist('subjects')[regs.banSubject] || ''))
+      .replace('{name}', esc(tlist('names')[regs.banSigner] || ''));
     return `<div class="r"><b>§${i + 1}</b> ${text}</div>`;
   }).join('');
   return `<div class="regs"><div class="rt">${t('ibRegs', { date: fmtDay(regs.key) })}</div>${rules}</div>`;
@@ -3316,11 +3530,14 @@ function showInbox() {
     <div class="ib-top"><h2>📥 ${t('ibTitle')}${ib.count ? ' · ' + t('ibOnDesk', { n: ib.count }) : ''}</h2>${streak}</div>`;
   let body;
   if (inboxResult) {
-    const r = inboxResult, why = (I18N[LANG].rules || I18N.en.rules)[r.rule];
-    const reason = r.rule ? `§${r.ruleNo}: ${esc(why.why.replace('{date}', fmtDay(r.doc.date, true)).replace('{pages}', r.doc.pages)
-      .replace('{form}', r.doc.form + '-' + r.doc.letter).replace('{ink}', inkWord(r.doc.ink)).replace('{dept}', dName(DEPT_BY_ID[r.doc.dept])))}.` : t('ibValid');
+    const r = inboxResult, why = (I18N[LANG].rules || I18N.en.rules)[r.rule], names = tlist('names'), regs = S.inbox.rules || {};
+    const who = r.rule === 'signerBan' ? names[regs.banSigner] : names[r.doc.sigs[0] % names.length];
+    const reason = (r.timeout ? t('ibTimeout') + ' ' : '') + (r.rule ? `§${r.ruleNo}: ${esc(why.why.replace('{date}', fmtDay(r.doc.date, true)).replace('{pages}', r.doc.pages)
+      .replace('{form}', r.doc.form + '-' + r.doc.letter).replace('{ink}', inkWord(r.doc.ink)).replace('{dept}', dName(DEPT_BY_ID[r.doc.dept]))
+      .replace('{seal}', dName(DEPT_BY_ID[sealOf(r.doc)])).replace('{name}', who || '')
+      .replace('{subject}', tlist('subjects')[r.doc.subject % tlist('subjects').length] || ''))}.` : t('ibValid'));
     const money = r.correct ? ` <b>+${fmt(r.amount)}</b>` : (r.amount > 0 ? ` <b>−${fmt(r.amount)}</b>` : ` ${t('ibNoFine')}`);
-    body = regsHTML() + docHTML(r.doc, r.approve ? 'yes' : 'no') +
+    body = regsHTML() + docHTML(r.doc, r.timeout ? 'late' : r.approve ? 'yes' : 'no') +
       `<div class="ib-result ${r.correct ? '' : 'bad'}">${r.correct ? '✓ <b>' + t('ibOk') + '</b>' : '✗ <b>' + t('ibBad') + '</b>'} ${reason}${money}</div>` +
       `<div class="m-btns"><button class="btn${ib.count ? '' : ' ghost'}" data-ib="next">${ib.count ? t('ibNext') : t('close')}</button></div>`;
   } else if (!ib.count) {
@@ -3331,8 +3548,9 @@ function showInbox() {
       <div class="m-btns"><button class="btn ghost" data-ib="close">${t('close')}</button></div>`;
   } else {
     if (!isDoc(ib.current)) ib.current = makeDoc();
+    if (!(ib.current.left > 0)) ib.current.left = inboxSeconds();
     const penalty = inboxPenaltyMin() > 0 ? fmt(inboxPenalty()) : null;
-    body = regsHTML() + docHTML(ib.current) +
+    body = `<div class="ib-timer" id="ibTimer"><div class="bar"><i></i></div><span class="mono"></span></div>` + regsHTML() + docHTML(ib.current) +
       `<div class="ib-actions"><button class="btn danger" data-ib="deny">${t('ibDeny')}</button><button class="btn ghost" data-ib="return">${t('ibReturn')}</button><button class="btn" data-ib="approve">${t('ibApprove')}</button></div>
       <div class="ib-note">${penalty ? t('ibNote', { r: fmt(inboxReward()), p: penalty }) : t('ibNoteFree', { r: fmt(inboxReward()) })}</div>`;
   }
@@ -3340,26 +3558,57 @@ function showInbox() {
   sheet.innerHTML = head + body;
   $('overlay').classList.add('show');
   modalKind = 'inbox';
+  ibTimerKey = '';
+  updateInboxTimer(0);
 }
-function decideDoc(approve) {
+// Сколько секунд даётся на документ (с реорганизациями — меньше)
+function inboxSeconds() { let n = 30; for (const [from, sec] of CONFIG.inbox.secondsByRestructures) if (S.restructures >= from) n = sec; return n; }
+/* Таймер идёт, только пока документ открыт на экране и игра не свёрнута:
+   закрыли окно — время стоит и потом продолжается с того же места. */
+let ibTimerKey = '';
+function updateInboxTimer(dt) {
+  const ib = S.inbox, d = ib && ib.current, el = $('ibTimer');
+  if (modalKind !== 'inbox' || inboxResult || !isDoc(d) || !el || Tabs.asleep) return;
+  const before = d.left;
+  d.left = Math.max(0, d.left - dt);
+  const total = inboxSeconds(), sec = Math.ceil(d.left);
+  const key = sec + '|' + Math.round(d.left / total * 200);
+  if (key !== ibTimerKey) {
+    ibTimerKey = key;
+    el.querySelector('i').style.width = (d.left / total * 100) + '%';
+    el.querySelector('span').textContent = sec + t('secShort');
+    el.classList.toggle('hurry', d.left <= 5);
+  }
+  // последние 5 секунд — тиканье и лёгкая вибрация на каждой секунде
+  if (dt > 0 && Math.ceil(before) !== sec && sec <= 5 && sec > 0) { Sound.play('tick'); haptic.light(); }
+  if (d.left <= 0) decideDoc(null, true);
+}
+// approve: true — одобрить, false — отказать; timeout — время вышло (считается ошибкой)
+function decideDoc(approve, timeout) {
   const ib = S.inbox, d = ib.current;
   if (!isDoc(d)) return;
   const rules = activeRules(), broken = rules.filter(r => r.broken(d, ib.rules));
-  const valid = broken.length === 0, correct = approve === valid;
+  const valid = broken.length === 0, correct = !timeout && approve === valid;
   let amount;
   if (correct) {
     amount = inboxReward();
     S.docs += amount; S.runEarned += amount; S.allTimeEarned += amount;
     ib.streak++; S.stats.inboxOk++; ib.day.ok++; ib.day.earned += amount;
     S.stats.bestStreak = Math.max(S.stats.bestStreak, ib.streak);
+    S.stats.inboxEarned += amount;
   } else {
     amount = inboxPenalty();
     S.docs = Math.max(0, S.docs - amount);
     ib.streak = 0; S.stats.inboxBad++; ib.day.bad++; ib.day.earned -= amount;
+    S.stats.inboxLost += amount;
+    if (timeout) S.stats.inboxTimeout++;
   }
+  // скрытые благодарности
+  if (correct && d.left <= 1) grantAch('lastsec');
+  if (new Date().getHours() < 5) grantAch('night');
   ib.count = Math.max(0, ib.count - 1);
   ib.current = null;
-  inboxResult = { doc: d, approve, correct, amount, rule: broken[0] ? broken[0].id : null, ruleNo: broken[0] ? rules.indexOf(broken[0]) + 1 : 0 };
+  inboxResult = { doc: d, approve, correct, amount, timeout: !!timeout, rule: broken[0] ? broken[0].id : null, ruleNo: broken[0] ? rules.indexOf(broken[0]) + 1 : 0 };
   haptic.light(); Sound.play('stamp');
   setTimeout(() => { if (correct) Sound.play('upgrade'); else { Sound.play('error'); haptic.success(); } }, 220);
   checkAchievements();
@@ -3375,6 +3624,7 @@ $('sheet').addEventListener('click', e => {
     case 'deny': decideDoc(false); break;
     case 'return':
       S.inbox.count = Math.max(0, S.inbox.count - 1); S.inbox.current = null;
+      S.stats.inboxReturned++; S.inbox.day.ret = (S.inbox.day.ret || 0) + 1;
       Sound.play('tab'); render(); save(); showInbox(); break;
     case 'next': inboxResult = null; Sound.play('tab'); if (S.inbox.count) showInbox(); else closeModal(); break;
     case 'close': inboxResult = null; closeModal(); break;
@@ -3387,6 +3637,7 @@ function render() {
   const m = getMods(S);
   const rate = totalRate(S, m), sRate = stampRate(S, m);
   curRate = rate; curSRate = sRate;   // для плавного счётчика в шапке
+  if (rate > S.stats.peakRate) S.stats.peakRate = rate;
   setText($('rate'), '+' + fmtRate(rate) + ' ' + t('perSec'));
   setText($('miniRate'), '+' + fmtRate(rate) + t('perS'));
   $('stampsLine').hidden = !m.stampsOn;
@@ -3477,6 +3728,7 @@ function onBuyDept(id) {
 function onBuyUpg(id) {
   const u = UPG_BY_ID[id];
   if (!buyUpgrade(S, id)) return;
+  S.stats.upgBought++;
   haptic.light(); Sound.play('upgrade');
   if (u.effect.type === 'unlockStamps') { toast(t('tStamps')); haptic.success(); }
   else toast(t('tApproved', { name: uName(u) }));
@@ -3492,7 +3744,14 @@ function onRestructure() {
       `<p class="hint" style="font-size:13px">${t('rcWarn')}</p>`,
     buttons: [
       { label: t('rcBtn'), onClick: () => {
+          // личное дело: печати и длительность периода; «Минималист» — период без купленных улучшений
+          const st = S.stats, runSec = (Date.now() - (S.runStarted || Date.now())) / 1000;
+          const perkUpg = PERKS.filter(p => p.effect.type === 'startUpgrade' && perkLevel(S, p.id) > 0).map(p => p.effect.upgrade);
+          const noUpg = S.upgrades.every(id => perkUpg.includes(id));
+          st.stampsEarned += S.stampsEarnedRun || 0;
+          if (runSec > 0) st.bestRunSec = st.bestRunSec ? Math.min(st.bestRunSec, runSec) : runSec;
           S = restructure(S); ensureSettings(S);
+          if (noUpg) grantAch('noupg');
           deptKey = upgKey = filedKey = perkKey = '';
           activeTab = 'depts';
           haptic.success(); Sound.play('shredder');
@@ -3550,6 +3809,7 @@ document.addEventListener('click', e => {
     case 'settings': Sound.play('click'); showSettings(); break;
     case 'achievements': Sound.play('click'); showAchievements(); break;
     case 'handbook': Sound.play('click'); showHandbook(); break;
+    case 'stats': Sound.play('click'); showStats(); break;
     case 'inbox': Sound.play('click'); inboxResult = null; showInbox(); break;
     case 'buyPerk': {
       const p = PERK_BY_ID[id];
@@ -3592,6 +3852,7 @@ function frame(now) {
     const docsStr = fmtPrecise(shown.docs);
     setText($('docs'), docsStr);
     if (miniOn) setText($('miniDocs'), docsStr);
+    if (modalKind === 'inbox') updateInboxTimer(dt);
     if (curSRate > 0 || S.stamps > 0) {
       shown.stamps = easeTo(shown.stamps, S.stamps + curSRate * since, curSRate, dt);
       setText($('stamps'), fmtPrecise(shown.stamps));
@@ -3773,6 +4034,7 @@ function rotateMemo() {
   const saved = migrate(await Store.load());
   if (saved) {
     S = saved;
+    S.stats.sessions++;
     LANG = S.settings.lang; NUMFMT = S.settings.numFormat;
     applySettings();
     const away = (Date.now() - (S.lastSeen || Date.now())) / 1000;

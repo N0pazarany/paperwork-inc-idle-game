@@ -41,17 +41,18 @@
 - **Вехи:** каждые 25 штук одного отдела удваивают его выработку.
 - **84 апгрейда**, в том числе удвоители за 50, 100 и 200 штук каждого отдела. Видны только почти доступные и уже купленные.
 - **Льготы за выслугу:** при реорганизации вместе с выслугой выдаются почётные грамоты (Merits). На них покупаются постоянные льготы: стартовые отделы и документы, скидки, офлайн-бонусы, фамильная печать, автопокупка отделов.
-- **36 достижений** 🏆, каждое даёт +1% ко всему доходу навсегда.
+- **51 достижение** 🏆 (часть из них скрытые), каждое даёт +1% ко всему доходу навсегда.
+- **Личное дело** 📊: подробная статистика игрока — доход, отделы, реорганизации, входящие.
 - **Памятка сотрудника** 📖 — короткий справочник по механикам. Разделы о том, до чего игрок ещё не дошёл, засекречены; красная точка на значке подсказывает, что рассекречен новый раздел.
 - **Офлайн-доход:** на старте начисляется 50% дохода и не больше чем за 8 часов. Апгрейды поднимают это до 100% и 20 часов.
 - **Restructuring:** Seniority = `floor(√(всего заработано / 5·10⁹))`, а после 25 единиц растёт медленнее (мягкий потолок), чтобы прогресс не уходил в лавину. Нужно заработать минимум 300B за период.
-- **Входящие** 📥 (открываются с Отделом согласований): документы копятся на столе, игрок проверяет их по регламенту дня и одобряет или отказывает. Верное решение приносит доход за несколько минут (больше за серию), ошибка после первой реорганизации стоит дохода, но не больше 10% баланса. Сомнительный документ можно вернуть без последствий.
+- **Входящие** 📥 (открываются с Отделом согласований): документы копятся на столе, игрок проверяет их по регламенту дня (17 видов правил, чем дальше — тем больше правил сразу) и одобряет или отказывает. На каждый документ даётся время: 30 секунд в начале и до 15 позже. Верное решение приносит доход за несколько минут (больше за серию), ошибка или просроченное время после первой реорганизации стоят дохода, но не больше 10% баланса. Сомнительный документ можно вернуть без последствий.
 - **Директива дня** 📌: в некоторые дни один отдел работает ×2, другой вполсилы.
 - **Отсылки:** в шутках и служебных записках встречаются отсылки к сериалу «Офис» и другой офисной классике.
 - **Два языка:** английский и русский. При первом запуске язык выбирается по профилю Telegram, сменить его можно в настройках.
 - **Звуки:** синтезируются прямо в браузере, без файлов. Удар печати, звонок, кассовый аппарат, шредер; по желанию — тихий фоновый гул офиса.
 - **Удержание кнопки покупки:** держите кнопку отдела, и он будет покупаться подряд, пока хватает документов.
-- **Настройки ⚙️:** язык, звук и громкость, шум офиса, вибрация, служебные записки, тема (авто, светлая, тёмная), анимации, полный экран, формат чисел, окно возвращения, экспорт и импорт сохранения, личное дело со статистикой, полный сброс.
+- **Настройки ⚙️:** язык, звук и громкость, шум офиса, вибрация, служебные записки, тема (авто, светлая, тёмная), анимации, полный экран, формат чисел, окно возвращения, экспорт и импорт сохранения, удаление сохранения.
 
 ---
 
@@ -194,17 +195,18 @@ It's an idle game, not a clicker. Income accrues on its own, even while the game
 - **Milestones:** every 25 units of a department double its output.
 - **84 upgrades**, including doublers at 50, 100 and 200 units of each department. Only those that are nearly affordable or already bought are shown.
 - **Tenure Benefits:** every restructuring also grants Merits, spent on permanent perks: starting departments and documents, discounts, offline bonuses, an heirloom stamp, auto-buying departments.
-- **36 achievements** 🏆, each permanently adds +1% to all income.
+- **51 achievements** 🏆 (some of them hidden), each permanently adds +1% to all income.
+- **Personnel file** 📊: detailed player statistics — income, departments, restructurings, in-tray.
 - **Employee Handbook** 📖, a short guide to the mechanics. Sections about things the player hasn't reached yet stay classified; a red dot on the icon marks a newly declassified section.
 - **Offline income:** starts at 50% efficiency for up to 8 hours. Upgrades raise this to 100% and 20 hours.
 - **Restructuring:** Seniority = `floor(√(total earned / 5·10⁹))`, growing more slowly past 25 (a soft cap) so progress never snowballs. Requires at least 300B earned in the current period.
-- **In-tray** 📥 (opens with the Approvals Office): documents pile up on your desk; check each against today's regulations and approve or deny it. A correct call pays a few minutes of income (more on a streak); after your first restructuring a mistake costs income, never more than 10% of your balance. Unsure documents can be returned with no effect.
+- **In-tray** 📥 (opens with the Approvals Office): documents pile up on your desk; check each against today's regulations (17 kinds of rules, more of them at once as you progress) and approve or deny it. Each document has a time limit: 30 seconds at first, down to 15 later. A correct call pays a few minutes of income (more on a streak); after your first restructuring a mistake or running out of time costs income, never more than 10% of your balance. Unsure documents can be returned with no effect.
 - **Daily directive** 📌: on some days one department works ×2 and another at half speed.
 - **References:** jokes and memos include nods to *The Office* and other office classics.
 - **Two languages:** English and Russian. Picked from the Telegram profile on first launch, switchable in settings.
 - **Sound:** synthesized in the browser, no audio files. Stamp thud, desk bell, cash register, shredder, and an optional quiet office hum.
 - **Hold to buy:** hold a department's buy button to keep buying while you can afford it.
-- **Settings ⚙️:** language, sound and volume, office ambience, vibration, memos, theme (auto, light, dark), animations, full screen, number format, absence report, save export/import, personnel file with stats, hard reset.
+- **Settings ⚙️:** language, sound and volume, office ambience, vibration, memos, theme (auto, light, dark), animations, full screen, number format, absence report, save export/import, delete save.
 
 ## Deployment
 

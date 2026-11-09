@@ -4,6 +4,15 @@
 
 Версии на GitHub, в Telegram и на itch.io обновляются одновременно. Сохранения переносятся между версиями автоматически.
 
+## 1.14 — 10 ноября 2026
+- **Таймер во входящих:** на каждый документ даётся время — 30 секунд в начале, с реорганизациями меньше, до 15. Не успели — это ошибка. Время идёт, только пока документ открыт на экране.
+- **8 новых правил** регламента (всего 17): копии, пустые поля, чужая печать, двойная подпись, отозванные формы, запрещённая тема дня, сотрудник в отпуске, формы серии R. После 6-й и 10-й реорганизации в регламенте больше правил одновременно.
+- **15 новых достижений** (всего 51), из них 6 скрытых — они засекречены, пока не получишь.
+- **Личное дело** 📊 — отдельная кнопка с подробной статистикой: доход, отделы с долей в доходе, улучшения, реорганизации, входящие.
+- 23 новые директивы дня.
+- Кнопка сброса теперь называется прямо: «Удалить сохранение (весь прогресс)».
+- Шапка и строка «Заявка» аккуратно помещаются на узких экранах.
+
 ## 1.13 — 9 ноября 2026
 - Сохранение стало примерно в 3 раза компактнее: в облаке Telegram освободилось место под новый контент.
 - Прогресс переносится сам при первом запуске. Сохранение от прошлых версий остаётся нетронутым как резервная копия.
@@ -108,6 +117,15 @@
 # 🇬🇧 English
 
 The GitHub, Telegram and itch.io versions are updated together. Saves carry over between versions automatically.
+
+## 1.14 — 10 Nov 2026
+- **In-tray timer:** each document has a time limit, 30 seconds at first and shorter with restructurings, down to 15. Running out of time counts as a mistake. The clock only runs while the document is on screen.
+- **8 new regulations** (17 in total): copies, blank fields, another department's seal, double signatures, withdrawn forms, a banned subject of the day, an employee on leave, series R forms. After the 6th and 10th restructurings the regulations hold more rules at once.
+- **15 new achievements** (51 in total), 6 of them hidden: classified until you earn them.
+- **Personnel file** 📊: a separate button with detailed statistics: income, departments with their share of income, upgrades, restructurings, in-tray.
+- 23 new daily directives.
+- The reset button now says plainly: “Delete save (all progress)”.
+- The header and the purchase row fit neatly on narrow screens.
 
 ## 1.13 — 9 Nov 2026
 - Saves are about 3 times more compact, freeing room in Telegram's cloud for new content.
