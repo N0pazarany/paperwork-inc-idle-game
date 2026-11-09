@@ -71,12 +71,12 @@
 
 ## 1.4.1 — 6 ноября 2026
 - Исправлена задержка счётчика после ручной подписи.
+- В Telegram всегда открывается самая свежая версия игры.
 
 ## 1.4 — 6 ноября 2026
 - Новый дизайн: вкладки-папки, чистая шапка, собственные шрифты.
 - Компактная полоска с балансом при прокрутке.
 - Удержание кнопки покупки отдела покупает подряд.
-- В Telegram всегда открывается самая свежая версия игры.
 
 ## 1.3 — 6 ноября 2026
 - **Льготы за выслугу:** почётные грамоты за реорганизацию и 8 постоянных льгот.
@@ -171,12 +171,12 @@ The GitHub, Telegram and itch.io versions are updated together. Saves carry over
 
 ## 1.4.1 — 6 Nov 2026
 - Fixed counter lag after manual signing.
+- Telegram always opens the latest version of the game.
 
 ## 1.4 — 6 Nov 2026
 - Redesign: folder tabs, clean header, embedded fonts.
 - Compact balance bar when scrolling.
 - Hold a department's buy button to keep buying.
-- Telegram always opens the latest version of the game.
 
 ## 1.3 — 6 Nov 2026
 - **Tenure Benefits:** Merits for restructuring and 8 permanent perks.
