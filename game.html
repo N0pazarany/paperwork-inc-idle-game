@@ -172,6 +172,11 @@ body.mini-on .tabs{top:calc(var(--mini-h) + var(--safe-top))}
 .tab.active{background:var(--folder);color:var(--text)}
 .tab:disabled{opacity:.55;cursor:default}
 .t-ico:empty{display:none}
+@media (max-width:359px){
+  .tabs{gap:3px}
+  .tab{padding:9px 4px 8px;font-size:12px;letter-spacing:-.01em}
+  .tab .badge{margin-left:3px}
+}
 .badge{
   display:inline-block; min-width:18px; height:18px; padding:0 5px; margin-left:5px; border-radius:9px;
   background:var(--ink); color:#fff; font:700 11px/18px var(--mono); vertical-align:1px;
@@ -529,7 +534,7 @@ html.scheme-dark{ --good:#4fb57a; }
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.12',              // версия игры (показывается в настройках)
+  version: '1.12.1',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   itchUrl: 'https://adomant.itch.io/paperwork-inc',   // страница на itch.io — появится в настройках
   achievementBonus: 0.01,
@@ -1161,6 +1166,9 @@ const I18N = {
       loadingCloud: 'Fetching your records from the Telegram cloud…',
       tCloudRestored: '☁️ Progress restored from the Telegram cloud',
       tSynced: '☁️ Progress synced from another device',
+      tTabSynced: '🗂️ Progress picked up from your other tab',
+      tabsForm: 'Form 2-T · Duplicate access', tabsTitle: 'Open in another tab', tabsBtn: 'Play here',
+      tabsBody: 'Paperwork Inc. is open in another tab. So that one tab does not overwrite the other, records are kept in one tab at a time.',
       numFormat: 'Number format',
       awayReport: 'Absence report', awayAlways: 'Always', awayLong: '30+ min', awayNever: 'Never',
       secRecords: 'Records', export: 'Export', import: 'Import',
@@ -1557,6 +1565,9 @@ const I18N = {
       loadingCloud: 'Запрашиваем ваши записи из облака Telegram…',
       tCloudRestored: '☁️ Прогресс восстановлен из облака Telegram',
       tSynced: '☁️ Прогресс синхронизирован с другого устройства',
+      tTabSynced: '🗂️ Прогресс подхвачен из другой вкладки',
+      tabsForm: 'Форма 2-В · Повторный доступ', tabsTitle: 'Игра открыта в другой вкладке', tabsBtn: 'Играть здесь',
+      tabsBody: 'Paperwork Inc. уже открыта в другой вкладке. Чтобы одна вкладка не затёрла прогресс другой, дела ведутся только в одной.',
       numFormat: 'Формат чисел',
       awayReport: 'Акт об отсутствии', awayAlways: 'Всегда', awayLong: '30+ мин', awayNever: 'Никогда',
       secRecords: 'Документация', export: 'Экспорт', import: 'Импорт',
@@ -3380,7 +3391,13 @@ document.addEventListener('click', e => {
     case 'toggleAuto': S.flags.autobuyOff = !S.flags.autobuyOff; haptic.light(); Sound.play('click'); render(); break;
   }
 });
+function dismissModal() {
+  if (!modalKind || modalKind === 'locked') return;
+  const wasSettings = modalKind === 'settings'; closeModal(); if (wasSettings) save();
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') dismissModal(); });
 $('overlay').addEventListener('click', e => {
+  if (e.target === $('overlay') && modalKind === 'locked') return;
   if (e.target === $('overlay')) { const wasSettings = modalKind === 'settings'; closeModal(); if (wasSettings) save(); }
 });
 // Звук разблокируется первым касанием
@@ -3463,11 +3480,11 @@ if ('IntersectionObserver' in window) {
 }
 
 /* ---------- Сохранение ---------- */
-function save() { if (!S) return; S.lastSeen = Date.now(); Store.save(S); }
+function save() { if (!S || Tabs.asleep) return; S.lastSeen = Date.now(); Store.save(S); }
 
 // Автосохранение: сначала сверяемся с облаком, потом пишем
 async function persist() {
-  if (!S) return;
+  if (!S || Tabs.asleep) return;
   const firstRead = Store.cloud && !Store.everRead;   // облако не ответило на старте и отвечает только сейчас
   const remote = await Store.sync();
   if (remote) adoptSave(remote, firstRead ? t('tCloudRestored') : t('tSynced'));
@@ -3476,6 +3493,51 @@ async function persist() {
 
 // Подхватить сохранение из облака (с другого устройства или после медленного старта).
 // Настройки этого устройства (язык, звук…) остаются свои.
+/* ---------- Игра открыта в нескольких вкладках ----------
+   В браузере сохранение одно на все вкладки. Без присмотра забытая старая вкладка
+   при автосохранении затёрла бы прогресс новой. Поэтому дела ведутся в одной вкладке:
+   новая (или та, где нажали «Играть здесь») становится главной, остальные сохраняются,
+   передают ей своё состояние и засыпают — ничего не считают и не пишут. */
+const Tabs = {
+  ch: null,
+  asleep: false,
+  claimedAt: 0,
+  init() {
+    if (!('BroadcastChannel' in window)) return;
+    try { this.ch = new BroadcastChannel('paperwork_inc_tabs'); } catch (e) { return; }
+    this.ch.onmessage = e => {
+      const d = e.data || {};
+      if (d.sid === SID) return;
+      if (d.type === 'active') this.sleep();
+      // другая вкладка уступила место и прислала своё свежее состояние — продолжаем с него
+      else if (d.type === 'yield' && d.save && Date.now() - this.claimedAt < 3000) {
+        try { adoptSave(JSON.parse(d.save), t('tTabSynced')); } catch (err) {}
+      }
+    };
+    this.claim();
+  },
+  post(msg) { try { this.ch && this.ch.postMessage(Object.assign({ sid: SID }, msg)); } catch (e) {} },
+  claim() { this.claimedAt = Date.now(); this.post({ type: 'active' }); },
+  sleep() {
+    if (this.asleep || !S) return;
+    save();                                         // последнее слово этой вкладки
+    this.post({ type: 'yield', save: JSON.stringify(S) });
+    this.asleep = true;
+    stopHold();
+    showModal({ form: t('tabsForm'), title: '🗂️ ' + t('tabsTitle'), body: `<p>${t('tabsBody')}</p>`,
+      buttons: [{ label: t('tabsBtn'), onClick: () => this.wake() }] });
+    modalKind = 'locked';                           // такое окно не закрывается мимо кнопки
+  },
+  wake() {
+    this.asleep = false;
+    // пока мы спали, другая вкладка могла поиграть и закрыться — берём её последнее сохранение
+    const local = Store.readLocal();
+    if (local && local.sid !== SID) adoptSave(local, t('tTabSynced'));
+    else { lastTick = Date.now(); render(); }
+    this.claim();
+  },
+};
+
 function adoptSave(raw, message) {
   const next = migrate(raw);
   if (!next) return;
@@ -3500,7 +3562,8 @@ function adoptSave(raw, message) {
 
 /* ---------- Игровой цикл ---------- */
 function tick() {
-  if (!S || document.hidden) return;   // в фоне не считаем: при возврате сработает офлайн-логика
+  if (!S || document.hidden) return;
+  if (Tabs.asleep) { lastTick = Date.now(); return; }   // спящая вкладка не считает   // в фоне не считаем: при возврате сработает офлайн-логика
   const now = Date.now();
   const dt = (now - lastTick) / 1000;
   lastTick = now;
@@ -3565,6 +3628,7 @@ function rotateMemo() {
   requestAnimationFrame(frame);
   setInterval(persist, CONFIG.saveIntervalMs);
   setInterval(rotateMemo, 15000);
+  Tabs.init();
 })();
 </script>
 </body>
