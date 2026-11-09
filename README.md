@@ -46,6 +46,7 @@
 - **Restructuring:** Seniority = `floor(√(всего заработано / 5·10⁹))`, а после 25 единиц растёт медленнее (мягкий потолок), чтобы прогресс не уходил в лавину. Нужно заработать минимум 300B за период.
 - **Входящие** 📥 (открываются с Отделом согласований): документы копятся на столе, игрок проверяет их по регламенту дня и одобряет или отказывает. Верное решение приносит доход за несколько минут (больше за серию), ошибка после первой реорганизации стоит дохода, но не больше 10% баланса. Сомнительный документ можно вернуть без последствий.
 - **Директива дня** 📌: в некоторые дни один отдел работает ×2, другой вполсилы.
+- **Офисный юмор:** служебные записки и отчёт о возвращении не повторяются, пока не покажутся все, и иногда подстраиваются под ситуацию. Среди них есть отсылки к сериалу «Офис» и другой офисной классике.
 - **Два языка:** английский и русский. При первом запуске язык выбирается по профилю Telegram, сменить его можно в настройках.
 - **Звуки:** синтезируются прямо в браузере, без файлов. Удар печати, звонок, кассовый аппарат, шредер; по желанию — тихий фоновый гул офиса.
 - **Удержание кнопки покупки:** держите кнопку отдела, и он будет покупаться подряд, пока хватает документов.
@@ -197,6 +198,7 @@ It's an idle game, not a clicker. Income accrues on its own, even while the game
 - **Restructuring:** Seniority = `floor(√(total earned / 5·10⁹))`, growing more slowly past 25 (a soft cap) so progress never snowballs. Requires at least 300B earned in the current period.
 - **In-tray** 📥 (opens with the Approvals Office): documents pile up on your desk; check each against today's regulations and approve or deny it. A correct call pays a few minutes of income (more on a streak); after your first restructuring a mistake costs income, never more than 10% of your balance. Unsure documents can be returned with no effect.
 - **Daily directive** 📌: on some days one department works ×2 and another at half speed.
+- **Office humor:** memos and absence reports don't repeat until all have been shown, and sometimes react to what's going on. Look out for nods to *The Office* and other office classics.
 - **Two languages:** English and Russian. Picked from the Telegram profile on first launch, switchable in settings.
 - **Sound:** synthesized in the browser, no audio files. Stamp thud, desk bell, cash register, shredder, and an optional quiet office hum.
 - **Hold to buy:** hold a department's buy button to keep buying while you can afford it.
