@@ -1,0 +1,197 @@
+# 📋 Журнал изменений · Changelog
+
+🇷🇺 Русский · [🇬🇧 English](#english)
+
+Версии на GitHub, в Telegram и на itch.io обновляются одновременно. Сохранения переносятся между версиями автоматически.
+
+## 1.12.2 — 9 ноября 2026
+- Убрана подпись «+N» у полоски до бонуса: сколько отделов купится, показывает бледная часть полоски и кнопка покупки.
+
+## 1.12.1 — 9 ноября 2026
+- **Игра в двух вкладках браузера больше не стирает прогресс.** Раньше забытая старая вкладка при автосохранении затирала прогресс новой. Теперь дела ведутся в одной вкладке: остальные сохраняются, передают ей своё состояние и засыпают с кнопкой «Играть здесь».
+- Esc закрывает окна.
+- На экранах шириной 320 px названия вкладок помещаются целиком.
+
+## 1.12 — 9 ноября 2026
+- Шутки и служебные записки выдаются без повторов: пока не покажутся все, ни одна не повторится.
+- Строки по ситуации: про долгое или короткое отсутствие, ночь, выходные, начало нового периода и открытие нового отдела.
+- 31 новая шутка и 16 новых записок, среди них отсылки к сериалу «Офис» и другой офисной классике.
+
+## 1.11 — 9 ноября 2026
+- Печати и почётные грамоты всегда на виду: грамоты в шапке, а при прокрутке обе валюты в верхней полоске.
+- Режим покупки «До ×2»: докупает ровно столько отделов, сколько не хватает до следующего бонуса.
+- Полоска до бонуса показывает, сколько добавит покупка в режимах ×10, «До ×2» и MAX.
+- Списки купленных улучшений и льгот сворачиваются при смене вкладки.
+- Исправлено: после реорганизации счётчик печатей мог на мгновение «докручиваться» со старого значения.
+
+## 1.10.2 — 8 ноября 2026
+- Убраны регистрационные номера у купленных улучшений.
+
+## 1.10.1 — 8 ноября 2026
+- У купленных улучшений появился регистрационный номер покупки.
+
+## 1.10 — 8 ноября 2026
+- Купленные улучшения показываются от новых к старым.
+- Список «Оформленные льготы» во вкладке реорганизации.
+- Выбор темы в настройках: авто, светлая, тёмная.
+- Полосы прокрутки в цвет темы, а не белые.
+- 15 новых шуток и 10 новых служебных записок.
+
+## 1.9 — 8 ноября 2026
+- **Входящие** (открываются с Отделом согласований): документы копятся на столе, их нужно проверить по регламенту дня и одобрить, отказать или вернуть. Верные решения приносят доход, серия верных — больше; ошибки после первой реорганизации штрафуются.
+- **Директива дня:** в некоторые дни один отдел работает ×2, другой вполсилы.
+- Мягкий потолок выслуги: после 25 единиц она растёт медленнее, чтобы периоды не сокращались до минут.
+
+## 1.8 — 8 ноября 2026
+- Безопасная синхронизация с облаком Telegram: медленное облако больше не стирает прогресс, а сохранение с другого устройства подхватывается, а не затирается.
+- Проверка сохранений при загрузке и импорте: испорченные значения больше не ломают игру.
+
+## 1.7.1 — 8 ноября 2026
+- Прокрутка внутри игры, а не страницы: на itch.io с выключенными полосами прокрутки нижние отделы снова доступны.
+
+## 1.7 — 8 ноября 2026
+- 3 новых отдела в конце игры: Центральное штемпельное управление, Отдел прецедентов, Вечная приёмная.
+- 20 новых улучшений (всего 84), новые уровни четырёх льгот.
+- 11 новых достижений, 15 шуток и 10 служебных записок.
+
+## 1.6.1 — 8 ноября 2026
+- В настройках ссылка на страницу itch.io.
+- Игра автоматически загружается на itch.io при каждом обновлении.
+
+## 1.6 — 8 ноября 2026
+- Полноэкранный режим в настройках (в Telegram и в браузере).
+
+## 1.5.1 — 8 ноября 2026
+- Шум офиса без тиканья часов.
+
+## 1.5 — 8 ноября 2026
+- **Справочник сотрудника** (значок книги): короткое описание каждой механики. Разделы о ещё не открытых механиках засекречены.
+- Игра расходует меньше батареи: экран перерисовывается только там, где что-то изменилось.
+- Исправлено: сохранение со временем могло перерасти лимит облака Telegram.
+
+## 1.4.1 — 6 ноября 2026
+- Исправлена задержка счётчика после ручной подписи.
+
+## 1.4 — 6 ноября 2026
+- Новый дизайн: вкладки-папки, чистая шапка, собственные шрифты.
+- Компактная полоска с балансом при прокрутке.
+- Удержание кнопки покупки отдела покупает подряд.
+- В Telegram всегда открывается самая свежая версия игры.
+
+## 1.3 — 6 ноября 2026
+- **Льготы за выслугу:** почётные грамоты за реорганизацию и 8 постоянных льгот.
+- Улучшения на 50, 100 и 200 штук каждого отдела.
+- 22 достижения, каждое +1% к доходу.
+- Ссылка на GitHub в настройках.
+
+## 1.2 — 6 ноября 2026
+- Плавный счётчик документов в шапке.
+- Первая версия на GitHub.
+
+## 1.1
+- Русский язык.
+- Настройки: язык, звук, шум офиса, вибрация, служебные записки, анимации, формат чисел, окно возвращения, экспорт и импорт сохранения, личное дело, полный сброс.
+- Звуки, синтезированные прямо в браузере.
+
+## 1.0
+- Первая версия: 10 отделов, 25 улучшений, печати, реорганизация с выслугой, офлайн-доход, Telegram Mini App.
+
+---
+
+<a id="english"></a>
+
+# 🇬🇧 English
+
+The GitHub, Telegram and itch.io versions are updated together. Saves carry over between versions automatically.
+
+## 1.12.2 — 9 Nov 2026
+- Removed the “+N” label next to the milestone bar: the pale part of the bar and the buy button already show how many departments will be bought.
+
+## 1.12.1 — 9 Nov 2026
+- **Playing in two browser tabs no longer wipes progress.** A forgotten old tab used to overwrite the newer tab's progress on autosave. Now only one tab keeps records: the others save, hand over their state and go to sleep with a “Play here” button.
+- Esc closes dialogs.
+- Tab names fit on 320 px wide screens.
+
+## 1.12 — 9 Nov 2026
+- Jokes and memos no longer repeat until every one has been shown.
+- Situational lines: long or short absences, nights, weekends, the start of a new period and newly opened departments.
+- 31 new jokes and 16 new memos, including nods to *The Office* and other office classics.
+
+## 1.11 — 9 Nov 2026
+- Stamps and Merits are always visible: Merits in the header, both currencies in the top bar when scrolling.
+- “To ×2” buy mode: buys exactly as many departments as needed for the next milestone.
+- The milestone bar previews how many units a purchase will add in ×10, To ×2 and MAX modes.
+- Filed upgrade and benefit lists collapse when switching tabs.
+- Fixed: after a restructuring the stamp counter could briefly roll down from its old value.
+
+## 1.10.2 — 8 Nov 2026
+- Removed registration numbers from filed upgrades.
+
+## 1.10.1 — 8 Nov 2026
+- Filed upgrades show a purchase registration number.
+
+## 1.10 — 8 Nov 2026
+- Filed upgrades are listed newest first.
+- “Granted benefits” list on the Restructuring tab.
+- Theme setting: auto, light, dark.
+- Scrollbars match the theme instead of being white.
+- 15 new jokes and 10 new memos.
+
+## 1.9 — 8 Nov 2026
+- **In-tray** (opens with the Approvals Office): documents pile up on the desk; check them against the day's regulations and approve, deny or return them. Correct calls pay income, more on a streak; after the first restructuring mistakes cost income.
+- **Daily directive:** on some days one department works ×2 and another at half speed.
+- Seniority soft cap: past 25 points it grows more slowly, so periods don't shrink to minutes.
+
+## 1.8 — 8 Nov 2026
+- Safe Telegram cloud sync: a slow cloud no longer wipes progress, and a save from another device is picked up instead of overwritten.
+- Saves are validated on load and import, so damaged values can't break the game.
+
+## 1.7.1 — 8 Nov 2026
+- The game scrolls inside itself, not the page: lower departments are reachable again on itch.io with scrollbars disabled.
+
+## 1.7 — 8 Nov 2026
+- 3 late-game departments: Central Stamping Authority, Department of Precedent, The Eternal Waiting Room.
+- 20 new upgrades (84 in total), more levels for four benefits.
+- 11 new achievements, 15 jokes and 10 memos.
+
+## 1.6.1 — 8 Nov 2026
+- itch.io link in settings.
+- The game is uploaded to itch.io automatically on every update.
+
+## 1.6 — 8 Nov 2026
+- Full screen toggle in settings (Telegram and browsers).
+
+## 1.5.1 — 8 Nov 2026
+- Office ambience without the ticking clock.
+
+## 1.5 — 8 Nov 2026
+- **Employee Handbook** (book icon): a short guide to every mechanic. Sections for mechanics not reached yet stay classified.
+- Lower battery use: the screen is redrawn only where something changed.
+- Fixed: the save could eventually outgrow Telegram's cloud limit.
+
+## 1.4.1 — 6 Nov 2026
+- Fixed counter lag after manual signing.
+
+## 1.4 — 6 Nov 2026
+- Redesign: folder tabs, clean header, embedded fonts.
+- Compact balance bar when scrolling.
+- Hold a department's buy button to keep buying.
+- Telegram always opens the latest version of the game.
+
+## 1.3 — 6 Nov 2026
+- **Tenure Benefits:** Merits for restructuring and 8 permanent perks.
+- Upgrades at 50, 100 and 200 units of every department.
+- 22 achievements, +1% income each.
+- GitHub link in settings.
+
+## 1.2 — 6 Nov 2026
+- Smooth document counter in the header.
+- First version on GitHub.
+
+## 1.1
+- Russian language.
+- Settings: language, sound, office ambience, vibration, memos, animations, number format, absence report, save export/import, personnel file, hard reset.
+- Sounds synthesized in the browser.
+
+## 1.0
+- First version: 10 departments, 25 upgrades, stamps, restructuring with Seniority, offline income, Telegram Mini App.

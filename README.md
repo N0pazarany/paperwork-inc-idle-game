@@ -13,6 +13,7 @@
 **▶️ Играть в Telegram:** [@paperwork_inc_bot](https://t.me/paperwork_inc_bot)
 **🕹️ На itch.io:** [adomant.itch.io/paperwork-inc](https://adomant.itch.io/paperwork-inc)
 **🌐 В браузере:** [https://n0pazarany.github.io/paperwork-inc-idle-game/](https://n0pazarany.github.io/paperwork-inc-idle-game/)
+**📋 Что нового:** [журнал изменений](CHANGELOG.md)
 
 ---
 
@@ -167,6 +168,7 @@ The whole game is a single `game.html`: no build step, no frameworks, no images.
 **▶️ Play in Telegram:** [@paperwork_inc_bot](https://t.me/paperwork_inc_bot)
 **🕹️ On itch.io:** [adomant.itch.io/paperwork-inc](https://adomant.itch.io/paperwork-inc)
 **🌐 In a browser:** [https://n0pazarany.github.io/paperwork-inc-idle-game/](https://n0pazarany.github.io/paperwork-inc-idle-game/)
+**📋 What's new:** [changelog](CHANGELOG.md#english)
 
 ## How to play
 
