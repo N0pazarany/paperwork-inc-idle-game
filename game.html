@@ -142,7 +142,12 @@ html.no-anim .stamp-anim, html.no-anim .float-num{display:none}
   background:var(--bg); transform:translateY(-102%); transition:transform .18s ease-out;
 }
 .mini-in{max-width:520px;height:100%;margin:0 auto;padding:0 12px 0 16px;display:flex;align-items:center;gap:10px}
-.mini-num{display:flex;align-items:baseline;gap:8px;min-width:0;flex:1;overflow:hidden;white-space:nowrap}
+.mini-num{display:flex;flex-direction:column;justify-content:center;min-width:0;flex:1;overflow:hidden;white-space:nowrap}
+.mini-main{display:flex;align-items:baseline;gap:8px;min-width:0}
+.mini-sub{display:flex;gap:14px;font:400 12px/1.25 var(--mono);color:var(--hint);margin-top:1px}
+.mini-sub b{font-weight:700;color:var(--text)}
+.mini-sub [hidden]{display:none}
+.mini.two .mini-docs{font-size:19px;line-height:1.1}
 .mini-docs{font:700 21px var(--mono);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .mini-rate{font:500 12.5px var(--mono);color:var(--link)}
 .mini .icon-btn{width:34px;height:34px}
@@ -190,8 +195,9 @@ body.mini-on .tabs{top:calc(var(--mini-h) + var(--safe-top))}
 .c-stats{font:500 12px var(--mono);margin-bottom:8px}
 .effect{font:500 12px/1.45 var(--mono);color:var(--link);margin-bottom:10px}
 .ms{display:flex;align-items:center;gap:8px;font:400 11.5px var(--mono);color:var(--hint);margin-bottom:10px}
-.ms-bar{flex:1;height:4px;background:var(--line);border-radius:2px;overflow:hidden}
-.ms-bar i{display:block;height:100%;width:0;background:var(--link);transition:width .25s}
+.ms-bar{flex:1;height:4px;background:var(--line);border-radius:2px;overflow:hidden;display:flex}
+.ms-bar i{display:block;flex:none;height:100%;width:0;background:var(--link);transition:width .25s}
+.ms-bar i.ghost{opacity:.55}   /* сколько добавит покупка в режимах ×10, До ×2 и MAX */
 
 .btn{
   display:flex; justify-content:space-between; align-items:center; gap:8px; width:100%;
@@ -415,6 +421,7 @@ html.scheme-dark{ --good:#4fb57a; }
     <div class="rate" id="rate">+0</div>
     <div class="subres">
       <span id="stampsLine" hidden>🔏 <b id="stamps">0</b> <span data-i18n="stampsWord"></span> <span class="mono hint" id="stampRate"></span></span>
+      <span id="meritsLine" hidden>📜 <b id="meritsTop">0</b> <span data-i18n="meritsShort"></span></span>
       <span id="senLine" hidden>🎖️ <span data-i18n="seniority"></span> <b id="sen">0</b> <span class="mono hint" id="senBonus"></span></span>
     </div>
     <button class="sign" id="signBtn" data-act="sign">✍️ <span data-i18n="sign"></span> <span class="mono">+1</span></button>
@@ -440,6 +447,7 @@ html.scheme-dark{ --good:#4fb57a; }
     <div class="po"><span data-i18n="purchaseOrder"></span><span class="sp"></span>
       <button data-act="mode" data-id="1">×1</button>
       <button data-act="mode" data-id="10">×10</button>
+      <button data-act="mode" data-id="next" data-i18n="modeNext"></button>
       <button data-act="mode" data-id="max">MAX</button>
     </div>
     <div id="deptList"></div>
@@ -491,7 +499,10 @@ html.scheme-dark{ --good:#4fb57a; }
 <!-- Мини-баланс: виден, когда шапка уехала вверх -->
 <div class="mini" id="mini" aria-hidden="true" inert>
   <div class="mini-in">
-    <div class="mini-num"><span class="mini-docs" id="miniDocs">0</span><span class="mini-rate" id="miniRate"></span></div>
+    <div class="mini-num">
+      <div class="mini-main"><span class="mini-docs" id="miniDocs">0</span><span class="mini-rate" id="miniRate"></span></div>
+      <div class="mini-sub" id="miniSub" hidden><span id="miniStampsW" hidden>🔏 <b id="miniStamps">0</b></span><span id="miniMeritsW" hidden>📜 <b id="miniMerits">0</b></span></div>
+    </div>
     <span class="icons"><button class="icon-btn" data-act="handbook" aria-label="Handbook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/><path d="M10 8.2a2 2 0 1 1 2.6 1.9c-.4.2-.6.5-.6.9v.5M12 13.6v.1"/></svg></button><button class="icon-btn" data-act="achievements" aria-label="Achievements"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 6H5a3 3 0 0 0 3 4.5M16 6h3a3 3 0 0 1-3 4.5"/><path d="M12 13v4M9 20h6M10 17h4"/></svg></button><button class="icon-btn" data-act="settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></span>
   </div>
 </div>
@@ -518,7 +529,7 @@ html.scheme-dark{ --good:#4fb57a; }
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.10.2',              // версия игры (показывается в настройках)
+  version: '1.11',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   itchUrl: 'https://adomant.itch.io/paperwork-inc',   // страница на itch.io — появится в настройках
   achievementBonus: 0.01,
@@ -912,6 +923,12 @@ function deptCost(s, d, n, m) {
   return d.baseCost * m.cost * Math.pow(g, c) * (Math.pow(g, n) - 1) / (g - 1);
 }
 // Сколько штук можно купить прямо сейчас
+// Сколько штук купит кнопка в выбранном режиме: 1, 10, до следующего бонуса ('next') или сколько хватит ('max')
+function buyCount(s, d, m) {
+  if (s.buyMode === 'max') return maxBuy(s, d, m);
+  if (s.buyMode === 'next') { const e = CONFIG.milestones.every; return e - owned(s, d.id) % e; }
+  return s.buyMode;
+}
 function maxBuy(s, d, m) {
   const g = CONFIG.costGrowth;
   const first = d.baseCost * m.cost * Math.pow(g, owned(s, d.id));
@@ -1049,7 +1066,7 @@ const I18N = {
       seniority: 'Seniority',
       sign: 'Sign manually',
       tabDepts: 'Departments', tabUpgs: 'Upgrades', tabRestr: 'Restructuring',
-      purchaseOrder: 'Purchase order · qty',
+      purchaseOrder: 'Purchase order · qty', modeNext: 'To ×2',
       form: 'Form',
       acquire: 'Acquire ×{n}',
       pending: 'Pending funds',
@@ -1166,7 +1183,7 @@ const I18N = {
       tier_t200_name: '{dept}: ISO-Pending Certification',
       tier_t200_desc: 'Certification has been pending since the department was founded. It has never been more motivating.',
       // льготы
-      shopTitle: 'Tenure Benefits', meritsWord: 'Merits',
+      shopTitle: 'Tenure Benefits', meritsWord: 'Merits', meritsShort: 'merits',
       shopHint: 'Merits are awarded together with Seniority on every restructuring and are never shredded. Benefits are permanent.',
       level: 'Level {l}/{max}', maxed: 'Fully approved', grant: 'Grant benefit', needMerits: 'Not enough Merits',
       pStartDepts: 'Each period starts with 10 × {list}',
@@ -1288,7 +1305,7 @@ const I18N = {
       docs: { t: 'Documents', x: ['Documents are the main currency. Departments approve them every second, on their own. The Sign manually button is only there to afford the first desk.'] },
       depts: { t: 'Departments', x: [
         'Each department approves documents per second. Every purchase raises its price by {growth}%, and every {every} units of one department multiply its output by {msMult}.',
-        'The % on a card is its share of your income. Hold a buy button to keep buying; ×10 and MAX buy in bulk.'] },
+        'The % on a card is its share of your income. Hold a buy button to keep buying; ×10 and MAX buy in bulk, and To ×2 buys exactly up to the next {every}-unit bonus.'] },
       away: { t: 'While you are away', x: ['The company keeps working when the game is closed. At first, records cover {cap} h of absence at {eff}% of normal income; upgrades and benefits extend both. Spend everything before you leave and come back a few times a day.'] },
       upgs: { t: 'Upgrades', x: ['One-time purchases: output multipliers, discounts, longer offline records. Only upgrades you can nearly afford are listed. The red badge on the tab shows how many you can buy right now.'] },
       stamps: { t: 'Stamps', x: ['Every department you own presses stamps. Spend them on the advanced upgrades marked 🔏.'] },
@@ -1371,7 +1388,7 @@ const I18N = {
       seniority: 'Выслуга',
       sign: 'Подписать вручную',
       tabDepts: 'Отделы', tabUpgs: 'Улучшения', tabRestr: 'Реорганизация',
-      purchaseOrder: 'Заявка · кол-во',
+      purchaseOrder: 'Заявка · кол-во', modeNext: 'До ×2',
       form: 'Форма',
       acquire: 'Приобрести ×{n}',
       pending: 'Ожидание средств',
@@ -1476,7 +1493,7 @@ const I18N = {
       tier_t100_desc: 'Латунная табличка в честь сотой единицы. Сотрудники работают усерднее, лишь бы их не попросили её натирать.',
       tier_t200_name: '{dept}: сертификация «на рассмотрении»',
       tier_t200_desc: 'Сертификация на рассмотрении с самого основания отдела. Мотивирует как никогда.',
-      shopTitle: 'Льготы за выслугу', meritsWord: 'Почётные грамоты',
+      shopTitle: 'Льготы за выслугу', meritsWord: 'Почётные грамоты', meritsShort: 'грамот',
       shopHint: 'Грамоты выдаются вместе с выслугой при каждой реорганизации и не уничтожаются. Льготы действуют постоянно.',
       level: 'Уровень {l}/{max}', maxed: 'Утверждено полностью', grant: 'Оформить льготу', needMerits: 'Недостаточно грамот',
       pStartDepts: 'Каждый период начинается с 10 шт.: {list}',
@@ -1658,7 +1675,7 @@ const I18N = {
       docs: { t: 'Документы', x: ['Документы — основная валюта. Отделы одобряют их каждую секунду сами. Кнопка «Подписать вручную» нужна только для того, чтобы накопить на первый стол.'] },
       depts: { t: 'Отделы', x: [
         'Каждый отдел одобряет документы в секунду. С каждой покупкой его цена растёт на {growth}%, а каждые {every} шт. одного отдела умножают его выработку на {msMult}.',
-        'Процент на карточке — доля отдела в вашем доходе. Удерживайте кнопку покупки, чтобы покупать подряд; ×10 и MAX покупают пачкой.'] },
+        'Процент на карточке — доля отдела в вашем доходе. Удерживайте кнопку покупки, чтобы покупать подряд; ×10 и MAX покупают пачкой, а «До ×2» докупает ровно до следующего бонуса за {every} штук.'] },
       away: { t: 'Пока вас нет', x: ['Компания работает, даже когда игра закрыта. Сначала учитывается до {cap} ч отсутствия с эффективностью {eff}% от обычного дохода; улучшения и льготы расширяют и то и другое. Тратьте всё перед уходом и заглядывайте несколько раз в день.'] },
       upgs: { t: 'Улучшения', x: ['Разовые покупки: множители выработки, скидки, более долгий офлайн. Показываются только те, на которые почти хватает. Красный значок на вкладке — сколько можно купить прямо сейчас.'] },
       stamps: { t: 'Печати', x: ['Каждый ваш отдел ставит печати. Их тратят на продвинутые улучшения, отмеченные 🔏.'] },
@@ -1972,7 +1989,7 @@ function migrate(raw) {
     if (p) s.perks[id] = Math.min(Math.floor(cleanNum(lvl)), p.costs.length);
   }
   s.achievements = Array.isArray(raw.achievements) ? [...new Set(raw.achievements)].filter(id => ACHIEVEMENTS.some(a => a.id === id)) : [];
-  if (![1, 10, 'max'].includes(s.buyMode)) s.buyMode = 1;
+  if (![1, 10, 'next', 'max'].includes(s.buyMode)) s.buyMode = 1;
   // v1.5: отметки canR_0, canR_1… (по одной на реорганизацию) заменены одним числом restrNotified
   if (s.flags['canR_' + s.restructures]) s.flags.restrNotified = s.restructures;
   for (const k of Object.keys(s.flags)) if (k.indexOf('canR_') === 0) delete s.flags[k];
@@ -2469,7 +2486,7 @@ function buildDepts() {
         <div class="c-owned mono" data-f="owned"></div></div>
       <div class="c-desc">${esc(dDesc(d))}</div>
       <div class="c-stats mono" data-f="stats"></div>
-      <div class="ms"><div class="ms-bar"><i data-f="bar"></i></div><span class="mono" data-f="ms"></span></div>
+      <div class="ms"><div class="ms-bar"><i data-f="bar"></i><i class="ghost" data-f="ghost"></i></div><span class="mono" data-f="ms"></span></div>
       <button class="btn" data-act="buyDept" data-id="${d.id}" data-f="btn"><span data-f="bl"></span><span class="sub mono" data-f="bs"></span></button>
     </div>`).join('');
   if (teaser) html += `
@@ -2495,10 +2512,14 @@ function renderDepts(m, rate) {
     setText(f.stats, c > 0
       ? t('each', { v: fmtRate(each) }) + ' · ' + t('total', { v: fmtRate(total) }) + (rate > 0 ? ` · ${Math.round(total / rate * 100)}%` : '')
       : t('each', { v: fmtRate(each) }));
-    setWidth(f.bar, ((c % every) / every * 100) + '%');
-    setText(f.ms, t('milestone', { c, next: (Math.floor(c / every) + 1) * every, m: CONFIG.milestones.mult }));
     // кнопка покупки
-    const n = Math.max(1, S.buyMode === 'max' ? maxBuy(S, d, m) : S.buyMode);
+    const want = buyCount(S, d, m), n = Math.max(1, want);
+    // полоска до бонуса: сплошная часть — что есть, бледная — что добавит покупка (кроме режима ×1)
+    const filled = (c % every) / every;
+    const add = S.buyMode === 1 ? 0 : want;
+    setWidth(f.bar, (filled * 100) + '%');
+    setWidth(f.ghost, (Math.min(1 - filled, add / every) * 100) + '%');
+    setText(f.ms, t('milestone', { c, next: (Math.floor(c / every) + 1) * every, m: CONFIG.milestones.mult }) + (add ? '  +' + add : ''));
     const cost = deptCost(S, d, n, m);
     const ok = S.docs >= cost;
     setDisabled(f.btn, !ok);
@@ -2984,6 +3005,14 @@ function render() {
   $('stampsLine').hidden = !m.stampsOn;
   if (m.stampsOn) setText($('stampRate'), '+' + fmtRate(sRate) + t('perS'));
   $('senLine').hidden = S.seniority <= 0;
+  // Грамоты и печати — всегда на виду: в шапке и в мини-полоске при прокрутке
+  const meritsOn = S.restructures > 0 || S.merits > 0;
+  $('meritsLine').hidden = !meritsOn;
+  if (meritsOn) { setText($('meritsTop'), fmt(S.merits || 0)); setText($('miniMerits'), fmt(S.merits || 0)); }
+  $('miniStampsW').hidden = !m.stampsOn;
+  $('miniMeritsW').hidden = !meritsOn;
+  $('miniSub').hidden = !(m.stampsOn || meritsOn);
+  $('mini').classList.toggle('two', !!(m.stampsOn || meritsOn));
   if (S.seniority > 0) { setText($('sen'), fmt(S.seniority)); setText($('senBonus'), '+' + Math.round(S.seniority * m.senPer * 100) + '%'); }
   // Кнопка ручной подписи уходит на второй план после первой покупки
   $('signBtn').classList.toggle('minor', totalOwned(S) > 0);
@@ -3040,7 +3069,7 @@ function onSign(btn) {
 let lastStampSfx = 0;
 function onBuyDept(id) {
   const d = DEPT_BY_ID[id], m = getMods(S);
-  const n = S.buyMode === 'max' ? maxBuy(S, d, m) : S.buyMode;
+  const n = buyCount(S, d, m);
   const before = owned(S, id);
   if (!buyDept(S, id, n)) return false;
   S.stats.bought += n;
@@ -3120,8 +3149,15 @@ document.addEventListener('click', e => {
     case 'sign': onSign(tEl); break;
     case 'buyDept': if (hold.fired) { hold.fired = false; break; } onBuyDept(id); break;
     case 'buyUpg': onBuyUpg(id); break;
-    case 'tab': if (activeTab !== id) Sound.play('tab'); activeTab = id; $('scroller').scrollTo({ top: 0 }); render(); break;
-    case 'mode': S.buyMode = id === 'max' ? 'max' : +id; syncBuyMode(); haptic.light(); Sound.play('click'); render(); break;
+    case 'tab':
+      if (activeTab !== id) {
+        Sound.play('tab');
+        // раскрытые списки купленного сворачиваем, чтобы вкладка открывалась в обычном виде
+        document.querySelectorAll('details.filed[open]').forEach(d => { d.open = false; });
+        filedOpen = perkFiledOpen = false;
+      }
+      activeTab = id; $('scroller').scrollTo({ top: 0 }); render(); break;
+    case 'mode': S.buyMode = id === 'max' || id === 'next' ? id : +id; syncBuyMode(); haptic.light(); Sound.play('click'); render(); break;
     case 'restructure': onRestructure(); break;
     case 'settings': Sound.play('click'); showSettings(); break;
     case 'achievements': Sound.play('click'); showAchievements(); break;
@@ -3165,7 +3201,8 @@ function frame(now) {
     if (curSRate > 0 || S.stamps > 0) {
       shown.stamps = easeTo(shown.stamps, S.stamps + curSRate * since, curSRate, dt);
       setText($('stamps'), fmtPrecise(shown.stamps));
-    }
+      if (miniOn) setText($('miniStamps'), fmt(shown.stamps));
+    } else shown.stamps = null;   // печатей нет (например, после реструктуризации) — потом счёт начнётся без докрутки
   }
   lastFrame = now;
   requestAnimationFrame(frame);
