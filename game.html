@@ -529,7 +529,7 @@ html.scheme-dark{ --good:#4fb57a; }
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.11',              // версия игры (показывается в настройках)
+  version: '1.12',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   itchUrl: 'https://adomant.itch.io/paperwork-inc',   // страница на itch.io — появится в настройках
   achievementBonus: 0.01,
@@ -1258,6 +1258,37 @@ const I18N = {
         "Someone asked what the company actually produces. The question has been minuted.",
         "The fax machine received a fax from itself. Nobody is sure what it said.",
         "The quarterly targets were exceeded. New targets were set to make sure it does not happen again.",
+        "The sales team's stapler was found in jelly again. Its owner filed a complaint. The complaint was also found in jelly.",
+        "The Assistant Regional Manager would like it noted that he is the Assistant TO the Regional Manager. All forms have been updated.",
+        "The manager bought himself a \"World's Best Boss\" mug. The receipt is attached to his performance review as evidence.",
+        "An accountant brought in his famous homemade chili. Accounting will be recarpeted next quarter.",
+        "A surprise fire safety drill was held. Staff readiness: low. The cat has been retrieved from the ceiling.",
+        "The manager walked into the corridor and loudly declared bankruptcy. Legal is checking whether that counts as filing.",
+        "A senior salesman introduced his own currency to reward staff. The exchange rate to Merits is 1000 to 0.",
+        "An employee nobody remembers hiring was found in the building. According to the records, he has been here the longest.",
+        "HR has been relocated to the annex. The manager calls it the best day of his life.",
+        "A clerk has been staring meaningfully into the security camera for three hours. Security does not get it.",
+        "A senior salesman offered to pay bonuses in beets from his farm. Accounting is looking for the right expense code.",
+        "The annual office awards were held at a diner. \"Whitest Sneakers\" went to HR again.",
+        "Sales took up parkour. Injuries are up. Sales are not.",
+        "Everyone was urgently called to the conference room. Agenda: find out why everyone was called to the conference room.",
+        "The manager has spent eleven years filming a movie about himself. The premiere is set for the office party.",
+        "A clerk woke up to find he had turned into an insect. HR wants to know whether he will be late.",
+        "To get Permit A-38, first obtain the blue form. The blue form is issued to holders of Permit A-38.",
+        "The air conditioning was repaired without Form 27-B/6. The repairman is now the most wanted man in the building.",
+        "The man in the basement has been moved further down. He took his red stapler with him.",
+        "The new hire read the Employee Handbook cover to cover. He is being monitored.",
+        "A deadline was met. Nobody knows who to blame.",
+        "The coffee machine and the printer are no longer speaking. Mediation is scheduled for Tuesday.",
+        "Someone took the last paperclip. An inquiry has been opened. There is nothing to clip the findings with.",
+        "The office was rearranged for better feng shui. The energy now flows straight into the stationery cupboard.",
+        "A clerk's leave request was approved. For 2041.",
+        "The lift now plays recordings of past meetings instead of music. Stair use is up 300%.",
+        "IT reported an e-mail outage. The report was sent by e-mail.",
+        "A department went a whole day without a meeting. Its staff are being treated for shock.",
+        "The Board allowed casual dress. Ties must now be knotted casually.",
+        "The new filing system is so efficient that nobody can find the old filing system.",
+        "A clerk was praised for thinking outside the box. He has been issued a new, slightly larger box.",
       ],
       dirPlus: ['works with redoubled zeal', 'received a new stapler', 'the manager is on holiday', 'found a box of pens that work', 'the coffee machine has been repaired'],
       dirMinus: ['closed for stocktaking', 'away at a mandatory team-building day', 'lost its only stapler', 'the printer has jammed again', 'stuck in a meeting about meetings'],
@@ -1299,6 +1330,59 @@ const I18N = {
         "BULLETIN: The new org chart is available on request, on paper, in triplicate.",
         "KITCHEN: The fridge will be cleared on Friday. Everything in it will be filed.",
         "REMINDER: The suggestion box is not a place for suggestions about the suggestion box.",
+        "NOTICE: Tomorrow is Free Pretzel Day. Full attendance is expected for the first time ever.",
+        "HR: Please stop putting coworkers' belongings in jelly.",
+        "SECURITY: Fire drills will no longer involve real fire.",
+        "ACCOUNTING: Beets are not an accepted form of payment.",
+        "MEMO: Conference room. Five minutes.",
+        "CONFIDENTIAL: An inspector is coming. Incognito. Facilities are repainting the ficus.",
+        "REMINDER: All reports now need the new cover sheet. A memo about this will be sent again.",
+        "IT: Please do not print the internet.",
+        "HR: The stress management programme has been cancelled due to stress.",
+        "FACILITIES: The \"Wet Floor\" sign is wet. Please use the other one.",
+        "LEGAL: Verbal agreements must be made in writing.",
+        "BULLETIN: The open-door policy now requires an appointment.",
+        "ACCOUNTING: The calculator has been audited. It disagrees with the findings.",
+        "NOTICE: Lost: one meeting agenda. If found, please hold the meeting it belongs to.",
+        "SECURITY: Visitors must be escorted. Escorts must also be escorted.",
+        "KITCHEN: The kettle is booked until Thursday.",
+      ],
+      jokesLong: [
+        "You were away for {t}. In that time the Committee renamed itself twice and changed its purpose once.",
+        "Over the last {t}, three meetings were held about your absence. All three are to be continued.",
+        "After {t}, your desk was declared vacant and briefly used as a meeting room.",
+        "Your plant has not been watered for {t}. It has filed a complaint.",
+        "After {t} without you, a portrait of you was hung in the lobby, just in case.",
+      ],
+      jokesShort: [
+        "You were gone for {t}. Nobody noticed. This has been noted.",
+        "In {t}, the office managed to schedule one meeting and postpone it.",
+        "Your {t} break has been logged as \"strategic reflection\".",
+        "Welcome back after {t}. The coffee is still brewing. It always is.",
+      ],
+      memosNight: [
+        "NIGHT SHIFT: Signatures after midnight count as yesterday's. Or tomorrow's. Legal will decide in the morning.",
+        "NIGHT SHIFT: A reminder that these are the same documents as in the daytime, just darker.",
+        "FACILITIES: The lights are motion-activated. If it goes dark, please wave a form.",
+        "HR: Overtime after 2 a.m. is recorded as enthusiasm and is not paid.",
+      ],
+      memosWeekend: [
+        "NOTICE: It is the weekend. Any work done today is officially not happening.",
+        "HR: Weekend work is voluntary. Your voluntary participation has been noted.",
+        "FACILITIES: The coffee machine is off for the weekend. It has earned it.",
+        "MEMO: Monday's meeting has been moved to Sunday so that it can be postponed to Monday.",
+      ],
+      memosFresh: [
+        "BULLETIN: Following the restructuring, everyone moved one desk to the right. Efficiency is up 0%.",
+        "HR: New nameplates are on order. Until they arrive, please answer to anything.",
+        "MEMO: The old org chart has been archived. The new one is a single box marked \"You\".",
+        "FACILITIES: The empty floors are not haunted. They are pending occupancy.",
+      ],
+      memosNewDept: [
+        "BULLETIN: The {dept} is open. Its first act was to approve its own opening, retroactively.",
+        "HR: Please welcome the new {dept}. It has already requested a bigger room.",
+        "MEMO: The {dept} is now operational. A committee will decide whether it was necessary.",
+        "FACILITIES: Signage for the {dept} has been ordered. Until it arrives, the {dept} does not officially exist.",
       ],
     },
     hb: {
@@ -1566,6 +1650,37 @@ const I18N = {
         "Кто-то спросил, что вообще производит компания. Вопрос занесён в протокол.",
         "Факс получил факс от самого себя. Никто не уверен, что там было написано.",
         "Квартальные цели перевыполнены. Установлены новые цели, чтобы такое больше не повторилось.",
+        "Степлер из отдела продаж снова нашли в желе. Владелец подал жалобу. Жалобу тоже нашли в желе.",
+        "Помощник регионального менеджера просит уточнять: он помощник «при» региональном менеджере. Все бланки обновлены.",
+        "Начальник купил себе кружку «Лучший начальник в мире». Чек приложен к его аттестации как доказательство.",
+        "Бухгалтер принёс из дома свой знаменитый чили. Ковролин в бухгалтерии заменят в следующем квартале.",
+        "Прошли внезапные учения по пожарной безопасности. Готовность персонала: низкая. Кошку из подвесного потолка достали.",
+        "Начальник вышел в коридор и громко объявил о банкротстве. Юристы выясняют, считается ли это подачей заявления.",
+        "Старший продавец ввёл собственную валюту для поощрения сотрудников. Курс к почётным грамотам — 1000 к 0.",
+        "В здании обнаружен сотрудник, которого никто не нанимал. По документам он работает здесь дольше всех.",
+        "Отдел кадров переселили в пристройку. Начальник называет это лучшим днём своей жизни.",
+        "Сотрудник третий час многозначительно смотрит в камеру наблюдения. Служба безопасности не понимает намёка.",
+        "Старший продавец предложил выплачивать премии свёклой со своей фермы. Бухгалтерия ищет подходящую статью расходов.",
+        "Ежегодную церемонию офисных наград провели в закусочной. Номинацию «Самые белые кроссовки» снова выиграл отдел кадров.",
+        "Отдел продаж увлёкся паркуром. Травматизм вырос. Продажи — нет.",
+        "Всех срочно позвали в переговорную. Повестка: выяснить, зачем всех позвали в переговорную.",
+        "Начальник одиннадцать лет снимает фильм о самом себе. Премьера назначена на корпоратив.",
+        "Сотрудник проснулся и обнаружил, что превратился в насекомое. Отдел кадров уточняет, не опоздает ли он.",
+        "Чтобы получить пропуск А-38, сначала получите синий бланк. Синий бланк выдают по пропуску А-38.",
+        "Кондиционер починили без формы 27-Б/6. Мастер объявлен самым разыскиваемым человеком в здании.",
+        "Сотрудника из подвала переселили ещё ниже. Красный степлер он забрал с собой.",
+        "Новый сотрудник прочитал справочник сотрудника от корки до корки. За ним установлено наблюдение.",
+        "Срок был соблюдён. Никто не знает, кого за это наказать.",
+        "Кофемашина и принтер больше не разговаривают. Медиация назначена на вторник.",
+        "Кто-то взял последнюю скрепку. Начато служебное расследование. Скреплять материалы нечем.",
+        "Офис переставили по фэн-шую. Теперь вся энергия уходит прямиком в шкаф с канцтоварами.",
+        "Заявление сотрудника на отпуск одобрено. На 2041 год.",
+        "В лифте вместо музыки теперь играют записи прошлых совещаний. По лестнице стали ходить втрое чаще.",
+        "ИТ-отдел сообщил о сбое почты. Сообщение пришло по почте.",
+        "Отдел провёл целый день без единого совещания. Сотрудникам оказывают помощь.",
+        "Правление разрешило свободный стиль одежды. Галстуки теперь нужно завязывать свободно.",
+        "Новая система хранения настолько эффективна, что старую систему хранения никто не может найти.",
+        "Сотрудника похвалили за мышление вне рамок. Ему выделили новые рамки, пошире.",
       ],
       dirPlus: ['работает с удвоенным рвением', 'получил новый степлер', 'начальник в отпуске', 'нашёл коробку пишущих ручек', 'починили кофемашину'],
       dirMinus: ['закрыт на инвентаризацию', 'на обязательном тимбилдинге', 'потерял единственный степлер', 'снова зажевало принтер', 'застрял на совещании о совещаниях'],
@@ -1607,6 +1722,59 @@ const I18N = {
         "БЮЛЛЕТЕНЬ: Новая оргструктура предоставляется по запросу, на бумаге, в трёх экземплярах.",
         "КУХНЯ: В пятницу холодильник будет очищен. Всё содержимое будет подшито.",
         "НАПОМИНАНИЕ: Ящик для предложений — не место для предложений о ящике для предложений.",
+        "ОБЪЯВЛЕНИЕ: Завтра День бесплатного кренделя. Впервые ожидается стопроцентная явка.",
+        "ОТДЕЛ КАДРОВ: Просьба прекратить помещать вещи коллег в желе.",
+        "ОХРАНА: Учебные пожарные тревоги больше не проводятся с настоящим огнём.",
+        "БУХГАЛТЕРИЯ: Свёкла не является допустимым средством платежа.",
+        "СЛУЖЕБНАЯ ЗАПИСКА: Переговорная. Через пять минут.",
+        "СЕКРЕТНО: К нам едет ревизор. Инкогнито. Хозчасть срочно красит фикус.",
+        "НАПОМИНАНИЕ: Ко всем отчётам теперь прикладывается новый титульный лист. Записку об этом пришлём ещё раз.",
+        "ИТ-ОТДЕЛ: Просьба не распечатывать интернет.",
+        "ОТДЕЛ КАДРОВ: Программа борьбы со стрессом отменена из-за стресса.",
+        "ХОЗЧАСТЬ: Табличка «Осторожно, мокрый пол» намокла. Пользуйтесь второй.",
+        "ЮРИСТЫ: Устные договорённости оформляются только письменно.",
+        "БЮЛЛЕТЕНЬ: Политика открытых дверей теперь действует по предварительной записи.",
+        "БУХГАЛТЕРИЯ: Калькулятор прошёл проверку. С её итогами он не согласен.",
+        "ОБЪЯВЛЕНИЕ: Потеряна повестка совещания. Нашедшего просим провести совещание, к которому она относится.",
+        "ОХРАНА: Посетителей сопровождают. Сопровождающих тоже сопровождают.",
+        "КУХНЯ: Чайник забронирован до четверга.",
+      ],
+      jokesLong: [
+        "Вас не было {t}. За это время комитет дважды сменил название и один раз — смысл существования.",
+        "За последние {t} о вашем отсутствии провели три совещания. Все три — с продолжением.",
+        "Через {t} ваш стол признали свободным и ненадолго использовали как переговорную.",
+        "Ваш фикус не поливали {t}. Он подал жалобу.",
+        "Через {t} без вас в холле на всякий случай повесили ваш портрет.",
+      ],
+      jokesShort: [
+        "Вас не было {t}. Никто не заметил. Это отмечено в журнале.",
+        "За {t} офис успел назначить одно совещание и перенести его.",
+        "Перерыв в {t} оформлен как «стратегическое осмысление».",
+        "С возвращением спустя {t}. Кофе ещё варится. Он всегда варится.",
+      ],
+      memosNight: [
+        "НОЧНАЯ СМЕНА: Подписи после полуночи считаются вчерашними. Или завтрашними. Юристы разберутся утром.",
+        "НОЧНАЯ СМЕНА: Напоминаем: днём здесь те же самые документы, просто при свете.",
+        "ХОЗЧАСТЬ: Свет включается от датчика движения. Если стало темно — помашите бланком.",
+        "ОТДЕЛ КАДРОВ: Переработка после двух ночи учитывается как энтузиазм и не оплачивается.",
+      ],
+      memosWeekend: [
+        "ОБЪЯВЛЕНИЕ: Сегодня выходной. Вся работа сегодня официально не происходит.",
+        "ОТДЕЛ КАДРОВ: Работа в выходные — дело добровольное. Ваше добровольное участие отмечено.",
+        "ХОЗЧАСТЬ: Кофемашина на выходных отдыхает. Она это заслужила.",
+        "СЛУЖЕБНАЯ ЗАПИСКА: Совещание с понедельника перенесено на воскресенье, чтобы его можно было перенести на понедельник.",
+      ],
+      memosFresh: [
+        "БЮЛЛЕТЕНЬ: После реорганизации все сотрудники пересели на один стол вправо. Эффективность выросла на 0%.",
+        "ОТДЕЛ КАДРОВ: Новые таблички с должностями заказаны. До их прибытия отзывайтесь на любые.",
+        "СЛУЖЕБНАЯ ЗАПИСКА: Старая оргструктура сдана в архив. Новая — один квадратик с надписью «Вы».",
+        "ХОЗЧАСТЬ: На пустых этажах нет привидений. Они ожидают заселения.",
+      ],
+      memosNewDept: [
+        "БЮЛЛЕТЕНЬ: Подразделение «{dept}» открыто. Первым делом оно задним числом согласовало собственное открытие.",
+        "ОТДЕЛ КАДРОВ: Поприветствуйте новое подразделение «{dept}». Оно уже запросило кабинет побольше.",
+        "СЛУЖЕБНАЯ ЗАПИСКА: Подразделение «{dept}» приступило к работе. Комиссия решает, было ли это необходимо.",
+        "ХОЗЧАСТЬ: Табличка для подразделения «{dept}» заказана. До её прибытия подразделения официально не существует.",
       ],
     },
     depts: {
@@ -2144,6 +2312,46 @@ function fmtTime(sec) {
 }
 const pct = x => Math.round(x * 100) + '%';
 const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+/* ---------- Колода без повторов ----------
+   Шутки и записки выдаются как карты из перетасованной колоды: пока не покажутся все,
+   ни одна не повторится. Остаток колоды хранится в браузере отдельно от сохранения
+   (в облако не идёт и места там не занимает). Колоды общие для обоих языков:
+   строки в en и ru идут в одном порядке. */
+const BAG_KEY = 'paperwork_inc_decks_v1';
+let decks = {};
+try { decks = JSON.parse(localStorage.getItem(BAG_KEY)) || {}; } catch (e) { decks = {}; }
+if (!decks || typeof decks !== 'object') decks = {};
+function draw(key) {
+  const list = tlist(key);
+  let d = decks[key];
+  const ok = d && d.n === list.length && Array.isArray(d.left) && d.left.every(i => Number.isInteger(i) && i >= 0 && i < list.length);
+  if (!ok || !d.left.length) {
+    const last = ok ? d.last : -1, left = [...list.keys()];
+    for (let i = left.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [left[i], left[j]] = [left[j], left[i]]; }
+    if (left.length > 1 && left[left.length - 1] === last) [left[0], left[left.length - 1]] = [left[left.length - 1], left[0]];   // на стыке колод не повторяемся
+    d = decks[key] = { n: list.length, left };
+  }
+  d.last = d.left.pop();
+  try { localStorage.setItem(BAG_KEY, JSON.stringify(decks)); } catch (e) {}
+  return list[d.last];
+}
+// Шутка для окна возвращения: после долгого или очень короткого отсутствия — иногда про это
+function awayJoke(awaySec) {
+  const r = Math.random();
+  const key = awaySec >= 8 * 3600 && r < 0.5 ? 'jokesLong' : awaySec < 600 && r < 0.5 ? 'jokesShort' : 'jokes';
+  return draw(key).replace(/\{t\}/g, fmtTime(awaySec));
+}
+// Служебная записка: иногда — про то, что происходит сейчас (ночь, выходные, новый период)
+let pendingMemo = null;
+function nextMemo() {
+  if (pendingMemo) { const m = pendingMemo; pendingMemo = null; return m; }
+  const now = new Date(), ctx = [];
+  if (now.getHours() < 5) ctx.push('memosNight');
+  if (now.getDay() === 0 || now.getDay() === 6) ctx.push('memosWeekend');
+  if (S && S.restructures > 0 && totalOwned(S) < 25) ctx.push('memosFresh');
+  return draw(ctx.length && Math.random() < 0.3 ? pick(ctx) : 'memos');
+}
 const esc = str => String(str).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
 
 // Номер формы для апгрейда генерируется из его позиции
@@ -2208,7 +2416,7 @@ function applySettings() {
   document.documentElement.classList.toggle('no-anim', !st.animations);
   applyTheme();
   $('memo').hidden = !st.memos;
-  if (langChanged) $('memo').textContent = pick(tlist('memos'));
+  if (langChanged) $('memo').textContent = nextMemo();
   applyStaticTexts();
   if (S) syncBuyMode();
   deptKey = upgKey = filedKey = perkKey = deskKey = perkFiledKey = '';   // пересобрать карточки на новом языке
@@ -2435,7 +2643,7 @@ function showAway(awaySec, countedSec, gained, m) {
       (gained.stamps > 0 ? t('awayStamps', { s: fmt(gained.stamps) }) : '') + `.</p>` +
       `<p class="hint mono" style="font-size:12px">${t('awayEff', { e: pct(m.eff), h: m.capHours })}</p>` +
       (capped ? `<p style="font-size:13px">${t('awayCapped', { h: m.capHours })}</p>` : '') +
-      `<div class="m-joke">${t('awayMeanwhile')} ${pick(tlist('jokes'))}</div>`;
+      `<div class="m-joke">${t('awayMeanwhile')} ${esc(awayJoke(awaySec))}</div>`;
   }
   showModal({ form: t('awayForm'), title: '📬 ' + t('awayTitle'), stamp: t('stampReceived'), body,
     buttons: [{ label: t('awayBtn'), onClick: () => Sound.play('welcome') }] });
@@ -3083,6 +3291,7 @@ function onBuyDept(id) {
     haptic.success(); setTimeout(() => Sound.play('milestone'), 150);
   }
   if (before === 0 && totalOwned(S) === n && id === DEPARTMENTS[0].id) toast(t('tFirstDept'));
+  else if (before === 0 && S.settings.memos) { pendingMemo = draw('memosNewDept').replace(/\{dept\}/g, dName(d)); rotateMemo(); }
   render();
   return true;
 }
@@ -3324,7 +3533,7 @@ function rotateMemo() {
   if (!S || !S.settings.memos) return;
   const el = $('memo');
   el.classList.add('fade');
-  setTimeout(() => { el.textContent = pick(tlist('memos')); el.classList.remove('fade'); }, 400);
+  setTimeout(() => { el.textContent = nextMemo(); el.classList.remove('fade'); }, 400);
 }
 
 /* ---------- Старт ---------- */
@@ -3346,7 +3555,7 @@ function rotateMemo() {
     applySettings();
     showIntro();
   }
-  $('memo').textContent = pick(tlist('memos'));
+  $('memo').textContent = nextMemo();
   lastTick = Date.now();
   S.lastSeen = lastTick;
   syncBuyMode();
