@@ -526,7 +526,7 @@ html.scheme-dark{ --good:#4fb57a; }
      SFX — рецепты звуков
    Блок между маркерами ENGINE — чистая логика без DOM
    (её же можно прогнать в Node для проверки баланса).
-   ВАЖНО для обновлений: не меняйте id отделов/апгрейдов и SAVE_KEY —
+   ВАЖНО для обновлений: не меняйте id отделов/апгрейдов, SAVE_KEY и порядок в SAVE_ORDER —
    иначе у игроков пропадёт прогресс.
    ===================================================================== */
 
@@ -534,7 +534,7 @@ html.scheme-dark{ --good:#4fb57a; }
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.12.2',              // версия игры (показывается в настройках)
+  version: '1.13',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   itchUrl: 'https://adomant.itch.io/paperwork-inc',   // страница на itch.io — появится в настройках
   achievementBonus: 0.01,
@@ -2038,8 +2038,159 @@ const haptic = {
   success() { if (this.on()) try { tg.HapticFeedback.notificationOccurred('success'); } catch (e) {} },
 };
 
-const SAVE_KEY = 'paperwork_inc_save_v1';   // не менять — иначе старые сохранения не найдутся
+const SAVE_KEY = 'paperwork_inc_save_v1';   // старый формат (до 1.13): только читаем, не пишем — это резервная копия
+const SAVE_KEY2 = 'paperwork_inc_save_v2';  // сжатый формат (с 1.13): сюда пишем
 const CLOUD_LIMIT = 4096;                     // лимит Telegram CloudStorage на одно значение (символов)
+
+/* ---------- Сжатый формат сохранения ----------
+   Игра работает с обычным объектом S, а в хранилище кладёт его сжатую копию:
+   короткие имена полей, отделы и льготы — списком чисел, улучшения — цепочкой номеров,
+   достижения и «увиденные» отделы — битовой маской, настройки — только отличия от умолчаний.
+   Сжимаем при записи (packSave) и разжимаем при чтении (unpackSave) — больше нигде формат не виден.
+   Старые сохранения (без метки _: 2) читаются как раньше.
+
+   ВАЖНО: списки SAVE_ORDER можно только дополнять в конце. Номер в списке — это то,
+   что лежит в сохранении; если переставить или удалить элемент, у игроков перепутаются покупки.
+   Новый отдел, улучшение, льгота или достижение, которых здесь нет, тоже сохранятся
+   (отдельным списком по имени), просто чуть длиннее. */
+const SAVE_ORDER = {
+  depts: [
+    'intern', 'filing', 'archive', 'approvals', 'committee', 'taskforce', 'reporting', 'synergy', 'review',
+    'headoffice', 'stamping', 'precedent', 'eternal',
+  ],
+  upgrades: [
+    'coffee', 'paperclips', 'poster', 'overtime', 'answering', 'alphabet', 'rubberstamp', 'toner', 'indextabs',
+    'carbon', 'nightshift', 'quorum', 'retreat', 'meta', 'whitepaper', 'minutes', 'letterhead', 'selfinking',
+    'standing', 'ooo', 'procurement', 'viscous', 'sleepwalk', 'pneumatic', 'lapelpin', 'dehumidifier', 'secondpen',
+    'biscuits', 'mandate', 'piecharts', 'buzzwords', 'magnifier', 'elevator', 'inkpad', 'doublestamp', 'casebook',
+    'metaprecedent', 'tickets', 'magazines', 'opendoor', 'allhands', 'roadmap', 'notary', 'embosser', 'napping',
+    'intern_t50', 'intern_t100', 'intern_t200', 'filing_t50', 'filing_t100', 'filing_t200', 'archive_t50',
+    'archive_t100', 'archive_t200', 'approvals_t50', 'approvals_t100', 'approvals_t200', 'committee_t50',
+    'committee_t100', 'committee_t200', 'taskforce_t50', 'taskforce_t100', 'taskforce_t200', 'reporting_t50',
+    'reporting_t100', 'reporting_t200', 'synergy_t50', 'synergy_t100', 'synergy_t200', 'review_t50', 'review_t100',
+    'review_t200', 'headoffice_t50', 'headoffice_t100', 'headoffice_t200', 'stamping_t50', 'stamping_t100',
+    'stamping_t200', 'precedent_t50', 'precedent_t100', 'precedent_t200', 'eternal_t50', 'eternal_t100',
+    'eternal_t200',
+  ],
+  perks: [
+    'headstart', 'capital', 'discount', 'lunch', 'remote', 'heirloom', 'autoreq', 'corner',
+  ],
+  achievements: [
+    'docs1k', 'docs1m', 'docs1b', 'docs1t', 'docs1q', 'rate1k', 'rate1m', 'rate1b', 'sign100', 'intern50',
+    'total100', 'total500', 'every', 'hundred', 'upg10', 'upg25', 'stamps1k', 'away8', 'play1h', 'restr1', 'restr5',
+    'sen25', 'docs1e18', 'rate1t', 'sign1000', 'total1000', 'every25', 'stamps1m', 'upg50', 'play10h', 'restr10',
+    'sen100', 'perksall', 'inbox1', 'inbox100', 'streak20',
+  ],
+};
+// Короткие имена полей. Все начинаются с заглавной буквы: обычные поля игры пишутся
+// с маленькой, поэтому перепутать нельзя. Поля, которых нет в таблице, сохраняются как есть.
+const PACK_KEYS = {
+  docs: 'A', stamps: 'B', runEarned: 'C', stampsEarnedRun: 'E', allTimeEarned: 'F', seniority: 'G', restructures: 'H',
+  depts: 'I', upgrades: 'J', flags: 'K', buyMode: 'L', created: 'M', runStarted: 'N', lastSeen: 'O', merits: 'P',
+  perks: 'Q', perksOrder: 'R', achievements: 'S', settings: 'T', stats: 'U', inbox: 'V', directive: 'W', rev: 'X', sid: 'Y',
+  // настройки
+  lang: 'La', sound: 'So', volume: 'Vo', ambience: 'Am', haptics: 'Ha', memos: 'Me', animations: 'An',
+  numFormat: 'Nf', fullscreen: 'Fs', awayReport: 'Ar', theme: 'Th',
+  // личное дело
+  signs: 'Sg', playSec: 'Ps', bought: 'Bo', maxAway: 'Ma', inboxOk: 'Io', inboxBad: 'Ib', bestStreak: 'Bs',
+  // отметки
+  upgradesTab: 'Ut', restructureTab: 'Rt', inboxOpen: 'Op', restrNotified: 'Rn', autobuyOff: 'Ao', hbSeen: 'Hs',
+  // входящие и директива
+  count: 'Co', timer: 'Ti', streak: 'St', current: 'Cu', rules: 'Ru', day: 'Dy', key: 'Ke', ids: 'Id', inkDept: 'Kd',
+  bad: 'Bd', earned: 'Ea', form: 'Fo', letter: 'Le', dept: 'De', date: 'Da', sigs: 'Si', ink: 'In', pages: 'Pg',
+  seal: 'Se', subject: 'Su', plus: 'Pl', minus: 'Mi', plusText: 'Pt', minusText: 'Mt', noneText: 'Nt',
+};
+const UNPACK_KEYS = Object.fromEntries(Object.entries(PACK_KEYS).map(([k, v]) => [v, k]));
+const ORDER_INDEX = Object.fromEntries(Object.entries(SAVE_ORDER).map(([k, ids]) => [k, Object.fromEntries(ids.map((id, i) => [id, i]))]));
+
+// Дробные и огромные числа — с 10 значащими цифрами (точнее, чем видно в игре), обычные целые — как есть
+const packNum = n => (Number.isSafeInteger(n) || !isFinite(n) ? n : +n.toPrecision(10));
+function renameKeys(v, map, round) {
+  if (Array.isArray(v)) return v.map(x => renameKeys(x, map, round));
+  if (v && typeof v === 'object') { const o = {}; for (const k of Object.keys(v)) o[map[k] || k] = renameKeys(v[k], map, round); return o; }
+  return round && typeof v === 'number' ? packNum(v) : v;
+}
+// Список id → цепочка номеров по 2 символа (36² = 1296 мест); чего нет в SAVE_ORDER — отдельно по имени
+function packIds(ids, kind) {
+  let str = ''; const extra = [];
+  for (const id of ids) { const i = ORDER_INDEX[kind][id]; if (i === undefined) extra.push(id); else str += i.toString(36).padStart(2, '0'); }
+  return [str, extra];
+}
+function unpackIds(str, extra, kind) {
+  const out = [], list = SAVE_ORDER[kind];
+  if (typeof str === 'string') for (let i = 0; i + 1 < str.length; i += 2) { const id = list[parseInt(str.slice(i, i + 2), 36)]; if (id) out.push(id); }
+  return Array.isArray(extra) ? out.concat(extra) : out;
+}
+// Набор id (порядок не важен) → битовая маска в шестнадцатеричной записи
+function packSet(ids, kind) {
+  const n = SAVE_ORDER[kind].length, bits = new Array(Math.ceil(n / 4)).fill(0), extra = [];
+  for (const id of ids) { const i = ORDER_INDEX[kind][id]; if (i === undefined) extra.push(id); else bits[i >> 2] |= 1 << (i & 3); }
+  return [bits.map(b => b.toString(16)).join('').replace(/0+$/, ''), extra];
+}
+function unpackSet(hex, extra, kind) {
+  const out = [], list = SAVE_ORDER[kind];
+  if (typeof hex === 'string') for (let j = 0; j < hex.length; j++) {
+    const b = parseInt(hex[j], 16) || 0;
+    for (let k = 0; k < 4; k++) if (b & (1 << k) && list[j * 4 + k]) out.push(list[j * 4 + k]);
+  }
+  return Array.isArray(extra) ? out.concat(extra) : out;
+}
+// Объект {id: число} → список чисел по порядку SAVE_ORDER (нули в конце отбрасываем)
+function packCounts(obj, kind) {
+  const arr = SAVE_ORDER[kind].map(id => obj[id] || 0), extra = {};
+  while (arr.length && !arr[arr.length - 1]) arr.pop();
+  for (const id of Object.keys(obj)) if (ORDER_INDEX[kind][id] === undefined && obj[id]) extra[id] = obj[id];
+  return [arr, extra];
+}
+function unpackCounts(arr, extra, kind) {
+  const out = {};
+  if (Array.isArray(arr)) arr.forEach((v, i) => { if (v && SAVE_ORDER[kind][i]) out[SAVE_ORDER[kind][i]] = v; });
+  return Object.assign(out, extra && typeof extra === 'object' ? extra : {});
+}
+
+function packSave(state) {
+  const o = Object.assign({}, state);
+  delete o.v;
+  const put = (key, [main, extra], empty) => { o[key] = main; const has = Array.isArray(extra) ? extra.length : Object.keys(extra).length; if (has) o[key + 'x'] = extra; };
+  put('depts', packCounts(state.depts || {}, 'depts'));
+  put('perks', packCounts(state.perks || {}, 'perks'));
+  put('upgrades', packIds(state.upgrades || [], 'upgrades'));
+  put('perksOrder', packIds(state.perksOrder || [], 'perks'));
+  put('achievements', packSet(state.achievements || [], 'achievements'));
+  // «Увиденные» отделы (seen_<id>) — маской, остальные отметки — как есть
+  const flags = Object.assign({}, state.flags || {}), seen = [];
+  for (const k of Object.keys(flags)) if (k.indexOf('seen_') === 0 && flags[k] && ORDER_INDEX.depts[k.slice(5)] !== undefined) { seen.push(k.slice(5)); delete flags[k]; }
+  o.flags = flags;
+  if (seen.length) o.seen = packSet(seen, 'depts')[0];
+  // Настройки — только то, что отличается от умолчаний; статистика — без нулей
+  if (state.settings) { o.settings = {}; for (const k of Object.keys(state.settings)) if (state.settings[k] !== DEFAULT_SETTINGS[k]) o.settings[k] = state.settings[k]; }
+  if (state.stats) { o.stats = {}; for (const k of Object.keys(state.stats)) if (state.stats[k]) o.stats[k] = state.stats[k]; }
+  for (const k of Object.keys(o)) if (o[k] === null || o[k] === undefined) delete o[k];
+  return Object.assign({ _: 2 }, renameKeys(o, PACK_KEYS, true));
+}
+function unpackSave(p) {
+  const o = renameKeys(p, UNPACK_KEYS, false);
+  delete o._;
+  const take = k => { const x = o[k + 'x']; delete o[k + 'x']; return x; };
+  o.depts = unpackCounts(o.depts, take('depts'), 'depts');
+  o.perks = unpackCounts(o.perks, take('perks'), 'perks');
+  o.upgrades = unpackIds(o.upgrades, take('upgrades'), 'upgrades');
+  o.perksOrder = unpackIds(o.perksOrder, take('perksOrder'), 'perks');
+  o.achievements = unpackSet(o.achievements, take('achievements'), 'achievements');
+  o.flags = Object.assign({}, o.flags && typeof o.flags === 'object' ? o.flags : {});
+  for (const id of unpackSet(o.seen, null, 'depts')) o.flags['seen_' + id] = true;
+  delete o.seen;
+  return o;   // дальше — обычная проверка migrate(), как для любого сохранения
+}
+// Строка из хранилища → обычный объект сохранения (любого формата) или null
+function parseSave(str) {
+  if (!str) return null;
+  try {
+    const raw = JSON.parse(str);
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+    return raw._ === 2 ? unpackSave(raw) : raw;
+  } catch (e) { return null; }
+}
 /* Синхронизация с облаком Telegram.
    Правила, которые защищают прогресс:
    1. В облако пишем только после того, как успешно прочитали его в этом сеансе
@@ -2059,8 +2210,14 @@ const Store = {
   rev: 0,            // номер последней известной версии в облаке
   baseSeen: 0,       // lastSeen сохранения, с которого стартовали (для старых записей без rev)
   syncing: null,
+  // Сначала новое сжатое сохранение; если его ещё нет — старое (до версии 1.13).
+  // Если на этом же устройстве после обновления успела поработать старая версия игры
+  // (например, из кэша браузера), её запись свежее — берём её, чтобы не потерять.
   readLocal() {
-    try { return JSON.parse(localStorage.getItem(SAVE_KEY)); } catch (e) { return null; }
+    const get = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+    const v2 = parseSave(get(SAVE_KEY2)), v1 = parseSave(get(SAVE_KEY));
+    if (v2 && v1 && cleanNum(v1.lastSeen) > cleanNum(v2.lastSeen)) return v1;
+    return v2 || v1;
   },
   // { ok: false } — облако не ответило; { ok: true, save } — ответило (save может быть null)
   readCloud() {
@@ -2068,13 +2225,20 @@ const Store = {
       let done = false;
       const finish = r => { if (!done) { done = true; clearTimeout(timer); resolve(r); } };
       const timer = setTimeout(() => finish({ ok: false }), CLOUD_WAIT_MS);
+      const done2 = (v2, v1) => finish({ ok: true, save: parseSave(v2) || parseSave(v1) });
       try {
-        tg.CloudStorage.getItem(SAVE_KEY, (err, val) => {
-          if (err) return finish({ ok: false });
-          let save = null;
-          if (val) { try { save = JSON.parse(val); } catch (e) {} }
-          finish({ ok: true, save });
-        });
+        if (tg.CloudStorage.getItems) {        // обе ячейки одним запросом
+          tg.CloudStorage.getItems([SAVE_KEY2, SAVE_KEY], (err, vals) => {
+            if (err || !vals) return finish({ ok: false });
+            done2(vals[SAVE_KEY2], vals[SAVE_KEY]);
+          });
+        } else {
+          tg.CloudStorage.getItem(SAVE_KEY2, (err, v2) => {
+            if (err) return finish({ ok: false });
+            if (v2) return done2(v2, null);
+            tg.CloudStorage.getItem(SAVE_KEY, (err1, v1) => err1 ? finish({ ok: false }) : done2(null, v1));
+          });
+        }
       } catch (e) { finish({ ok: false }); }
     });
   },
@@ -2124,16 +2288,19 @@ const Store = {
     const toCloud = this.cloud && this.writable;
     if (toCloud) state.rev = ++this.rev;
     state.sid = SID;
-    const str = JSON.stringify(state);
-    try { localStorage.setItem(SAVE_KEY, str); } catch (e) {}
+    const str = JSON.stringify(packSave(state));
+    try { localStorage.setItem(SAVE_KEY2, str); } catch (e) {}
     if (!toCloud) return;
     // Сверх лимита облако запись не примет — локальная копия всё равно сохранена
     if (str.length > CLOUD_LIMIT) { console.warn('Save is ' + str.length + ' chars, over the CloudStorage limit'); return; }
-    try { tg.CloudStorage.setItem(SAVE_KEY, str, err => { if (err) console.warn('CloudStorage:', err); }); } catch (e) {}
+    try { tg.CloudStorage.setItem(SAVE_KEY2, str, err => { if (err) console.warn('CloudStorage:', err); }); } catch (e) {}
   },
+  // Полный сброс стирает оба формата, иначе при следующем запуске поднялось бы старое сохранение
   wipe() {
-    try { localStorage.removeItem(SAVE_KEY); } catch (e) {}
-    if (this.cloud) { try { tg.CloudStorage.removeItem(SAVE_KEY, () => {}); } catch (e) {} }
+    for (const k of [SAVE_KEY2, SAVE_KEY]) {
+      try { localStorage.removeItem(k); } catch (e) {}
+      if (this.cloud) { try { tg.CloudStorage.removeItem(k, () => {}); } catch (e) {} }
+    }
   },
 };
 
@@ -2599,12 +2766,13 @@ function openExternal(url) {
 }
 
 /* ---------- Экспорт и импорт сохранения ---------- */
-const CODE_PREFIX = 'PWI1.';
-function exportCode() { return CODE_PREFIX + btoa(unescape(encodeURIComponent(JSON.stringify(S)))); }
+const CODE_PREFIX = 'PWI2.', CODE_PREFIXES = ['PWI2.', 'PWI1.'];   // PWI1 — коды до версии 1.13, тоже принимаются
+function exportCode() { return CODE_PREFIX + btoa(unescape(encodeURIComponent(JSON.stringify(packSave(S))))); }
 function parseCode(code) {
   code = String(code || '').trim().replace(/\s+/g, '');
-  if (code.indexOf(CODE_PREFIX) !== 0) return null;
-  try { return migrate(JSON.parse(decodeURIComponent(escape(atob(code.slice(CODE_PREFIX.length)))))); } catch (e) { return null; }
+  const pre = CODE_PREFIXES.find(p => code.indexOf(p) === 0);
+  if (!pre) return null;
+  try { return migrate(parseSave(decodeURIComponent(escape(atob(code.slice(pre.length)))))); } catch (e) { return null; }
 }
 function showExport() {
   save();

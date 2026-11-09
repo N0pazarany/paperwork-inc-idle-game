@@ -4,6 +4,11 @@
 
 Версии на GitHub, в Telegram и на itch.io обновляются одновременно. Сохранения переносятся между версиями автоматически.
 
+## 1.13 — 9 ноября 2026
+- Сохранение стало примерно в 3 раза компактнее: в облаке Telegram освободилось место под новый контент.
+- Прогресс переносится сам при первом запуске. Сохранение от прошлых версий остаётся нетронутым как резервная копия.
+- Код экспорта сохранения стал в 2,5 раза короче. Старые коды по-прежнему принимаются.
+
 ## 1.12.2 — 9 ноября 2026
 - Убрана подпись «+N» у полоски до бонуса: сколько отделов купится, показывает бледная часть полоски и кнопка покупки.
 
@@ -103,6 +108,11 @@
 # 🇬🇧 English
 
 The GitHub, Telegram and itch.io versions are updated together. Saves carry over between versions automatically.
+
+## 1.13 — 9 Nov 2026
+- Saves are about 3 times more compact, freeing room in Telegram's cloud for new content.
+- Progress carries over automatically on first launch. The save from earlier versions is kept untouched as a backup.
+- Save export codes are 2.5 times shorter. Old codes are still accepted.
 
 ## 1.12.2 — 9 Nov 2026
 - Removed the “+N” label next to the milestone bar: the pale part of the bar and the buy button already show how many departments will be bought.
