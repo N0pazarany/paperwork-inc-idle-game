@@ -4,6 +4,9 @@
 
 Версии на GitHub, в Telegram и на itch.io обновляются одновременно. Сохранения переносятся между версиями автоматически.
 
+## 1.15 — 10 ноября 2026
+- **Поделиться:** кнопка в личном деле и ссылка в настройках. Отправляет «справку с места работы» с вашими цифрами и ссылкой на игру. В Telegram открывается выбор чата, на телефоне — системное «Поделиться», на компьютере — текст, который можно скопировать.
+
 ## 1.14.1 — 10 ноября 2026
 - На печати во входящих теперь сокращение отдела (ОС, КАР, DP…): в английской версии два отдела больше не выглядят одинаково.
 - Исправлено: достижение «Ночная смена» могло выдаваться за просроченный документ.
@@ -122,6 +125,9 @@
 # 🇬🇧 English
 
 The GitHub, Telegram and itch.io versions are updated together. Saves carry over between versions automatically.
+
+## 1.15 — 10 Nov 2026
+- **Share:** a button in the personnel file and a link in settings. Sends a “certificate of employment” with your numbers and a link to the game. In Telegram it opens the chat picker, on phones the system share sheet, on computers a text you can copy.
 
 ## 1.14.1 — 10 Nov 2026
 - In-tray seals now show the department's initials (AO, ARC, DP…), so two departments no longer look the same in English.

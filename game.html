@@ -326,6 +326,7 @@ input.vol:disabled{opacity:.4}
 .credit a{color:var(--link);text-decoration:none}
 
 /* ---------- Достижения ---------- */
+textarea.code.share{font:400 13px/1.45 var(--sans);height:150px;word-break:normal}
 .ach-sum{font:500 12.5px var(--mono);color:var(--hint);margin:-4px 0 10px}
 .ach .rbar{background:var(--hint);color:transparent;border-radius:2px;opacity:.5}
 /* личное дело: строка отдела с долей дохода */
@@ -564,9 +565,10 @@ html.scheme-dark{ --good:#4fb57a; }
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.14.1',              // версия игры (показывается в настройках)
+  version: '1.15',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   itchUrl: 'https://adomant.itch.io/paperwork-inc',   // страница на itch.io — появится в настройках
+  botUrl: 'https://t.me/paperwork_inc_bot',            // бот в Telegram — ссылка, которой делятся из Telegram
   achievementBonus: 0.01,
   // Директива дня: каждый день с некоторым шансом один отдел работает лучше, другой хуже
   directive: { plusMult: 2, minusMult: 0.5, plusChance: 0.55, minusChance: 0.45 },
@@ -1215,6 +1217,9 @@ const I18N = {
       tInboxOpen: '📥 The in-tray is open: the first documents have landed on your desk.',
       loadingCloud: 'Fetching your records from the Telegram cloud…',
       tCloudRestored: '☁️ Progress restored from the Telegram cloud',
+      share: 'Share', shareLink: 'Tell a colleague about the game', shareForm: 'Form 5-R · Certificate of employment', shareTitle: 'Share',
+      shareBody: 'Copy the text and send it to anyone who appreciates a good form.', shareCopy: 'Copy text', tShareCopied: '📋 Text copied',
+      shareText: '📋 Certificate of employment, Paperwork Inc.\nDocuments approved: {docs}\nSeniority: {sen} · Restructurings: {r}\nCommendations: {a} of {all}\nThere are still vacancies.',
       stForm: 'Form 1-L · Personnel file', stTitle: 'Personnel file',
       stGeneral: 'General', stSessions: 'Visits to the office', stMaxAway: 'Longest absence',
       stIncome: 'Documents', stRunEarned: 'Approved this period', stRate: 'Current output', stPeak: 'Best output', stOffline: 'Earned while away',
@@ -1650,6 +1655,9 @@ const I18N = {
       tInboxOpen: '📥 Открыты входящие: на стол легли первые документы.',
       loadingCloud: 'Запрашиваем ваши записи из облака Telegram…',
       tCloudRestored: '☁️ Прогресс восстановлен из облака Telegram',
+      share: 'Поделиться', shareLink: 'Рассказать коллегам об игре', shareForm: 'Форма 5-Р · Справка с места работы', shareTitle: 'Поделиться',
+      shareBody: 'Скопируйте текст и отправьте тому, кто знает толк в хорошо заполненных бланках.', shareCopy: 'Скопировать текст', tShareCopied: '📋 Текст скопирован',
+      shareText: '📋 Справка с места работы, Paperwork Inc.\nОдобрено документов: {docs}\nВыслуга: {sen} · Реорганизаций: {r}\nБлагодарностей: {a} из {all}\nВакансии ещё есть.',
       stForm: 'Форма 1-Л · Личное дело', stTitle: 'Личное дело',
       stGeneral: 'Общее', stSessions: 'Заходов в офис', stMaxAway: 'Самая долгая отлучка',
       stIncome: 'Документы', stRunEarned: 'Одобрено за период', stRate: 'Сейчас в секунду', stPeak: 'Лучшее в секунду', stOffline: 'Получено в отсутствие',
@@ -2802,7 +2810,7 @@ function showSettings() {
     </div>
     <div class="set-sec">${t('secDanger')}</div>
     <div style="margin-top:8px"><button class="btn danger" data-set-act="reset"><span>${t('reset')}</span><span class="sub">🗑️</span></button></div>
-    <div class="credit mono">Paperwork Inc. v${CONFIG.version} · ${t('credit')}${CONFIG.itchUrl ? `<br><a href="#" data-set-act="itch">🕹️ ${t('itchPage')}</a>` : ''}${CONFIG.repoUrl ? `<br><a href="#" data-set-act="repo">💻 ${t('sourceCode')}</a>` : ''}</div>
+    <div class="credit mono">Paperwork Inc. v${CONFIG.version} · ${t('credit')}<br><a href="#" data-set-act="share">📤 ${t('shareLink')}</a>${CONFIG.itchUrl ? `<br><a href="#" data-set-act="itch">🕹️ ${t('itchPage')}</a>` : ''}${CONFIG.repoUrl ? `<br><a href="#" data-set-act="repo">💻 ${t('sourceCode')}</a>` : ''}</div>
     <div class="m-btns"><button class="btn" data-set-act="close">${t('close')}</button></div>`;
   $('overlay').classList.add('show');
   modalKind = 'settings';
@@ -2821,6 +2829,7 @@ $('sheet').addEventListener('click', e => {
       case 'reset': onReset(); break;
       case 'repo': e.preventDefault(); openExternal(CONFIG.repoUrl); break;
       case 'itch': e.preventDefault(); openExternal(CONFIG.itchUrl); break;
+      case 'share': e.preventDefault(); onShare(); break;
       case 'fullscreen': S.settings.fullscreen = !Fullscreen.active(); Fullscreen.set(S.settings.fullscreen); save(); break;
     }
     return;
@@ -2896,6 +2905,32 @@ function openExternal(url) {
   window.open(url, '_blank', 'noopener');
 }
 
+/* ---------- Поделиться ----------
+   Короткая «справка с места работы» с цифрами игрока и ссылкой на игру.
+   В Telegram — штатное окно выбора чата (сервер для этого не нужен).
+   В браузере — системное «Поделиться» (телефоны), иначе окно с текстом и кнопкой «Скопировать». */
+function shareText() {
+  return t('shareText', {
+    docs: fmt(S.allTimeEarned), sen: fmt(S.seniority), r: fmt(S.restructures),
+    a: (S.achievements || []).length, all: ACHIEVEMENTS.length,
+  });
+}
+function onShare() {
+  const text = shareText(), url = IN_TG ? CONFIG.botUrl : CONFIG.itchUrl;
+  if (IN_TG && tgv('6.1') && tg.openTelegramLink) {
+    try { tg.openTelegramLink('https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(text)); return; } catch (e) {}
+  }
+  if (navigator.share && matchMedia('(pointer: coarse)').matches) {
+    navigator.share({ title: 'Paperwork Inc.', text, url }).catch(() => {});
+    return;
+  }
+  showModal({
+    form: t('shareForm'), title: '📤 ' + t('shareTitle'),
+    body: `<p>${t('shareBody')}</p><textarea class="code share" id="saveCode" readonly>${esc(text + '\n' + url)}</textarea>`,
+    buttons: [{ label: '📋 ' + t('shareCopy'), keepOpen: true, onClick: () => copyCode(t('tShareCopied')) }, { label: t('close'), ghost: true }],
+  });
+}
+
 /* ---------- Экспорт и импорт сохранения ---------- */
 const CODE_PREFIX = 'PWI2.', CODE_PREFIXES = ['PWI2.', 'PWI1.'];   // PWI1 — коды до версии 1.13, тоже принимаются
 function exportCode() { return CODE_PREFIX + btoa(unescape(encodeURIComponent(JSON.stringify(packSave(S))))); }
@@ -2916,11 +2951,12 @@ function showExport() {
     ],
   });
 }
-function copyCode() {
+function copyCode(doneMsg) {
   const ta = $('saveCode'); if (!ta) return;
+  const okMsg = typeof doneMsg === 'string' ? doneMsg : t('tCopied');
   ta.focus(); ta.select();
-  const fallback = () => { let ok = false; try { ok = document.execCommand('copy'); } catch (e) {} toast(ok ? t('tCopied') : t('tCopyFail')); };
-  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).then(() => toast(t('tCopied')), fallback);
+  const fallback = () => { let ok = false; try { ok = document.execCommand('copy'); } catch (e) {} toast(ok ? okMsg : t('tCopyFail')); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).then(() => toast(okMsg), fallback);
   else fallback();
 }
 function showImport() {
@@ -2983,7 +3019,8 @@ function showStats() {
   const got = (S.achievements || []).length;
   html += sec(t('achTitle')) + kv(t('stAch'), got + ' / ' + ACHIEVEMENTS.length + ' · +' + Math.round(got * CONFIG.achievementBonus * 100) + '%');
   html += `<p class="hint" style="font-size:12px;margin:12px 0 0">${t('stNote')}</p>`;
-  showModal({ form: t('stForm'), title: '📊 ' + t('stTitle'), body: html, buttons: [{ label: t('close') }] });
+  showModal({ form: t('stForm'), title: '📊 ' + t('stTitle'), body: html,
+    buttons: [{ label: '📤 ' + t('share'), keepOpen: true, onClick: onShare }, { label: t('close'), ghost: true }] });
 }
 
 /* ---------- Окно «пока вас не было» ---------- */

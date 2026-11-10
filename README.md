@@ -42,7 +42,7 @@
 - **84 апгрейда**, в том числе удвоители за 50, 100 и 200 штук каждого отдела. Видны только почти доступные и уже купленные.
 - **Льготы за выслугу:** при реорганизации вместе с выслугой выдаются почётные грамоты (Merits). На них покупаются постоянные льготы: стартовые отделы и документы, скидки, офлайн-бонусы, фамильная печать, автопокупка отделов.
 - **51 достижение** 🏆 (часть из них скрытые), каждое даёт +1% ко всему доходу навсегда.
-- **Личное дело** 📊: подробная статистика игрока — доход, отделы, реорганизации, входящие.
+- **Личное дело** 📊: подробная статистика игрока — доход, отделы, реорганизации, входящие. Своими цифрами можно поделиться с друзьями.
 - **Памятка сотрудника** 📖 — короткий справочник по механикам. Разделы о том, до чего игрок ещё не дошёл, засекречены; красная точка на значке подсказывает, что рассекречен новый раздел.
 - **Офлайн-доход:** на старте начисляется 50% дохода и не больше чем за 8 часов. Апгрейды поднимают это до 100% и 20 часов.
 - **Restructuring:** Seniority = `floor(√(всего заработано / 5·10⁹))`, а после 25 единиц растёт медленнее (мягкий потолок), чтобы прогресс не уходил в лавину. Нужно заработать минимум 300B за период.
@@ -196,7 +196,7 @@ It's an idle game, not a clicker. Income accrues on its own, even while the game
 - **84 upgrades**, including doublers at 50, 100 and 200 units of each department. Only those that are nearly affordable or already bought are shown.
 - **Tenure Benefits:** every restructuring also grants Merits, spent on permanent perks: starting departments and documents, discounts, offline bonuses, an heirloom stamp, auto-buying departments.
 - **51 achievements** 🏆 (some of them hidden), each permanently adds +1% to all income.
-- **Personnel file** 📊: detailed player statistics — income, departments, restructurings, in-tray.
+- **Personnel file** 📊: detailed player statistics — income, departments, restructurings, in-tray. You can share your numbers with friends.
 - **Employee Handbook** 📖, a short guide to the mechanics. Sections about things the player hasn't reached yet stay classified; a red dot on the icon marks a newly declassified section.
 - **Offline income:** starts at 50% efficiency for up to 8 hours. Upgrades raise this to 100% and 20 hours.
 - **Restructuring:** Seniority = `floor(√(total earned / 5·10⁹))`, growing more slowly past 25 (a soft cap) so progress never snowballs. Requires at least 300B earned in the current period.
