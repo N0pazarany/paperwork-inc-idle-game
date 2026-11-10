@@ -380,7 +380,7 @@ html.scheme-dark{ --good:#4fb57a; }
 .doc .sig{font-style:italic;font-size:15px}
 .doc .ink-blue{color:#2c4a8a} .doc .ink-black{color:#1e2226} .doc .ink-red{color:#b5312a} .doc .ink-green{color:#2e7d4f}
 .doc .seal{display:inline-grid;place-items:center;width:40px;height:40px;border:2px solid #2c4a8a;border-radius:50%;color:#2c4a8a;
-  font:700 7px/1.1 var(--mono);text-align:center;opacity:.7;transform:rotate(-8deg);vertical-align:middle;margin:-8px 0}
+  font:700 11px/1 var(--mono);letter-spacing:.02em;text-align:center;opacity:.75;transform:rotate(-8deg);vertical-align:middle;margin:-8px 0}
 .verdict{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%) rotate(-12deg);border:4px solid;font:700 28px var(--mono);
   letter-spacing:.1em;padding:4px 16px;border-radius:6px;background:rgba(255,253,246,.6);white-space:nowrap;animation:verdictIn .4s ease-out}
 @keyframes verdictIn{from{opacity:0;transform:translate(-50%,-50%) rotate(-12deg) scale(2.2)}to{opacity:1;transform:translate(-50%,-50%) rotate(-12deg) scale(1)}}
@@ -421,6 +421,14 @@ html.scheme-dark{ --good:#4fb57a; }
   font-size:13.5px; max-width:92vw; width:max-content; box-shadow:0 6px 20px rgba(0,0,0,.25); pointer-events:none;
 }
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* совсем узко (крупный масштаб на маленьком телефоне) */
+@media (max-width:300px){
+  .icons{gap:3px}
+  .icon-btn,.mini .icon-btn{width:30px;height:30px}
+  .icon-btn svg{width:17px;height:17px}
+  .tab{font-size:11px;padding:8px 2px 7px}
+  .po{flex-wrap:wrap}
+}
 </style>
 <!-- Встроенные шрифты IBM Plex Sans / Plex Mono (SIL Open Font License), латиница и кириллица -->
 <style id="fonts">
@@ -556,7 +564,7 @@ html.scheme-dark{ --good:#4fb57a; }
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.14',              // версия игры (показывается в настройках)
+  version: '1.14.1',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   itchUrl: 'https://adomant.itch.io/paperwork-inc',   // страница на itch.io — появится в настройках
   achievementBonus: 0.01,
@@ -3347,6 +3355,12 @@ function rollDirective(key) {
    Поля документа: subject < 0 — тема не заполнена; copy — копия; sealDept — чья печать (null — того же отдела). */
 const docNames = () => tlist('names').length, docSubjects = () => tlist('subjects').length;
 const sealOf = d => (d.sealDept && DEPT_BY_ID[d.sealDept] ? d.sealDept : d.dept);
+// Надпись на печати — сокращение названия отдела: «Отдел согласований» → ОС, «Архив» → АРХ.
+// Сокращения всех отделов различаются на обоих языках (проверяется тестом).
+function sealCode(dept) {
+  const words = dName(dept).split(/[\s\-]+/).filter(w => w && !/^(of|the|по|и|в|на)$/i.test(w));
+  return (words.length === 1 ? words[0].slice(0, 3) : words.map(w => w[0]).join('')).slice(0, 4).toUpperCase();
+}
 function lastWeekendAgo(rnd) {
   const opts = [0, 1, 2, 3, 4, 5, 6].filter(n => isWeekendKey(keyDaysAgo(n)));
   return pickR(rnd, opts);
@@ -3504,7 +3518,7 @@ function docHTML(d, verdict) {
     <div class="f"><span>${t('fSigs')}</span><span class="sig ink-${d.ink}">${d.sigs.map(i => esc(names[i % names.length])).join(', ')}</span></div>
     <div class="f"><span>${t('fInk')}</span><span class="ink-${d.ink}" style="font-weight:600">${inkWord(d.ink)}</span></div>
     <div class="f"><span>${t('fPages')}</span><span class="mono">${d.pages}</span></div>
-    <div class="f"><span>${t('fSeal')}</span><span>${d.seal ? `<span class="seal">${esc(dName(DEPT_BY_ID[sealOf(d)]).slice(0, 10).toUpperCase())}</span> ${esc(dName(DEPT_BY_ID[sealOf(d)]))}` : t('sealNo')}</span></div>
+    <div class="f"><span>${t('fSeal')}</span><span>${d.seal ? `<span class="seal">${esc(sealCode(DEPT_BY_ID[sealOf(d)]))}</span> ${esc(dName(DEPT_BY_ID[sealOf(d)]))}` : t('sealNo')}</span></div>
     <div class="f"><span>${t('fCopy')}</span><span>${d.copy ? t('copyYes') : t('copyNo')}</span></div>
     <div class="f"><span>${t('fSubject')}</span><span>${d.subject < 0 ? '<span class="blank">—</span>' : esc(subjects[d.subject % subjects.length])}</span></div>
     ${verdict ? `<div class="verdict ${verdict === 'yes' ? 'yes' : 'no'}">${verdict === 'yes' ? t('stampApproved') : verdict === 'late' ? t('stampLate') : t('stampDenied')}</div>` : ''}
@@ -3605,7 +3619,7 @@ function decideDoc(approve, timeout) {
   }
   // скрытые благодарности
   if (correct && d.left <= 1) grantAch('lastsec');
-  if (new Date().getHours() < 5) grantAch('night');
+  if (!timeout && new Date().getHours() < 5) grantAch('night');
   ib.count = Math.max(0, ib.count - 1);
   ib.current = null;
   inboxResult = { doc: d, approve, correct, amount, timeout: !!timeout, rule: broken[0] ? broken[0].id : null, ruleNo: broken[0] ? rules.indexOf(broken[0]) + 1 : 0 };

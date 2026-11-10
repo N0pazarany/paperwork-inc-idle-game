@@ -4,6 +4,11 @@
 
 Версии на GitHub, в Telegram и на itch.io обновляются одновременно. Сохранения переносятся между версиями автоматически.
 
+## 1.14.1 — 10 ноября 2026
+- На печати во входящих теперь сокращение отдела (ОС, КАР, DP…): в английской версии два отдела больше не выглядят одинаково.
+- Исправлено: достижение «Ночная смена» могло выдаваться за просроченный документ.
+- Игра аккуратно помещается и при крупном масштабе на маленьких телефонах.
+
 ## 1.14 — 10 ноября 2026
 - **Таймер во входящих:** на каждый документ даётся время — 30 секунд в начале, с реорганизациями меньше, до 15. Не успели — это ошибка. Время идёт, только пока документ открыт на экране.
 - **8 новых правил** регламента (всего 17): копии, пустые поля, чужая печать, двойная подпись, отозванные формы, запрещённая тема дня, сотрудник в отпуске, формы серии R. После 6-й и 10-й реорганизации в регламенте больше правил одновременно.
@@ -117,6 +122,11 @@
 # 🇬🇧 English
 
 The GitHub, Telegram and itch.io versions are updated together. Saves carry over between versions automatically.
+
+## 1.14.1 — 10 Nov 2026
+- In-tray seals now show the department's initials (AO, ARC, DP…), so two departments no longer look the same in English.
+- Fixed: the “Night Shift” achievement could be granted for a document that ran out of time.
+- The game now fits on small phones with large display scaling.
 
 ## 1.14 — 10 Nov 2026
 - **In-tray timer:** each document has a time limit, 30 seconds at first and shorter with restructurings, down to 15. Running out of time counts as a mistake. The clock only runs while the document is on screen.
