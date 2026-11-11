@@ -380,8 +380,9 @@ html.scheme-dark{ --good:#4fb57a; }
 .doc .f > span:last-child{text-align:right}
 .doc .sig{font-style:italic;font-size:15px}
 .doc .ink-blue{color:#2c4a8a} .doc .ink-black{color:#1e2226} .doc .ink-red{color:#b5312a} .doc .ink-green{color:#2e7d4f}
-.doc .seal{display:inline-grid;place-items:center;width:40px;height:40px;border:2px solid #2c4a8a;border-radius:50%;color:#2c4a8a;
-  font:700 11px/1 var(--mono);letter-spacing:.02em;text-align:center;opacity:.75;transform:rotate(-8deg);vertical-align:middle;margin:-8px 0}
+.doc .stamp{display:inline-block;max-width:190px;border:2.5px solid #2c4a8a;color:#2c4a8a;padding:5px 9px;border-radius:3px;
+  font:700 11px/1.25 var(--mono);text-transform:uppercase;letter-spacing:.03em;text-align:center;overflow-wrap:anywhere;
+  transform:rotate(-3deg);opacity:.85;box-shadow:inset 0 0 0 2px #fffdf6, inset 0 0 0 3.2px #2c4a8a}   /* штамп печати с названием отдела */
 .verdict{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%) rotate(-12deg);border:4px solid;font:700 28px var(--mono);
   letter-spacing:.1em;padding:4px 16px;border-radius:6px;background:rgba(255,253,246,.6);white-space:nowrap;animation:verdictIn .4s ease-out}
 @keyframes verdictIn{from{opacity:0;transform:translate(-50%,-50%) rotate(-12deg) scale(2.2)}to{opacity:1;transform:translate(-50%,-50%) rotate(-12deg) scale(1)}}
@@ -565,7 +566,7 @@ html.scheme-dark{ --good:#4fb57a; }
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.15.1',              // версия игры (показывается в настройках)
+  version: '1.16',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   itchUrl: 'https://adomant.itch.io/paperwork-inc',   // страница на itch.io — появится в настройках
   botUrl: 'https://t.me/paperwork_inc_bot',            // бот в Telegram — ссылка, которой делятся из Telegram
@@ -1203,7 +1204,7 @@ const I18N = {
       inboxFull: 'Documents on your desk', inboxGo: 'Review', inboxEmpty: 'Your desk is clear', inboxEta: 'next ≈ {t}',
       ibForm: 'Form 0-3 · Incoming correspondence', ibTitle: 'In-tray', ibOnDesk: '{n} on the desk',
       ibStreak: 'streak {n} ✓ +{p}%', ibRegs: 'Regulations for {date}',
-      fDate: 'Date', fSigs: 'Signatures', fInk: 'Ink', fPages: 'Pages', fSeal: 'Department seal', fSubject: 'Subject',
+      fDate: 'Date', fSigs: 'Signatures', fInk: 'Ink', fPages: 'Pages', fSeal: 'Department seal', fSubject: 'Subject', fSender: 'Sender',
       sealYes: 'affixed', sealNo: 'none', inkBlue: 'blue', inkBlack: 'black', inkRed: 'red', inkGreen: 'green',
       ibDeny: 'Deny', ibReturn: 'Return', ibApprove: 'Approve',
       ibNote: 'Correct: +{r} · Mistake: −{p} · Return: no effect',
@@ -1641,7 +1642,7 @@ const I18N = {
       inboxFull: 'На столе документы', inboxGo: 'Разобрать', inboxEmpty: 'Стол пуст', inboxEta: 'следующий ≈ {t}',
       ibForm: 'Форма 0-3 · Входящая корреспонденция', ibTitle: 'Входящие', ibOnDesk: 'на столе: {n}',
       ibStreak: 'серия {n} ✓ +{p}%', ibRegs: 'Регламент на {date}',
-      fDate: 'Дата', fSigs: 'Подписи', fInk: 'Чернила', fPages: 'Страниц', fSeal: 'Печать отдела', fSubject: 'Предмет',
+      fDate: 'Дата', fSigs: 'Подписи', fInk: 'Чернила', fPages: 'Страниц', fSeal: 'Печать отдела', fSubject: 'Предмет', fSender: 'Отправитель',
       sealYes: 'стоит', sealNo: 'нет', inkBlue: 'синие', inkBlack: 'чёрные', inkRed: 'красные', inkGreen: 'зелёные',
       ibDeny: 'Отказать', ibReturn: 'Вернуть', ibApprove: 'Одобрить',
       ibNote: 'Верно: +{r} · Ошибка: −{p} · «Вернуть» — без последствий',
@@ -3392,12 +3393,7 @@ function rollDirective(key) {
    Поля документа: subject < 0 — тема не заполнена; copy — копия; sealDept — чья печать (null — того же отдела). */
 const docNames = () => tlist('names').length, docSubjects = () => tlist('subjects').length;
 const sealOf = d => (d.sealDept && DEPT_BY_ID[d.sealDept] ? d.sealDept : d.dept);
-// Надпись на печати — сокращение названия отдела: «Отдел согласований» → ОС, «Архив» → АРХ.
-// Сокращения всех отделов различаются на обоих языках (проверяется тестом).
-function sealCode(dept) {
-  const words = dName(dept).split(/[\s\-]+/).filter(w => w && !/^(of|the|по|и|в|на)$/i.test(w));
-  return (words.length === 1 ? words[0].slice(0, 3) : words.map(w => w[0]).join('')).slice(0, 4).toUpperCase();
-}
+
 function lastWeekendAgo(rnd) {
   const opts = [0, 1, 2, 3, 4, 5, 6].filter(n => isWeekendKey(keyDaysAgo(n)));
   return pickR(rnd, opts);
@@ -3550,12 +3546,13 @@ function docHTML(d, verdict) {
   const names = tlist('names'), subjects = tlist('subjects');
   const dept = DEPT_BY_ID[d.dept];
   return `<div class="doc">
-    <div class="dt"><b>${t('form')} ${d.form}-${d.letter}</b><span>${esc(dName(dept))}</span></div>
+    <div class="dt"><b>${t('form')} ${d.form}-${d.letter}</b></div>
+    <div class="f"><span>${t('fSender')}</span><span>${esc(dName(dept))}</span></div>
+    <div class="f"><span>${t('fSeal')}</span><span>${d.seal ? `<span class="stamp">${esc(dName(DEPT_BY_ID[sealOf(d)]))}</span>` : t('sealNo')}</span></div>
     <div class="f"><span>${t('fDate')}</span><span class="mono">${esc(fmtDay(d.date, true))}</span></div>
     <div class="f"><span>${t('fSigs')}</span><span class="sig ink-${d.ink}">${d.sigs.map(i => esc(names[i % names.length])).join(', ')}</span></div>
     <div class="f"><span>${t('fInk')}</span><span class="ink-${d.ink}" style="font-weight:600">${inkWord(d.ink)}</span></div>
     <div class="f"><span>${t('fPages')}</span><span class="mono">${d.pages}</span></div>
-    <div class="f"><span>${t('fSeal')}</span><span>${d.seal ? `<span class="seal">${esc(sealCode(DEPT_BY_ID[sealOf(d)]))}</span> ${esc(dName(DEPT_BY_ID[sealOf(d)]))}` : t('sealNo')}</span></div>
     <div class="f"><span>${t('fCopy')}</span><span>${d.copy ? t('copyYes') : t('copyNo')}</span></div>
     <div class="f"><span>${t('fSubject')}</span><span>${d.subject < 0 ? '<span class="blank">—</span>' : esc(subjects[d.subject % subjects.length])}</span></div>
     ${verdict ? `<div class="verdict ${verdict === 'yes' ? 'yes' : 'no'}">${verdict === 'yes' ? t('stampApproved') : verdict === 'late' ? t('stampLate') : t('stampDenied')}</div>` : ''}

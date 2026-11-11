@@ -4,6 +4,10 @@
 
 Версии на GitHub, в Telegram и на itch.io обновляются одновременно. Сохранения переносятся между версиями автоматически.
 
+## 1.16 — 11 ноября 2026
+- Документ во входящих стало удобнее сверять: отправитель теперь первая строка документа, а печать отдела — сразу под ним.
+- Печать — прямоугольный штамп с полным названием отдела вместо сокращения.
+
 ## 1.15.1 — 11 ноября 2026
 - После реорганизации счётчик документов больше не «сползает» больше секунды со старого значения: большие изменения прокручиваются быстро.
 - Кнопка «Подписать вручную» после первой реорганизации остаётся маленькой: со стартовым капиталом её +1 всё равно незаметен.
@@ -129,6 +133,10 @@
 # 🇬🇧 English
 
 The GitHub, Telegram and itch.io versions are updated together. Saves carry over between versions automatically.
+
+## 1.16 — 11 Nov 2026
+- In-tray documents are easier to check: the sender is now the first line of the document, with the department seal right below it.
+- The seal is a rectangular stamp with the department's full name instead of initials.
 
 ## 1.15.1 — 11 Nov 2026
 - After a restructuring the document counter no longer slides down from the old value for over a second: big changes roll quickly.
