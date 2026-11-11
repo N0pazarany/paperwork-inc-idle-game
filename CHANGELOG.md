@@ -4,6 +4,10 @@
 
 Версии на GitHub, в Telegram и на itch.io обновляются одновременно. Сохранения переносятся между версиями автоматически.
 
+## 1.15.1 — 11 ноября 2026
+- После реорганизации счётчик документов больше не «сползает» больше секунды со старого значения: большие изменения прокручиваются быстро.
+- Кнопка «Подписать вручную» после первой реорганизации остаётся маленькой: со стартовым капиталом её +1 всё равно незаметен.
+
 ## 1.15 — 10 ноября 2026
 - **Поделиться:** кнопка в личном деле и ссылка в настройках. Отправляет «справку с места работы» с вашими цифрами и ссылкой на игру. В Telegram открывается выбор чата, на телефоне — системное «Поделиться», на компьютере — текст, который можно скопировать.
 
@@ -125,6 +129,10 @@
 # 🇬🇧 English
 
 The GitHub, Telegram and itch.io versions are updated together. Saves carry over between versions automatically.
+
+## 1.15.1 — 11 Nov 2026
+- After a restructuring the document counter no longer slides down from the old value for over a second: big changes roll quickly.
+- After the first restructuring the “Sign manually” button stays small: with starting capital its +1 is not noticeable anyway.
 
 ## 1.15 — 10 Nov 2026
 - **Share:** a button in the personnel file and a link in settings. Sends a “certificate of employment” with your numbers and a link to the game. In Telegram it opens the chat picker, on phones the system share sheet, on computers a text you can copy.

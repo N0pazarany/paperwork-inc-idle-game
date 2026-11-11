@@ -565,7 +565,7 @@ html.scheme-dark{ --good:#4fb57a; }
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.15',              // версия игры (показывается в настройках)
+  version: '1.15.1',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   itchUrl: 'https://adomant.itch.io/paperwork-inc',   // страница на itch.io — появится в настройках
   botUrl: 'https://t.me/paperwork_inc_bot',            // бот в Telegram — ссылка, которой делятся из Telegram
@@ -3703,8 +3703,8 @@ function render() {
   $('miniSub').hidden = !(m.stampsOn || meritsOn);
   $('mini').classList.toggle('two', !!(m.stampsOn || meritsOn));
   if (S.seniority > 0) { setText($('sen'), fmt(S.seniority)); setText($('senBonus'), '+' + Math.round(S.seniority * m.senPer * 100) + '%'); }
-  // Кнопка ручной подписи уходит на второй план после первой покупки
-  $('signBtn').classList.toggle('minor', totalOwned(S) > 0);
+  // Кнопка ручной подписи уходит на второй план после первой покупки — и навсегда после первой реорганизации
+  $('signBtn').classList.toggle('minor', totalOwned(S) > 0 || S.restructures > 0);
   // Точка на кнопке справочника
   const hbNew = hbOpenCount() > (S.flags.hbSeen || 0);
   document.querySelectorAll('[data-act="handbook"]').forEach(b => b.classList.toggle('dot', hbNew));
@@ -3893,7 +3893,11 @@ function easeTo(cur, target, rate, dt) {
   const diff = target - cur;
   if (diff >= 0 && diff <= rate * 0.6 + CONFIG.manualSignAmount + 1e-9) return target;  // обычный рост и ручная подпись — сразу
   if (Math.abs(diff) <= Math.max(0.05, Math.abs(target) * 5e-4)) return target;          // разница уже не видна — дотягиваем
-  return cur + diff * Math.min(1, dt * 12);                                               // трата или крупное начисление — докрутка
+  const k = Math.min(1, dt * 12);
+  // Разница в разы (реорганизация, крупная трата, большой офлайн-доход):
+  // крутим по порядкам величины, иначе 30T → 5B тянулось бы секунду с лишним
+  if (cur > 0 && target > 0 && (cur / target > 2 || target / cur > 2)) return Math.exp(Math.log(cur) + (Math.log(target) - Math.log(cur)) * k);
+  return cur + diff * k;                                                                  // трата или крупное начисление — докрутка
 }
 function frame(now) {
   if (S && !document.hidden) {
