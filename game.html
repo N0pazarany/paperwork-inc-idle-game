@@ -1221,6 +1221,8 @@ const I18N = {
       share: 'Share', shareLink: 'Tell a colleague about the game', shareForm: 'Form 5-R · Certificate of employment', shareTitle: 'Share',
       shareBody: 'Copy the text and send it to anyone who appreciates a good form.', shareCopy: 'Copy text', tShareCopied: '📋 Text copied',
       shareText: '📋 Certificate of employment, Paperwork Inc.\nDocuments approved: {docs}\nSeniority: {sen} · Restructurings: {r}\nCommendations: {a} of {all}\nThere are still vacancies.',
+      cardForm: 'FORM 5-R · CERTIFICATE OF EMPLOYMENT', cardTitle: 'Certificate', cardTopDept: 'Most productive', cardInbox: 'In-tray accuracy',
+      cardStreak: 'best streak {n}', cardStamp: 'CERTIFIED', cardJoin: 'There are still vacancies:',
       stForm: 'Form 1-L · Personnel file', stTitle: 'Personnel file',
       stGeneral: 'General', stSessions: 'Visits to the office', stMaxAway: 'Longest absence',
       stIncome: 'Documents', stRunEarned: 'Approved this period', stRate: 'Current output', stPeak: 'Best output', stOffline: 'Earned while away',
@@ -1659,6 +1661,8 @@ const I18N = {
       share: 'Поделиться', shareLink: 'Рассказать коллегам об игре', shareForm: 'Форма 5-Р · Справка с места работы', shareTitle: 'Поделиться',
       shareBody: 'Скопируйте текст и отправьте тому, кто знает толк в хорошо заполненных бланках.', shareCopy: 'Скопировать текст', tShareCopied: '📋 Текст скопирован',
       shareText: '📋 Справка с места работы, Paperwork Inc.\nОдобрено документов: {docs}\nВыслуга: {sen} · Реорганизаций: {r}\nБлагодарностей: {a} из {all}\nВакансии ещё есть.',
+      cardForm: 'ФОРМА 5-Р · СПРАВКА С МЕСТА РАБОТЫ', cardTitle: 'Справка', cardTopDept: 'Самый продуктивный', cardInbox: 'Точность во входящих',
+      cardStreak: 'серия {n}', cardStamp: 'ЗАВЕРЕНО', cardJoin: 'Вакансии ещё есть:',
       stForm: 'Форма 1-Л · Личное дело', stTitle: 'Личное дело',
       stGeneral: 'Общее', stSessions: 'Заходов в офис', stMaxAway: 'Самая долгая отлучка',
       stIncome: 'Документы', stRunEarned: 'Одобрено за период', stRate: 'Сейчас в секунду', stPeak: 'Лучшее в секунду', stOffline: 'Получено в отсутствие',
@@ -2910,6 +2914,59 @@ function openExternal(url) {
    Короткая «справка с места работы» с цифрами игрока и ссылкой на игру.
    В Telegram — штатное окно выбора чата (сервер для этого не нужен).
    В браузере — системное «Поделиться» (телефоны), иначе окно с текстом и кнопкой «Скопировать». */
+/* Карточка «Справка с места работы» для «Поделиться»: картинка 1080×1350, рисуется прямо в браузере. */
+async function drawShareCard() {
+  try { await document.fonts.load('600 40px "Plex Sans"'); await document.fonts.load('700 40px "Plex Mono"'); await document.fonts.load('400 40px "Plex Sans"'); await document.fonts.load('500 40px "Plex Mono"'); } catch (e) {}
+  const W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H;
+  const g = c.getContext('2d'), m = getMods(S), st = S.stats, rate = totalRate(S, m);
+  const SANS = '"Plex Sans", system-ui, sans-serif', MONO = '"Plex Mono", ui-monospace, monospace';
+  const INK = '#2c4a8a', TEXT = '#1e2226', HINT = '#6b7068', LINE = 'rgba(0,0,0,.14)', RED = '#b5312a';
+  // фон-стол и лист бумаги
+  g.fillStyle = '#d9ded3'; g.fillRect(0, 0, W, H);
+  g.save(); g.shadowColor = 'rgba(40,30,10,.25)'; g.shadowBlur = 30; g.shadowOffsetY = 10;
+  g.fillStyle = '#fffdf6'; g.fillRect(60, 60, W - 120, H - 120); g.restore();
+  g.strokeStyle = 'rgba(181,49,42,.35)'; g.lineWidth = 3; g.beginPath(); g.moveTo(110, 60); g.lineTo(110, H - 60); g.stroke();   // поле листа
+  const L = 150, R = W - 110;
+  // шапка
+  g.fillStyle = HINT; g.font = `500 26px ${MONO}`; g.fillText(t('cardForm'), L, 140);
+  g.fillStyle = TEXT; g.font = `700 54px ${MONO}`; g.fillText(t('cardTitle'), L, 215);
+  g.fillStyle = HINT; g.font = `400 30px ${SANS}`; g.fillText('Paperwork Inc. · ' + new Date().toLocaleDateString(LANG === 'ru' ? 'ru-RU' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' }), L, 262);
+  g.fillStyle = LINE; g.fillRect(L, 292, R - L, 2);
+  // главная цифра
+  g.fillStyle = HINT; g.font = `400 30px ${SANS}`; g.fillText(t('lifetime'), L, 350);
+  g.fillStyle = TEXT; g.font = `700 110px ${MONO}`; g.fillText(fmt(S.allTimeEarned), L - 6, 458);
+  g.fillStyle = INK; g.font = `500 32px ${MONO}`; g.fillText('+' + fmtRate(rate) + t('perS'), L, 510);
+  // строки справки
+  const dec = st.inboxOk + st.inboxBad;
+  const top = DEPARTMENTS.filter(d => owned(S, d.id) > 0).sort((a, b) => deptRate(S, b, m) - deptRate(S, a, m))[0];
+  const rows = [
+    [t('seniority'), fmt(S.seniority) + (S.seniority > 0 ? '  (+' + Math.round(S.seniority * m.senPer * 100) + '%)' : '')],
+    [t('restrCount'), fmt(S.restructures)],
+    [t('stOwnedNow'), fmt(totalOwned(S))],
+    [t('cardTopDept'), top ? dName(top) : '—'],
+    [t('stUpgNow'), S.upgrades.length + ' / ' + UPGRADES.length],
+    [t('achTitle'), (S.achievements || []).length + ' / ' + ACHIEVEMENTS.length],
+  ];
+  if (dec > 0) rows.push([t('cardInbox'), Math.round(st.inboxOk / dec * 100) + '% · ' + t('cardStreak', { n: st.bestStreak })]);
+  rows.push([t('played'), fmtTime(st.playSec)]);
+  let y = 580;
+  for (const [k, v] of rows) {
+    g.fillStyle = HINT; g.font = `400 31px ${SANS}`; g.fillText(k, L, y);
+    g.fillStyle = TEXT; g.font = `600 31px ${SANS}`; g.textAlign = 'right';
+    let val = v; while (g.measureText(val).width > 470 && val.length > 4) val = val.slice(0, -2) + '…';
+    g.fillText(val, R, y); g.textAlign = 'left';
+    g.strokeStyle = LINE; g.lineWidth = 1.5; g.setLineDash([6, 6]); g.beginPath(); g.moveTo(L, y + 22); g.lineTo(R, y + 22); g.stroke(); g.setLineDash([]);
+    y += 66;
+  }
+  // штамп «Заверено»
+  g.save(); g.translate(R - 180, H - 222); g.rotate(-0.12);
+  g.strokeStyle = INK; g.globalAlpha = .8; g.lineWidth = 6; g.strokeRect(-170, -52, 340, 104); g.lineWidth = 2.5; g.strokeRect(-160, -42, 320, 84);
+  g.fillStyle = INK; g.font = `700 44px ${MONO}`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(t('cardStamp'), 0, 2); g.restore();
+  // подвал: куда идти
+  g.fillStyle = HINT; g.font = `400 28px ${SANS}`; g.fillText(t('cardJoin'), L, H - 132);
+  g.fillStyle = INK; g.font = `600 30px ${MONO}`; g.fillText(IN_TG || !CONFIG.itchUrl ? 't.me/paperwork_inc_bot' : CONFIG.itchUrl.replace('https://', ''), L, H - 92);
+  return c;
+}
 function shareText() {
   return t('shareText', {
     docs: fmt(S.allTimeEarned), sen: fmt(S.seniority), r: fmt(S.restructures),
