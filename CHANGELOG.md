@@ -4,6 +4,10 @@
 
 Версии на GitHub, в Telegram и на itch.io обновляются одновременно. Сохранения переносятся между версиями автоматически.
 
+## 1.17.1 — 12 ноября 2026
+- Если браузер не разрешает «Поделиться» или копирование картинки (например, в рамке на itch.io), появляется подсказка сохранить её вручную; на компьютере всегда есть «Скачать картинку».
+- На картинке-справке огромный бонус выслуги пишется коротко.
+
 ## 1.17 — 12 ноября 2026
 - **Поделиться картинкой:** игра рисует «справку с места работы» с вашими цифрами — документы, доход, выслуга, самый продуктивный отдел, благодарности, точность во входящих, время в офисе.
 - На телефоне в браузере и в Telegram на iPhone картинкой можно поделиться сразу, на компьютере — скачать или скопировать. В остальных случаях Telegram не даёт мини-приложениям отправлять картинки, там остаются скриншот и отправка текстом.
@@ -138,6 +142,10 @@
 # 🇬🇧 English
 
 The GitHub, Telegram and itch.io versions are updated together. Saves carry over between versions automatically.
+
+## 1.17.1 — 12 Nov 2026
+- If the browser blocks sharing or copying the picture (for example, inside the itch.io frame), a hint suggests saving it manually; computers always get “Download picture”.
+- A huge Seniority bonus is shown in short form on the picture certificate.
 
 ## 1.17 — 12 Nov 2026
 - **Share as a picture:** the game draws a “certificate of employment” with your numbers: documents, income, Seniority, most productive department, commendations, in-tray accuracy, time in office.
