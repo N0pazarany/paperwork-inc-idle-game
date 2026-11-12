@@ -4,6 +4,11 @@
 
 Версии на GitHub, в Telegram и на itch.io обновляются одновременно. Сохранения переносятся между версиями автоматически.
 
+## 1.17 — 12 ноября 2026
+- **Поделиться картинкой:** игра рисует «справку с места работы» с вашими цифрами — документы, доход, выслуга, самый продуктивный отдел, благодарности, точность во входящих, время в офисе.
+- На телефоне в браузере и в Telegram на iPhone картинкой можно поделиться сразу, на компьютере — скачать или скопировать. В остальных случаях Telegram не даёт мини-приложениям отправлять картинки, там остаются скриншот и отправка текстом.
+- В текстовой справке тоже больше цифр.
+
 ## 1.16 — 11 ноября 2026
 - Документ во входящих стало удобнее сверять: отправитель теперь первая строка документа, а печать отдела — сразу под ним.
 - Печать — прямоугольный штамп с полным названием отдела вместо сокращения.
@@ -133,6 +138,11 @@
 # 🇬🇧 English
 
 The GitHub, Telegram and itch.io versions are updated together. Saves carry over between versions automatically.
+
+## 1.17 — 12 Nov 2026
+- **Share as a picture:** the game draws a “certificate of employment” with your numbers: documents, income, Seniority, most productive department, commendations, in-tray accuracy, time in office.
+- In mobile browsers and in Telegram on iPhone the picture can be shared directly; on computers it can be downloaded or copied. Elsewhere Telegram does not let mini apps send pictures, so a screenshot or the text version remain.
+- The text certificate has more numbers too.
 
 ## 1.16 — 11 Nov 2026
 - In-tray documents are easier to check: the sender is now the first line of the document, with the department seal right below it.

@@ -327,6 +327,7 @@ input.vol:disabled{opacity:.4}
 
 /* ---------- Достижения ---------- */
 textarea.code.share{font:400 13px/1.45 var(--sans);height:150px;word-break:normal}
+.share-card{display:block;width:100%;max-width:420px;margin:0 auto;border-radius:6px;box-shadow:0 4px 18px rgba(0,0,0,.25)}
 .ach-sum{font:500 12.5px var(--mono);color:var(--hint);margin:-4px 0 10px}
 .ach .rbar{background:var(--hint);color:transparent;border-radius:2px;opacity:.5}
 /* личное дело: строка отдела с долей дохода */
@@ -566,7 +567,7 @@ html.scheme-dark{ --good:#4fb57a; }
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.16',              // версия игры (показывается в настройках)
+  version: '1.17',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   itchUrl: 'https://adomant.itch.io/paperwork-inc',   // страница на itch.io — появится в настройках
   botUrl: 'https://t.me/paperwork_inc_bot',            // бот в Telegram — ссылка, которой делятся из Telegram
@@ -1220,7 +1221,10 @@ const I18N = {
       tCloudRestored: '☁️ Progress restored from the Telegram cloud',
       share: 'Share', shareLink: 'Tell a colleague about the game', shareForm: 'Form 5-R · Certificate of employment', shareTitle: 'Share',
       shareBody: 'Copy the text and send it to anyone who appreciates a good form.', shareCopy: 'Copy text', tShareCopied: '📋 Text copied',
-      shareText: '📋 Certificate of employment, Paperwork Inc.\nDocuments approved: {docs}\nSeniority: {sen} · Restructurings: {r}\nCommendations: {a} of {all}\nThere are still vacancies.',
+      shareText: '📋 Certificate of employment, Paperwork Inc.\nDocuments approved: {docs} (+{rate}/s)\nSeniority: {sen} · Restructurings: {r}\nMost productive: {top}\nCommendations: {a} of {all}',
+      shareInbox: 'In-tray accuracy: {p}% · best streak {n}', shareTail: 'There are still vacancies.',
+      shareImage: 'Share picture', shareDownload: 'Download picture', shareCopyImg: 'Copy picture', shareAsText: 'Send as text', tImgCopied: '🖼 Picture copied',
+      shareHint: 'The picture is drawn from your current numbers.', shareHintShot: 'Telegram does not let mini apps send pictures to a chat directly. To share the picture, take a screenshot of this window, or send your numbers as text.',
       cardForm: 'FORM 5-R · CERTIFICATE OF EMPLOYMENT', cardTitle: 'Certificate', cardTopDept: 'Most productive', cardInbox: 'In-tray accuracy',
       cardStreak: 'best streak {n}', cardStamp: 'CERTIFIED', cardJoin: 'There are still vacancies:',
       stForm: 'Form 1-L · Personnel file', stTitle: 'Personnel file',
@@ -1660,7 +1664,10 @@ const I18N = {
       tCloudRestored: '☁️ Прогресс восстановлен из облака Telegram',
       share: 'Поделиться', shareLink: 'Рассказать коллегам об игре', shareForm: 'Форма 5-Р · Справка с места работы', shareTitle: 'Поделиться',
       shareBody: 'Скопируйте текст и отправьте тому, кто знает толк в хорошо заполненных бланках.', shareCopy: 'Скопировать текст', tShareCopied: '📋 Текст скопирован',
-      shareText: '📋 Справка с места работы, Paperwork Inc.\nОдобрено документов: {docs}\nВыслуга: {sen} · Реорганизаций: {r}\nБлагодарностей: {a} из {all}\nВакансии ещё есть.',
+      shareText: '📋 Справка с места работы, Paperwork Inc.\nОдобрено документов: {docs} (+{rate}/с)\nВыслуга: {sen} · Реорганизаций: {r}\nСамый продуктивный: {top}\nБлагодарностей: {a} из {all}',
+      shareInbox: 'Точность во входящих: {p}% · серия {n}', shareTail: 'Вакансии ещё есть.',
+      shareImage: 'Поделиться картинкой', shareDownload: 'Скачать картинку', shareCopyImg: 'Скопировать картинку', shareAsText: 'Отправить текстом', tImgCopied: '🖼 Картинка скопирована',
+      shareHint: 'Картинка нарисована по вашим текущим цифрам.', shareHintShot: 'Telegram не разрешает мини-приложениям отправлять картинки в чат напрямую. Чтобы поделиться картинкой, сделайте скриншот этого окна — или отправьте цифры текстом.',
       cardForm: 'ФОРМА 5-Р · СПРАВКА С МЕСТА РАБОТЫ', cardTitle: 'Справка', cardTopDept: 'Самый продуктивный', cardInbox: 'Точность во входящих',
       cardStreak: 'серия {n}', cardStamp: 'ЗАВЕРЕНО', cardJoin: 'Вакансии ещё есть:',
       stForm: 'Форма 1-Л · Личное дело', stTitle: 'Личное дело',
@@ -2968,25 +2975,56 @@ async function drawShareCard() {
   return c;
 }
 function shareText() {
+  const m = getMods(S), st = S.stats, dec = st.inboxOk + st.inboxBad;
+  const top = DEPARTMENTS.filter(d => owned(S, d.id) > 0).sort((a, b) => deptRate(S, b, m) - deptRate(S, a, m))[0];
   return t('shareText', {
-    docs: fmt(S.allTimeEarned), sen: fmt(S.seniority), r: fmt(S.restructures),
-    a: (S.achievements || []).length, all: ACHIEVEMENTS.length,
-  });
+    docs: fmt(S.allTimeEarned), rate: fmtRate(totalRate(S, m)), sen: fmt(S.seniority), r: fmt(S.restructures),
+    a: (S.achievements || []).length, all: ACHIEVEMENTS.length, top: top ? dName(top) : '—',
+  }) + (dec ? '\n' + t('shareInbox', { p: Math.round(st.inboxOk / dec * 100), n: st.bestStreak }) : '') + '\n' + t('shareTail');
 }
-function onShare() {
-  const text = shareText(), url = IN_TG ? CONFIG.botUrl : CONFIG.itchUrl;
+const shareUrl = () => (IN_TG ? CONFIG.botUrl : CONFIG.itchUrl);
+// Текстом: в Telegram — окно выбора чата, в браузере — системное «Поделиться» или копирование
+function shareAsText() {
+  const text = shareText(), url = shareUrl();
   if (IN_TG && tgv('6.1') && tg.openTelegramLink) {
     try { tg.openTelegramLink('https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(text)); return; } catch (e) {}
   }
-  if (navigator.share && matchMedia('(pointer: coarse)').matches) {
-    navigator.share({ title: 'Paperwork Inc.', text, url }).catch(() => {});
-    return;
-  }
-  showModal({
-    form: t('shareForm'), title: '📤 ' + t('shareTitle'),
-    body: `<p>${t('shareBody')}</p><textarea class="code share" id="saveCode" readonly>${esc(text + '\n' + url)}</textarea>`,
-    buttons: [{ label: '📋 ' + t('shareCopy'), keepOpen: true, onClick: () => copyCode(t('tShareCopied')) }, { label: t('close'), ghost: true }],
-  });
+  if (navigator.share && matchMedia('(pointer: coarse)').matches) { navigator.share({ title: 'Paperwork Inc.', text, url }).catch(() => {}); return; }
+  const ta = document.createElement('textarea'); ta.value = text + '\n' + url; ta.style.cssText = 'position:fixed;opacity:0';
+  document.body.appendChild(ta); ta.select();
+  const done = ok => { ta.remove(); toast(ok ? t('tShareCopied') : t('tCopyFail')); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).then(() => done(true), () => { let ok = false; try { ok = document.execCommand('copy'); } catch (e) {} done(ok); });
+  else { let ok = false; try { ok = document.execCommand('copy'); } catch (e) {} done(ok); }
+}
+/* «Поделиться»: окно с картинкой-справкой. Отправить картинку прямо в чат Telegram
+   без своего сервера нельзя, поэтому в Telegram — текст со ссылкой, а картинку можно
+   сохранить там, где это разрешено (iPhone, браузер), иначе — скриншотом окна. */
+let shareFile = null;
+async function onShare() {
+  const canvas = await drawShareCard();
+  const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+  shareFile = blob ? new File([blob], 'paperwork-inc.png', { type: 'image/png' }) : null;
+  const canFiles = !!(shareFile && navigator.canShare && (() => { try { return navigator.canShare({ files: [shareFile] }); } catch (e) { return false; } })());
+  const desktop = !IN_TG && !matchMedia('(pointer: coarse)').matches;
+  const buttons = [];
+  if (canFiles) buttons.push({ label: '🖼 ' + t('shareImage'), keepOpen: true, onClick: () => navigator.share({ files: [shareFile], title: 'Paperwork Inc.', text: shareUrl() }).catch(() => {}) });
+  else if (!IN_TG) buttons.push({ label: '⬇ ' + t('shareDownload'), keepOpen: true, onClick: downloadCard });
+  if (desktop && window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) buttons.push({ label: '📋 ' + t('shareCopyImg'), keepOpen: true, onClick: copyCardImage });
+  buttons.push({ label: '💬 ' + t('shareAsText'), keepOpen: true, ghost: buttons.length > 0, onClick: shareAsText });
+  buttons.push({ label: t('close'), ghost: true });
+  const hint = canFiles || !IN_TG ? t('shareHint') : t('shareHintShot');
+  showModal({ form: t('shareForm'), title: '📤 ' + t('shareTitle'),
+    body: `<img class="share-card" src="${canvas.toDataURL('image/png')}" alt=""><p class="hint" style="font-size:12.5px;margin:10px 0 0">${hint}</p>`, buttons });
+}
+function downloadCard() {
+  if (!shareFile) return;
+  const a = document.createElement('a'), url = URL.createObjectURL(shareFile);
+  a.href = url; a.download = 'paperwork-inc.png'; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
+function copyCardImage() {
+  if (!shareFile) return;
+  navigator.clipboard.write([new ClipboardItem({ 'image/png': shareFile })]).then(() => toast(t('tImgCopied')), () => toast(t('tCopyFail')));
 }
 
 /* ---------- Экспорт и импорт сохранения ---------- */
