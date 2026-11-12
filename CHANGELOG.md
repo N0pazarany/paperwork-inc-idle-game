@@ -4,6 +4,9 @@
 
 Версии на GitHub, в Telegram и на itch.io обновляются одновременно. Сохранения переносятся между версиями автоматически.
 
+## 1.18 — 12 ноября 2026
+- Игра меньше нагружает телефон: счётчики и таймер обновляются 20 раз в секунду вместо 60. Цифры бегут так же плавно, а нагрузка на процессор примерно вдвое меньше — меньше нагрев и расход батареи.
+
 ## 1.17.2 — 12 ноября 2026
 - Если полночь наступила, пока открыт документ во входящих, на экране сразу появляется новый регламент. Раньше игрок видел вчерашние правила, а проверка шла уже по сегодняшним.
 - Когда уведомлений накапливается много (например, после импорта сохранения), они показываются быстрее, а хвост сворачивается в «…и ещё N». Раньше очередь тянулась почти минуту.
@@ -147,6 +150,9 @@
 # 🇬🇧 English
 
 The GitHub, Telegram and itch.io versions are updated together. Saves carry over between versions automatically.
+
+## 1.18 — 12 Nov 2026
+- Lighter on phones: counters and the timer update 20 times a second instead of 60. The numbers roll just as smoothly, while CPU load is roughly halved, meaning less heat and battery drain.
 
 ## 1.17.2 — 12 Nov 2026
 - If midnight strikes while an in-tray document is open, the new regulations appear on screen right away. Previously the player saw yesterday's rules while the check already used today's.

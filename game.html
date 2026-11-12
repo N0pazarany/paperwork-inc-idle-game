@@ -567,7 +567,7 @@ html.scheme-dark{ --good:#4fb57a; }
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.17.2',              // версия игры (показывается в настройках)
+  version: '1.18',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   itchUrl: 'https://adomant.itch.io/paperwork-inc',   // страница на itch.io — появится в настройках
   botUrl: 'https://t.me/paperwork_inc_bot',            // бот в Telegram — ссылка, которой делятся из Telegram
@@ -4012,7 +4012,12 @@ function easeTo(cur, target, rate, dt) {
   if (cur > 0 && target > 0 && (cur / target > 2 || target / cur > 2)) return Math.exp(Math.log(cur) + (Math.log(target) - Math.log(cur)) * k);
   return cur + diff * k;                                                                  // трата или крупное начисление — докрутка
 }
+/* Счётчики в шапке и таймер входящих обновляем ~20 раз в секунду, а не на каждом кадре (60+):
+   на глаз цифры бегут так же плавно, а браузер перерисовывает страницу втрое реже — меньше
+   нагрузка и расход батареи. Анимации кнопок, штампов и «+1» идут сами по себе, их это не касается. */
+const COUNTER_FPS = 20;
 function frame(now) {
+  if (lastFrame && now - lastFrame < 1000 / COUNTER_FPS - 2) { requestAnimationFrame(frame); return; }
   if (S && !document.hidden) {
     const dt = Math.min(0.1, (now - (lastFrame || now)) / 1000);
     const since = Math.min(0.5, Math.max(0, (Date.now() - lastTick) / 1000));
