@@ -4,6 +4,11 @@
 
 Версии на GitHub, в Telegram и на itch.io обновляются одновременно. Сохранения переносятся между версиями автоматически.
 
+## 1.17.2 — 12 ноября 2026
+- Если полночь наступила, пока открыт документ во входящих, на экране сразу появляется новый регламент. Раньше игрок видел вчерашние правила, а проверка шла уже по сегодняшним.
+- Когда уведомлений накапливается много (например, после импорта сохранения), они показываются быстрее, а хвост сворачивается в «…и ещё N». Раньше очередь тянулась почти минуту.
+- Если браузер не может сохранить прогресс (память заполнена или запрещена), игра один раз предупреждает об этом.
+
 ## 1.17.1 — 12 ноября 2026
 - Если браузер не разрешает «Поделиться» или копирование картинки (например, в рамке на itch.io), появляется подсказка сохранить её вручную; на компьютере всегда есть «Скачать картинку».
 - На картинке-справке огромный бонус выслуги пишется коротко.
@@ -142,6 +147,11 @@
 # 🇬🇧 English
 
 The GitHub, Telegram and itch.io versions are updated together. Saves carry over between versions automatically.
+
+## 1.17.2 — 12 Nov 2026
+- If midnight strikes while an in-tray document is open, the new regulations appear on screen right away. Previously the player saw yesterday's rules while the check already used today's.
+- When many notifications pile up (for example, after importing a save), they show faster and the rest collapse into “…and N more”. Previously the queue took almost a minute.
+- If the browser cannot save progress (storage full or blocked), the game warns about it once.
 
 ## 1.17.1 — 12 Nov 2026
 - If the browser blocks sharing or copying the picture (for example, inside the itch.io frame), a hint suggests saving it manually; computers always get “Download picture”.

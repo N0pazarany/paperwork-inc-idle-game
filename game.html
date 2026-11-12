@@ -567,7 +567,7 @@ html.scheme-dark{ --good:#4fb57a; }
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.17.1',              // версия игры (показывается в настройках)
+  version: '1.17.2',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   itchUrl: 'https://adomant.itch.io/paperwork-inc',   // страница на itch.io — появится в настройках
   botUrl: 'https://t.me/paperwork_inc_bot',            // бот в Telegram — ссылка, которой делятся из Telegram
@@ -1242,6 +1242,7 @@ const I18N = {
       achHidden: 'Classified. Details will be released upon completion.',
       tSynced: '☁️ Progress synced from another device',
       tTabSynced: '🗂️ Progress picked up from your other tab',
+      tNewDay: '📅 A new day, new regulations', tMoreToasts: '…and {n} more notifications', tSaveFail: '⚠️ Cannot save: the browser storage is full or blocked',
       tabsForm: 'Form 2-T · Duplicate access', tabsTitle: 'Open in another tab', tabsBtn: 'Play here',
       tabsBody: 'Paperwork Inc. is open in another tab. So that one tab does not overwrite the other, records are kept in one tab at a time.',
       numFormat: 'Number format',
@@ -1686,6 +1687,7 @@ const I18N = {
       achHidden: 'Засекречено. Подробности — по факту выполнения.',
       tSynced: '☁️ Прогресс синхронизирован с другого устройства',
       tTabSynced: '🗂️ Прогресс подхвачен из другой вкладки',
+      tNewDay: '📅 Новый день — новый регламент', tMoreToasts: '…и ещё уведомлений: {n}', tSaveFail: '⚠️ Не удаётся сохранить: память браузера заполнена или запрещена',
       tabsForm: 'Форма 2-В · Повторный доступ', tabsTitle: 'Игра открыта в другой вкладке', tabsBtn: 'Играть здесь',
       tabsBody: 'Paperwork Inc. уже открыта в другой вкладке. Чтобы одна вкладка не затёрла прогресс другой, дела ведутся только в одной.',
       numFormat: 'Формат чисел',
@@ -2449,7 +2451,8 @@ const Store = {
     state.sid = SID;
     state.legacySeen = this.legacySeen;
     const str = JSON.stringify(packSave(state));
-    try { localStorage.setItem(SAVE_KEY2, str); } catch (e) {}
+    try { localStorage.setItem(SAVE_KEY2, str); }
+    catch (e) { if (!this.warned) { this.warned = true; setTimeout(() => toast(t('tSaveFail')), 0); } }   // один раз за сеанс
     if (!toCloud) return;
     // Сверх лимита облако запись не примет — локальная копия всё равно сохранена
     if (str.length > CLOUD_LIMIT) { console.warn('Save is ' + str.length + ' chars, over the CloudStorage limit'); return; }
@@ -2769,8 +2772,12 @@ function toast(msg) { toastQ.push(msg); if (!toastBusy) nextToast(); }
 function nextToast() {
   const el = $('toast');
   if (!toastQ.length) { toastBusy = false; return; }
+  // Если уведомлений накопилось много (импорт, долгое отсутствие), не крутим их минуту:
+  // показываем быстрее, а хвост сворачиваем в одно «…и ещё N»
+  if (toastQ.length > 4) { const rest = toastQ.length - 3; toastQ.splice(3, rest, t('tMoreToasts', { n: rest })); }
+  const quick = toastQ.length > 1;
   toastBusy = true; el.textContent = toastQ.shift(); el.classList.add('show');
-  setTimeout(() => { el.classList.remove('show'); setTimeout(nextToast, 350); }, 2600);
+  setTimeout(() => { el.classList.remove('show'); setTimeout(nextToast, 300); }, quick ? 1600 : 2600);
 }
 
 /* ---------- Модальное окно ---------- */
@@ -3590,7 +3597,13 @@ function ensureDaily() {
   if (!inboxOpen()) return;
   const key = todayKey(), ib = S.inbox;
   if (!S.directive || S.directive.key !== key) { S.directive = rollDirective(key); deptKey = deskKey = ''; }
-  if (!ib.rules || ib.rules.key !== key) ib.rules = rollRules(key);
+  if (!ib.rules || ib.rules.key !== key) {
+    const was = !!ib.rules;
+    ib.rules = rollRules(key);
+    // наступила полночь, пока открыт документ: показываем новый регламент, иначе игрок
+    // читал бы вчерашние правила, а проверка шла по сегодняшним
+    if (was && modalKind === 'inbox' && !inboxResult) { showInbox(); toast(t('tNewDay')); }
+  }
   if (!ib.day || ib.day.key !== key) ib.day = { key, ok: 0, bad: 0, earned: 0 };
 }
 // Документы копятся на столе, пока игрок в игре и пока его нет
