@@ -417,12 +417,26 @@ html.sticky-act .ib-actions,html.sticky-act .ib-next{position:sticky;bottom:calc
   padding:10px 0 calc(12px + env(safe-area-inset-bottom));margin-top:4px}
 html.sticky-act .ib-next{margin-top:6px}
 /* Подсказки клавиш: только с мышью/тачпадом и включённой настройкой */
+html.kh-on kbd.kh:empty{display:none}
 kbd.kh{display:none;font:600 10px/1 var(--mono);padding:2px 4px 3px;border-radius:3px;border:1px solid currentColor;opacity:.55;margin-left:6px;
   vertical-align:1px;letter-spacing:0;white-space:nowrap}
 html.kh-on kbd.kh{display:inline-block}
 .tab kbd.kh{margin-left:5px;font-size:9px;padding:1px 3px 2px}
 .card.kbd-sel{box-shadow:0 0 0 2px var(--link),0 1px 0 var(--edge)}
 .keys-list{font-size:13px;margin:4px 0 8px}
+details.keys{border-bottom:1px dashed var(--line)}
+details.keys summary{font-size:14.5px;padding:10px 0;cursor:pointer}
+.keys-list .key-btn{background:none;border:1px dashed transparent;border-radius:4px;padding:2px 3px;cursor:pointer;color:inherit;white-space:nowrap}
+.keys-list .key-btn:hover{border-color:var(--line-strong)}
+.keys-list .key-btn.wait{border-color:var(--link);color:var(--link);font:600 11px var(--mono)}
+.keys-list .reset{margin:10px 0 4px}
+html.swipe-on .doc{touch-action:pan-y}
+.doc.dragging{transition:none!important;animation:none!important}
+.doc.snap{transition:transform .2s ease-out}
+.swipe-hint{position:absolute;top:38%;border:3px solid;font:700 22px var(--mono);letter-spacing:.08em;padding:3px 12px;border-radius:6px;
+  background:rgba(255,253,246,.7);pointer-events:none;opacity:0;white-space:nowrap}
+.swipe-hint.yes{color:#2c4a8a;border-color:#2c4a8a} .swipe-hint.no{color:#b5312a;border-color:#b5312a}
+.swipe-hint.r{left:18px;transform:rotate(-12deg)} .swipe-hint.l{right:14px;transform:rotate(12deg)}
 .keys-list .set-sub{font:600 11px var(--mono);color:var(--hint);text-transform:uppercase;letter-spacing:.06em;margin:10px 0 2px}
 .keys-list .kv{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px dashed var(--line)}
 .keys-list kbd{font:600 11px var(--mono);padding:2px 5px;border:1px solid var(--line-strong);border-radius:3px;margin-left:3px;white-space:nowrap}
@@ -610,7 +624,7 @@ html.kh-on kbd.kh{display:inline-block}
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.20',              // версия игры (показывается в настройках)
+  version: '1.21',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   itchUrl: 'https://adomant.itch.io/paperwork-inc',   // страница на itch.io — появится в настройках
   botUrl: 'https://t.me/paperwork_inc_bot',            // бот в Telegram — ссылка, которой делятся из Telegram
@@ -1244,6 +1258,17 @@ const I18N = {
       kSign: 'Sign manually', kTabs: 'Tabs', kSelect: 'Select a card', kBuy: 'Buy the selected card (hold to repeat)', kMode: 'Purchase quantity',
       kInbox: 'In-tray', kMenus: 'Handbook · File · Commendations · Settings', kClose: 'Close a window',
       kApprove: 'Approve', kDeny: 'Deny', kReturn: 'Return', kNext: 'Next document',
+      kTab1: 'Tab: Departments', kTab2: 'Tab: Upgrades', kTab3: 'Tab: Restructuring', kUp: 'Previous card', kDown: 'Next card',
+      kHandbook: 'Handbook', kStats: 'Personnel file', kAch: 'Commendations', kSettings: 'Settings',
+      keysTitle: 'Keys', keysRebindHint: 'Tap a key to reassign it. Key layout is stored on this device only.',
+      keyPress: 'Press a key… (Esc cancels)', keyNone: '—', keysReset: 'Reset keys', tKeysReset: '⌨️ Default keys restored',
+      tKeyMoved: '⌨️ {key} was taken from “{act}”', tKeyBad: '⌨️ This key cannot be assigned',
+      swipes: 'Swipe documents', swipesHint: 'In the in-tray, swipe a document toward the button: Approve or Deny',
+      swapDecision: 'Approve on the left', swapDecisionHint: 'Swaps Approve and Deny',
+      holdBuy: 'Hold to buy', holdOff: 'Off', holdNormal: 'Normal', holdFast: 'Fast',
+      confirmMax: 'Confirm MAX purchases', confirmMaxHint: 'Asks before buying several departments at once in MAX mode',
+      cmTitle: 'Bulk requisition', cmForm: 'Form 10-M · Requisition for multiple units',
+      cmBody: 'Acquire <b>{n} × {name}</b> for <b>📄 {cost}</b>? That is {p}% of your documents.', cmBuy: 'Acquire ×{n}', cmCancel: 'Cancel',
       secDisplay: 'Display', memos: 'Office memos', animations: 'Stamp animations',
       fullscreen: 'Full screen', tFsFail: '⚠️ Full screen is not available here',
       theme: 'Theme', themeAuto: 'Auto', themeLight: 'Light', themeDark: 'Dark',
@@ -1696,6 +1721,17 @@ const I18N = {
       kSign: 'Подписать вручную', kTabs: 'Вкладки', kSelect: 'Выбрать карточку', kBuy: 'Купить выбранное (удерживать — подряд)', kMode: 'Количество в заявке',
       kInbox: 'Входящие', kMenus: 'Справочник · Личное дело · Благодарности · Настройки', kClose: 'Закрыть окно',
       kApprove: 'Одобрить', kDeny: 'Отказать', kReturn: 'Вернуть', kNext: 'Следующий документ',
+      kTab1: 'Вкладка «Отделы»', kTab2: 'Вкладка «Улучшения»', kTab3: 'Вкладка «Реорганизация»', kUp: 'Предыдущая карточка', kDown: 'Следующая карточка',
+      kHandbook: 'Памятка', kStats: 'Личное дело', kAch: 'Благодарности', kSettings: 'Настройки',
+      keysTitle: 'Клавиши', keysRebindHint: 'Нажмите на клавишу, чтобы переназначить. Раскладка хранится только на этом устройстве.',
+      keyPress: 'Нажмите клавишу… (Esc — отмена)', keyNone: '—', keysReset: 'Сбросить клавиши', tKeysReset: '⌨️ Клавиши по умолчанию восстановлены',
+      tKeyMoved: '⌨️ {key} снята с действия «{act}»', tKeyBad: '⌨️ Эту клавишу назначить нельзя',
+      swipes: 'Смахивать документы', swipesHint: 'Во входящих смахните документ в сторону кнопки: «Одобрить» или «Отказать»',
+      swapDecision: '«Одобрить» слева', swapDecisionHint: 'Меняет местами «Одобрить» и «Отказать»',
+      holdBuy: 'Удержание для покупки', holdOff: 'Выкл', holdNormal: 'Обычно', holdFast: 'Быстро',
+      confirmMax: 'Подтверждать покупку MAX', confirmMaxHint: 'Спрашивать, прежде чем купить сразу несколько отделов в режиме MAX',
+      cmTitle: 'Оптовая заявка', cmForm: 'Форма 10-М · Заявка на несколько единиц',
+      cmBody: 'Приобрести <b>{n} × {name}</b> за <b>📄 {cost}</b>? Это {p}% ваших документов.', cmBuy: 'Приобрести ×{n}', cmCancel: 'Отмена',
       secDisplay: 'Отображение', memos: 'Служебные записки', animations: 'Анимации печатей',
       fullscreen: 'Полный экран', tFsFail: '⚠️ Полноэкранный режим здесь недоступен',
       theme: 'Тема', themeAuto: 'Авто', themeLight: 'Светлая', themeDark: 'Тёмная',
@@ -2146,6 +2182,10 @@ const DEFAULT_SETTINGS = {
   hotkeys: true,         // управление с клавиатуры
   keyHints: true,        // подсказки клавиш на кнопках (только с мышью)
   stickyActions: true,   // во входящих кнопки решений прилипают к низу окна
+  swipes: true,          // во входящих документ можно смахнуть (только на сенсорном экране)
+  swapDecision: false,   // «Одобрить» слева, «Отказать» справа
+  holdBuy: 'normal',     // удержание кнопки покупки: 'off' | 'normal' | 'fast'
+  confirmMax: false,     // спрашивать подтверждение покупки в режиме MAX
 };
 const DEFAULT_STATS = { signs: 0, playSec: 0, bought: 0, maxAway: 0, inboxOk: 0, inboxBad: 0, bestStreak: 0,
   // v1.14 — считаются с момента обновления
@@ -2858,7 +2898,7 @@ function showModal({ form, title, stamp, body, buttons }) {
   $('overlay').classList.add('show'); modalKind = 'modal';
 }
 function closeModal() {
-  $('overlay').classList.remove('show'); modalKind = null; deskCancel();
+  $('overlay').classList.remove('show'); modalKind = null; deskCancel(); Keys.capturing = null;
   // фокус (например, в поле импорта) не должен остаться в скрытом окне — иначе молчат горячие клавиши
   const ae = document.activeElement; if (ae && $('sheet').contains(ae)) ae.blur();
 }
@@ -2892,6 +2932,10 @@ function showSettings() {
     ${row(t('awayReport'), seg('awayReport', [['always', t('awayAlways')], ['long', t('awayLong')], ['never', t('awayNever')]]))}
     <div class="set-sec">${t('secControls')}</div>
     ${row(t('stickyActions'), sw('stickyActions'), t('stickyActionsHint'))}
+    ${Swipe.available() ? row(t('swipes'), sw('swipes'), t('swipesHint')) : ''}
+    ${row(t('swapDecision'), sw('swapDecision'), t('swapDecisionHint'))}
+    ${row(t('holdBuy'), seg('holdBuy', [['off', t('holdOff')], ['normal', t('holdNormal')], ['fast', t('holdFast')]]))}
+    ${row(t('confirmMax'), sw('confirmMax'), t('confirmMaxHint'))}
     ${Keys.hasKeyboard() ? row(t('hotkeys'), sw('hotkeys'), t('hotkeysHint')) + (st.hotkeys ? row(t('keyHints'), sw('keyHints')) + Keys.listHTML() : '') : ''}
     <div class="set-sec">${t('secRecords')}</div>
     <p class="hint" style="font-size:12px;margin:6px 0 8px">${t('saveHint')} ${Store.cloud ? t('storageCloud') : t('storageLocal')}</p>
@@ -2922,6 +2966,8 @@ $('sheet').addEventListener('click', e => {
       case 'itch': e.preventDefault(); openExternal(CONFIG.itchUrl); break;
       case 'share': e.preventDefault(); onShare(); break;
       case 'fullscreen': S.settings.fullscreen = !Fullscreen.active(); Fullscreen.set(S.settings.fullscreen); save(); break;
+      case 'rebind': Keys.capturing = Keys.capturing === b.dataset.id ? null : b.dataset.id; showSettings(); break;
+      case 'keysReset': Keys.reset(); toast(t('tKeysReset')); showSettings(); break;
     }
     return;
   }
@@ -3787,8 +3833,11 @@ function showInbox() {
     if (!isDoc(ib.current)) ib.current = makeDoc();
     if (!(ib.current.left > 0)) ib.current.left = inboxSeconds();
     const penalty = inboxPenaltyMin() > 0 ? fmt(inboxPenalty()) : null;
+    const denyBtn = `<button class="btn danger" data-ib="deny">${t('ibDeny')}${kh('deny')}</button>`,
+      returnBtn = `<button class="btn ghost" data-ib="return">${t('ibReturn')}${kh('ret')}</button>`,
+      approveBtn = `<button class="btn" data-ib="approve">${t('ibApprove')}${kh('approve')}</button>`;
     body = `<div class="ib-timer" id="ibTimer"><div class="bar"><i></i></div><span class="mono"></span></div>` + regsHTML() + deskHTML(ib.count - 1) + docHTML(ib.current) +
-      `<div class="ib-actions"><button class="btn danger" data-ib="deny">${t('ibDeny')}${kh('deny')}</button><button class="btn ghost" data-ib="return">${t('ibReturn')}${kh('ret')}</button><button class="btn" data-ib="approve">${t('ibApprove')}${kh('approve')}</button></div>
+      `<div class="ib-actions">${S.settings.swapDecision ? approveBtn + returnBtn + denyBtn : denyBtn + returnBtn + approveBtn}</div>
       <div class="ib-note">${penalty ? t('ibNote', { r: fmt(inboxReward()), p: penalty }) : t('ibNoteFree', { r: fmt(inboxReward()) })}</div>`;
   }
   deskCancel();
@@ -3981,9 +4030,21 @@ function onSign(btn) {
   render();
 }
 let lastStampSfx = 0;
-function onBuyDept(id) {
+// В режиме MAX с настройкой «Подтверждать» — сначала спросить (если покупается больше одного)
+function needMaxConfirm(id) {
+  if (!S.settings.confirmMax || S.buyMode !== 'max') return false;
+  return buyCount(S, DEPT_BY_ID[id], getMods(S)) > 1;
+}
+function confirmMaxBuy(id) {
+  const d = DEPT_BY_ID[id], m = getMods(S), n = buyCount(S, d, m), cost = deptCost(S, d, n, m);
+  Sound.play('click');
+  showModal({ form: t('cmForm'), title: '📋 ' + t('cmTitle'),
+    body: `<p>${t('cmBody', { n, name: esc(dName(d)), cost: fmt(cost), p: Math.max(1, Math.round(cost / Math.max(S.docs, 1) * 100)) })}</p>`,
+    buttons: [{ label: t('cmBuy', { n }), onClick: () => onBuyDept(id, n) }, { label: t('cmCancel'), ghost: true }] });
+}
+function onBuyDept(id, exactN) {
   const d = DEPT_BY_ID[id], m = getMods(S);
-  const n = buyCount(S, d, m);
+  const n = exactN || buyCount(S, d, m);
   const before = owned(S, id);
   if (!buyDept(S, id, n)) return false;
   S.stats.bought += n;
@@ -4070,7 +4131,7 @@ document.addEventListener('click', e => {
   const id = tEl.dataset.id;
   switch (tEl.dataset.act) {
     case 'sign': onSign(tEl); break;
-    case 'buyDept': if (hold.fired) { hold.fired = false; break; } onBuyDept(id); break;
+    case 'buyDept': if (hold.fired) { hold.fired = false; break; } if (needMaxConfirm(id)) confirmMaxBuy(id); else onBuyDept(id); break;
     case 'buyUpg': onBuyUpg(id); break;
     case 'tab':
       if (activeTab !== id) {
@@ -4126,9 +4187,49 @@ function keyLabel(code) {
   return named[code] || code.replace(/^Numpad/, 'Num ');
 }
 // Подсказка клавиши для кнопки (в разметке окон)
-function kh(act) { return `<kbd class="kh">${esc(keyLabel(Keys.map[act][0]))}</kbd>`; }
+function kh(act) { const c = Keys.map[act][0]; return c ? `<kbd class="kh">${esc(keyLabel(c))}</kbd>` : ''; }
+const KEYS_STORE = 'paperwork_inc_keys_v1';   // своя раскладка — только на этом устройстве, не в облаке
+const KEY_NAMES = { sign: 'kSign', tab1: 'kTab1', tab2: 'kTab2', tab3: 'kTab3', up: 'kUp', down: 'kDown', buy: 'kBuy', mode: 'kMode', inbox: 'kInbox',
+  handbook: 'kHandbook', stats: 'kStats', achievements: 'kAch', settings: 'kSettings', approve: 'kApprove', deny: 'kDeny', ret: 'kReturn', next: 'kNext' };
+// Эти клавиши не назначаются: Esc закрывает окна, Tab ходит по кнопкам, модификаторы — для сочетаний
+const KEYS_RESERVED = /^(Escape|Tab|Shift|Control|Alt|Meta|OS|CapsLock|NumLock|ScrollLock|ContextMenu|Fn)/;
 const Keys = {
   map: KEYS_DEFAULT,
+  custom: {},
+  capturing: null,                           // действие, которому сейчас назначают клавишу
+  load() {
+    let c = {};
+    try { c = JSON.parse(localStorage.getItem(KEYS_STORE) || '{}') || {}; } catch (e) {}
+    this.custom = {};
+    for (const a of Object.keys(KEYS_DEFAULT))
+      if (Array.isArray(c[a]) && c[a].every(x => typeof x === 'string' && x.length < 30 && !KEYS_RESERVED.test(x))) this.custom[a] = c[a].slice(0, 3);
+    this.map = Object.assign({}, KEYS_DEFAULT, this.custom);
+  },
+  store() { try { localStorage.setItem(KEYS_STORE, JSON.stringify(this.custom)); } catch (e) {} },
+  reset() { this.custom = {}; this.map = Object.assign({}, KEYS_DEFAULT); this.capturing = null; try { localStorage.removeItem(KEYS_STORE); } catch (e) {} this.apply(); },
+  // Назначить клавишу; у другого действия в том же месте (офис или входящие) она снимается
+  assign(act, code) {
+    const group = INBOX_ACTS.includes(act) ? INBOX_ACTS : MAIN_ACTS;
+    for (const other of group) {
+      if (other === act || !this.map[other].includes(code)) continue;
+      this.custom[other] = this.map[other].filter(c => c !== code);
+      toast(t('tKeyMoved', { key: keyLabel(code), act: t(KEY_NAMES[other]) }));
+    }
+    this.custom[act] = [code];
+    this.map = Object.assign({}, KEYS_DEFAULT, this.custom);
+    this.store(); this.apply();
+  },
+  // Перехват следующей клавиши, пока назначаем (раньше всех остальных обработчиков, в том числе Esc)
+  capture(e) {
+    if (!this.capturing) return false;
+    e.preventDefault(); e.stopImmediatePropagation();
+    if (e.repeat) return true;
+    if (e.code === 'Escape') this.capturing = null;
+    else if (!e.code || KEYS_RESERVED.test(e.code)) { toast(t('tKeyBad')); return true; }
+    else { const act = this.capturing; this.capturing = null; this.assign(act, e.code); Sound.play('stamp'); }
+    if (modalKind === 'settings') showSettings();
+    return true;
+  },
   sel: { depts: null, upgs: null },          // выбранная карточка: { id, i }
   lastBuy: 0,
   hasKeyboard() { return !!(window.matchMedia && matchMedia('(any-hover: hover) and (any-pointer: fine)').matches); },
@@ -4137,10 +4238,11 @@ const Keys = {
     const show = !!(S && S.settings.hotkeys && S.settings.keyHints && this.hasKeyboard());
     document.documentElement.classList.toggle('kh-on', show);
     document.querySelectorAll('kbd.kh[data-k]').forEach(k => { k.textContent = keyLabel(this.map[k.dataset.k][0]); });
+    document.documentElement.classList.toggle('swipe-on', Swipe.available() && !!(S && S.settings.swipes));
     const titles = { handbook: t('hbTitle'), stats: t('stTitle'), achievements: t('achTitle'), settings: t('settingsTitle') };
     document.querySelectorAll('.icon-btn[data-act]').forEach(b => {
       const a = b.dataset.act; if (!titles[a]) return;
-      b.title = this.on() ? `${titles[a]} (${keyLabel(this.map[a][0])})` : titles[a];
+      b.title = this.on() && this.map[a][0] ? `${titles[a]} (${keyLabel(this.map[a][0])})` : titles[a];
     });
     if (!this.on()) this.clearSel();
   },
@@ -4179,8 +4281,11 @@ const Keys = {
     const el = this.current(); if (!el) return;
     const btn = el.querySelector('.btn[data-act]'); if (!btn || btn.disabled) return;
     if (btn.dataset.act === 'buyDept') {
-      const now = Date.now(); if (repeat && now - this.lastBuy < HOLD.min) return;
-      this.lastBuy = now; onBuyDept(btn.dataset.id);
+      const id = btn.dataset.id;
+      if (needMaxConfirm(id)) { if (!repeat) confirmMaxBuy(id); return; }
+      if (repeat && S.settings.holdBuy === 'off') return;
+      const now = Date.now(); if (repeat && now - this.lastBuy < (HOLD_SPEEDS[S.settings.holdBuy] || HOLD_SPEEDS.normal).min) return;
+      this.lastBuy = now; onBuyDept(id);
     } else if (!repeat) onBuyUpg(btn.dataset.id);
     this.paint();
   },
@@ -4218,26 +4323,91 @@ const Keys = {
       default: this.click(`.icons [data-act="${act}"]`);
     }
   },
-  // Список клавиш для настроек
+  // Список клавиш для настроек: строка на действие, нажатие на клавиши — переназначить
   listHTML() {
-    const k = acts => [...new Set(acts.flatMap(a => this.map[a].map(keyLabel)))].map(l => `<kbd>${esc(l)}</kbd>`).join('');
-    const r = (label, html) => `<div class="kv"><span>${label}</span><span>${html}</span></div>`;
-    return `<div class="keys-list">
-      <div class="set-sub">${t('keysMain')}</div>
-      ${r(t('kSign'), k(['sign']))}${r(t('kTabs'), k(['tab1', 'tab2', 'tab3']))}
-      ${r(t('kSelect'), k(['up', 'down']))}${r(t('kBuy'), k(['buy']))}${r(t('kMode'), k(['mode']))}
-      ${r(t('kInbox'), k(['inbox']))}${r(t('kMenus'), k(['handbook', 'stats', 'achievements', 'settings']))}${r(t('kClose'), '<kbd>Esc</kbd>')}
-      <div class="set-sub">${t('keysInbox')}</div>
-      ${r(t('kApprove'), k(['approve']))}${r(t('kDeny'), k(['deny']))}${r(t('kReturn'), k(['ret']))}${r(t('kNext'), k(['next']))}
-    </div>`;
+    const row = a => {
+      const wait = this.capturing === a;
+      const keys = wait ? t('keyPress') : ([...new Set(this.map[a].map(keyLabel))].map(l => `<kbd>${esc(l)}</kbd>`).join('') || t('keyNone'));
+      return `<div class="kv"><span>${t(KEY_NAMES[a])}</span><button class="key-btn${wait ? ' wait' : ''}" data-set-act="rebind" data-id="${a}">${keys}</button></div>`;
+    };
+    const fixed = (label, k) => `<div class="kv"><span>${label}</span><span class="key-btn"><kbd>${k}</kbd></span></div>`;
+    return `<details class="keys" ${this.listOpen || this.capturing ? 'open' : ''}><summary>⌨️ ${t('keysTitle')}</summary><div class="keys-list">
+      <p class="hint" style="font-size:12px;margin:2px 0 6px">${t('keysRebindHint')}</p>
+      <div class="set-sub">${t('keysMain')}</div>${MAIN_ACTS.map(row).join('')}${fixed(t('kClose'), 'Esc')}
+      <div class="set-sub">${t('keysInbox')}</div>${INBOX_ACTS.map(row).join('')}
+      <button class="btn ghost reset" data-set-act="keysReset">${t('keysReset')}</button>
+    </div></details>`;
   },
 };
+Keys.load();
+window.addEventListener('keydown', e => Keys.capture(e), true);
 document.addEventListener('keydown', e => Keys.onKey(e));
+// раскрыт ли список клавиш (после перерисовки настроек остаётся как был)
+document.addEventListener('toggle', e => { if (e.target.matches && e.target.matches('details.keys')) Keys.listOpen = e.target.open; }, true);
 // Клик мышью по карточке переносит выбор на неё — стрелки продолжают с этого места
 document.addEventListener('pointerdown', e => {
   const c = e.target.closest('#deptList .card.dept, #upgList .card.upg');
   if (c && Keys.sel[activeTab]) { Keys.sel[activeTab] = { id: c.id, i: Keys.cards().indexOf(c) }; Keys.paint(); }
 }, { passive: true });
+
+/* ---------- Свайпы во входящих ----------
+   Документ смахивают в сторону кнопки: к «Одобрить» — одобрить, к «Отказать» — отказать.
+   Вертикальная прокрутка остаётся браузеру (touch-action: pan-y), мы ловим только движение вбок.
+   Мышью не тянется — только палец или стилус. */
+const Swipe = {
+  d: null,   // { el, id, x, y, dx, on, hint }
+  available() { return !!(window.matchMedia && matchMedia('(any-pointer: coarse)').matches); },
+  enabled() { return !!(S && S.settings.swipes) && this.available(); },
+  // куда ведёт смахивание вправо
+  rightIs() { return S.settings.swapDecision ? 'deny' : 'approve'; },
+  threshold(el) { return Math.min(110, el.offsetWidth * 0.28); },
+  start(e) {
+    if (!this.enabled() || e.pointerType === 'mouse' || modalKind !== 'inbox' || inboxResult || deskTimer) return;
+    const el = e.target.closest('#sheet .doc'); if (!el) return;
+    this.d = { el, id: e.pointerId, x: e.clientX, y: e.clientY, dx: 0, on: false, hint: null, past: false };
+  },
+  move(e) {
+    const d = this.d; if (!d || e.pointerId !== d.id) return;
+    const dx = e.clientX - d.x, dy = e.clientY - d.y;
+    if (!d.on) {
+      if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { this.d = null; return; }   // это прокрутка
+      if (Math.abs(dx) < 10 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
+      d.on = true;
+      d.el.classList.remove('from-pile', 'snap'); d.el.classList.add('dragging');
+      try { d.el.setPointerCapture(d.id); } catch (err) {}
+    }
+    d.dx = dx;
+    const thr = this.threshold(d.el), k = Math.min(1, Math.abs(dx) / thr);
+    d.el.style.transform = `translateX(${dx}px) rotate(${dx / 30}deg)`;
+    const act = dx > 0 ? this.rightIs() : (this.rightIs() === 'approve' ? 'deny' : 'approve');
+    if (!d.hint) { d.hint = document.createElement('div'); d.el.appendChild(d.hint); }
+    d.hint.className = `swipe-hint ${act === 'approve' ? 'yes' : 'no'} ${dx > 0 ? 'r' : 'l'}`;
+    d.hint.textContent = act === 'approve' ? t('stampApproved') : t('stampDenied');
+    d.hint.style.opacity = (k * 0.9).toFixed(2);
+    const past = Math.abs(dx) >= thr;
+    if (past !== d.past) { d.past = past; if (past) haptic.light(); }
+  },
+  end(e, cancel) {
+    const d = this.d; if (!d || (e && e.pointerId !== d.id)) return;
+    this.d = null;
+    if (!d.on) return;
+    if (!d.el.isConnected) return;                 // документ уже сменился (вышло время)
+    if (!cancel && Math.abs(d.dx) >= this.threshold(d.el) && modalKind === 'inbox' && !inboxResult) {
+      const act = d.dx > 0 ? this.rightIs() : (this.rightIs() === 'approve' ? 'deny' : 'approve');
+      decideDoc(act === 'approve');
+      return;
+    }
+    // не дотянули — лист возвращается на место
+    d.el.classList.remove('dragging'); d.el.classList.add('snap');
+    d.el.style.transform = '';
+    if (d.hint) d.hint.remove();
+    setTimeout(() => d.el.classList.remove('snap'), 220);
+  },
+};
+$('sheet').addEventListener('pointerdown', e => Swipe.start(e));
+$('sheet').addEventListener('pointermove', e => Swipe.move(e));
+$('sheet').addEventListener('pointerup', e => Swipe.end(e, false));
+$('sheet').addEventListener('pointercancel', e => Swipe.end(e, true));
 
 // Звук разблокируется первым касанием
 document.addEventListener('pointerdown', () => Sound.unlock(), { passive: true });
@@ -4287,7 +4457,8 @@ function frame(now) {
    Короткое нажатие — одна покупка (обычный click).
    Удержание дольше 0.35 с — покупка повторяется всё быстрее, пока хватает документов.
    Если палец сдвинулся (прокрутка) — удержание отменяется. */
-const HOLD = { delay: 350, first: 160, min: 45, accel: 0.86 };
+const HOLD_SPEEDS = { normal: { delay: 350, first: 160, min: 45, accel: 0.86 }, fast: { delay: 250, first: 110, min: 25, accel: 0.8 } };
+let HOLD = HOLD_SPEEDS.normal;
 const hold = { id: null, timer: 0, rep: 0, step: 0, fired: false, x: 0, y: 0, btn: null };
 function stopHold() {
   clearTimeout(hold.timer); clearTimeout(hold.rep);
@@ -4308,6 +4479,8 @@ document.addEventListener('pointerdown', e => {
   hold.fired = false;
   if (!b || b.disabled || (e.pointerType === 'mouse' && e.button !== 0)) return;
   stopHold();
+  if (S.settings.holdBuy === 'off' || needMaxConfirm(b.dataset.id)) return;
+  HOLD = HOLD_SPEEDS[S.settings.holdBuy] || HOLD_SPEEDS.normal;
   hold.id = b.dataset.id; hold.x = e.clientX; hold.y = e.clientY;
   hold.timer = setTimeout(() => { hold.fired = true; hold.step = HOLD.first; holdStep(); }, HOLD.delay);
 });

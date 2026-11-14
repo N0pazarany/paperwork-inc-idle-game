@@ -4,6 +4,13 @@
 
 Версии на GitHub, в Telegram и на itch.io обновляются одновременно. Сохранения переносятся между версиями автоматически.
 
+## 1.21 — 14 ноября 2026
+- **Смахивание документов** (на телефоне): во входящих документ можно смахнуть в сторону кнопки — к «Одобрить» или «Отказать». Пока тянете, на листе проступает штамп; не дотянули — лист возвращается. Прокрутка вверх-вниз работает как обычно.
+- **«Одобрить» слева:** кнопки решений можно поменять местами, смахивание тоже меняет стороны.
+- **Удержание для покупки:** выключить, обычная скорость или быстрая.
+- **Подтверждать покупку MAX:** перед покупкой сразу нескольких отделов игра показывает, сколько и за сколько. Покупается ровно то, что было показано.
+- **Переназначение клавиш:** в настройках → «Управление» → «Клавиши» нажмите на клавишу действия и затем новую. Если клавиша была занята, она снимается с прежнего действия. Раскладка хранится только на этом устройстве, есть кнопка «Сбросить клавиши».
+
 ## 1.20 — 14 ноября 2026
 - **Горячие клавиши:** пробел — подписать вручную, 1/2/3 — вкладки, ↑↓ — выбрать карточку, Enter — купить (удерживать — подряд), X — количество в заявке, I — входящие, H/P/T/, — справочник, личное дело, благодарности, настройки.
 - **Во входящих:** A или → — одобрить, D или ← — отказать, R или ↓ — вернуть, Enter или пробел — следующий документ. Зажатая клавиша не разбирает всю стопку.
@@ -169,6 +176,13 @@
 # 🇬🇧 English
 
 The GitHub, Telegram and itch.io versions are updated together. Saves carry over between versions automatically.
+
+## 1.21 — 14 Nov 2026
+- **Swipe documents** (on phones): in the in-tray, swipe a document toward a button — Approve or Deny. A stamp shows through while you drag; let go early and the sheet slides back. Scrolling up and down works as usual.
+- **Approve on the left:** decision buttons can be swapped, and swipe directions follow.
+- **Hold to buy:** off, normal or fast.
+- **Confirm MAX purchases:** before buying several departments at once, the game shows how many and for how much. Exactly the number shown is bought.
+- **Rebind keys:** in settings → Controls → Keys, tap an action's key and press a new one. A key taken from another action is removed there. The layout is stored on this device only; “Reset keys” restores the defaults.
 
 ## 1.20 — 14 Nov 2026
 - **Keyboard shortcuts:** Space signs manually, 1/2/3 switch tabs, ↑↓ select a card, Enter buys (hold to repeat), X cycles the purchase quantity, I opens the in-tray, H/P/T/, open the handbook, personnel file, commendations and settings.

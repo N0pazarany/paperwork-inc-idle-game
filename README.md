@@ -52,8 +52,9 @@
 - **Два языка:** английский и русский. При первом запуске язык выбирается по профилю Telegram, сменить его можно в настройках.
 - **Звуки:** синтезируются прямо в браузере, без файлов. Удар печати, звонок, кассовый аппарат, шредер; по желанию — тихий фоновый гул офиса.
 - **Удержание кнопки покупки:** держите кнопку отдела, и он будет покупаться подряд, пока хватает документов.
-- **Горячие клавиши** ⌨️: пробел — подписать, 1/2/3 — вкладки, ↑↓ и Enter — выбрать и купить, X — количество, I — входящие; во входящих A/D/R — одобрить, отказать, вернуть, Enter — следующий. Работают в любой раскладке, полный список — в настройках.
-- **Настройки ⚙️:** язык, звук и громкость, шум офиса, вибрация, служебные записки, тема (авто, светлая, тёмная), анимации, полный экран, формат чисел, окно возвращения, управление (горячие клавиши, подсказки клавиш, кнопки решений внизу экрана), экспорт и импорт сохранения, удаление сохранения.
+- **Горячие клавиши** ⌨️: пробел — подписать, 1/2/3 — вкладки, ↑↓ и Enter — выбрать и купить, X — количество, I — входящие; во входящих A/D/R — одобрить, отказать, вернуть, Enter — следующий. Работают в любой раскладке, полный список и переназначение — в настройках.
+- **Смахивание** 👆: на телефоне документ во входящих можно смахнуть в сторону «Одобрить» или «Отказать».
+- **Настройки ⚙️:** язык, звук и громкость, шум офиса, вибрация, служебные записки, тема (авто, светлая, тёмная), анимации, полный экран, формат чисел, окно возвращения, управление (кнопки решений внизу экрана, смахивание, «Одобрить» слева, удержание для покупки, подтверждение MAX, горячие клавиши с переназначением и подсказками), экспорт и импорт сохранения, удаление сохранения.
 
 ---
 
@@ -148,6 +149,7 @@ S.runEarned = S.allTimeEarned = 4e11; render();          // открыть ре�
 - Игра сохраняется каждые 10 секунд, а также при сворачивании (`visibilitychange`) и закрытии (`pagehide`).
 - Внутри Telegram запись идёт и в CloudStorage, и в `localStorage`. При загрузке берётся более свежая версия.
 - Сохранение занимает около 500 байт при лимите CloudStorage в 4096 байт на ключ.
+- Своя раскладка клавиш хранится отдельно, только в `localStorage` этого устройства (`paperwork_inc_keys_v1`).
 
 Если поменяется формат сохранения, обновите функцию `migrate()`. Новые поля добавляются с значениями по умолчанию, поэтому обновления не стирают прогресс. **Не меняйте** `id` отделов и апгрейдов и ключ сохранения, иначе прогресс у игроков пропадёт.
 
@@ -207,8 +209,9 @@ It's an idle game, not a clicker. Income accrues on its own, even while the game
 - **Two languages:** English and Russian. Picked from the Telegram profile on first launch, switchable in settings.
 - **Sound:** synthesized in the browser, no audio files. Stamp thud, desk bell, cash register, shredder, and an optional quiet office hum.
 - **Hold to buy:** hold a department's buy button to keep buying while you can afford it.
-- **Keyboard shortcuts** ⌨️: Space signs, 1/2/3 switch tabs, ↑↓ and Enter select and buy, X sets the quantity, I opens the in-tray; in the in-tray A/D/R approve, deny, return and Enter moves on. They work in any layout; the full list is in settings.
-- **Settings ⚙️:** language, sound and volume, office ambience, vibration, memos, theme (auto, light, dark), animations, full screen, number format, absence report, controls (keyboard shortcuts, key hints, decision buttons at the bottom), save export/import, delete save.
+- **Keyboard shortcuts** ⌨️: Space signs, 1/2/3 switch tabs, ↑↓ and Enter select and buy, X sets the quantity, I opens the in-tray; in the in-tray A/D/R approve, deny, return and Enter moves on. They work in any layout; the full list and rebinding are in settings.
+- **Swipes** 👆: on phones, swipe an in-tray document toward Approve or Deny.
+- **Settings ⚙️:** language, sound and volume, office ambience, vibration, memos, theme (auto, light, dark), animations, full screen, number format, absence report, controls (decision buttons at the bottom, swipes, approve on the left, hold to buy, MAX confirmation, rebindable keyboard shortcuts with hints), save export/import, delete save.
 
 ## Deployment
 
@@ -299,6 +302,7 @@ Unlock conditions (`req`) can include `dept` + `count`, `upgrade`, `earned` (ear
 - The game saves every 10 seconds, on minimize (`visibilitychange`) and on close (`pagehide`).
 - Inside Telegram it writes to both CloudStorage and `localStorage`, and loads whichever is newer.
 - A save is about 500 bytes, well under CloudStorage's 4096-byte limit per key.
+- Custom key bindings are stored separately, only in this device's `localStorage` (`paperwork_inc_keys_v1`).
 
 If you change the save format, update `migrate()`. New fields get default values, so updates never wipe progress. **Do not change** department or upgrade `id`s or the save key, or players will lose their progress.
 
