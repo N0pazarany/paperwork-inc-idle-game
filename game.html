@@ -624,7 +624,7 @@ html.swipe-on .doc{touch-action:pan-y}
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.21',              // версия игры (показывается в настройках)
+  version: '1.21.1',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   itchUrl: 'https://adomant.itch.io/paperwork-inc',   // страница на itch.io — появится в настройках
   botUrl: 'https://t.me/paperwork_inc_bot',            // бот в Telegram — ссылка, которой делятся из Telegram
@@ -2187,6 +2187,7 @@ const DEFAULT_SETTINGS = {
   holdBuy: 'normal',     // удержание кнопки покупки: 'off' | 'normal' | 'fast'
   confirmMax: false,     // спрашивать подтверждение покупки в режиме MAX
 };
+const HOLD_MODES = ['off', 'normal', 'fast'];
 const DEFAULT_STATS = { signs: 0, playSec: 0, bought: 0, maxAway: 0, inboxOk: 0, inboxBad: 0, bestStreak: 0,
   // v1.14 — считаются с момента обновления
   sessions: 0, peakRate: 0, offlineEarned: 0, upgBought: 0, stampsEarned: 0, bestRunSec: 0,
@@ -2569,6 +2570,7 @@ const Store = {
 function ensureSettings(s) {
   s.settings = Object.assign({}, DEFAULT_SETTINGS, s.settings || {});
   if (!s.settings.lang || !I18N[s.settings.lang]) s.settings.lang = detectLang();
+  if (!HOLD_MODES.includes(s.settings.holdBuy)) s.settings.holdBuy = 'normal';
   s.stats = Object.assign({}, DEFAULT_STATS, s.stats || {});
   return s;
 }
@@ -2884,7 +2886,7 @@ function nextToast() {
 /* ---------- Модальное окно ---------- */
 // buttons: [{ label, ghost, danger, keepOpen, onClick }]
 function showModal({ form, title, stamp, body, buttons }) {
-  deskCancel();
+  deskCancel(); Keys.capturing = null;
   const sheet = $('sheet');
   sheet.classList.toggle('stamped', !!stamp);
   sheet.innerHTML =
@@ -4294,9 +4296,11 @@ const Keys = {
     if (!this.on() || e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey || Tabs.asleep) return;
     const tg = e.target;
     if (tg && (tg.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName))) return;
-    // Enter/пробел на кнопке, выбранной клавишей Tab, нажимают её саму
+    // Enter/пробел на кнопке, до которой дошли клавишей Tab, нажимают её саму.
+    // После клика мышью кнопка тоже в фокусе, но тогда клавиши работают как горячие.
+    if (e.code === 'Tab') { this.tabNav = true; return; }
     const ae = document.activeElement;
-    if ((e.code === 'Enter' || e.code === 'Space') && ae && ae !== document.body && ae.matches(':focus-visible')) return;
+    if ((e.code === 'Enter' || e.code === 'Space') && this.tabNav && ae && ae !== document.body && ae.matches('button, a, summary')) return;
     if (modalKind === 'inbox') {
       const act = this.of(e.code, INBOX_ACTS); if (!act) return;
       e.preventDefault();
@@ -4346,6 +4350,7 @@ document.addEventListener('keydown', e => Keys.onKey(e));
 document.addEventListener('toggle', e => { if (e.target.matches && e.target.matches('details.keys')) Keys.listOpen = e.target.open; }, true);
 // Клик мышью по карточке переносит выбор на неё — стрелки продолжают с этого места
 document.addEventListener('pointerdown', e => {
+  Keys.tabNav = false;
   const c = e.target.closest('#deptList .card.dept, #upgList .card.upg');
   if (c && Keys.sel[activeTab]) { Keys.sel[activeTab] = { id: c.id, i: Keys.cards().indexOf(c) }; Keys.paint(); }
 }, { passive: true });

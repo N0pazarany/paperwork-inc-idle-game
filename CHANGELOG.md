@@ -4,6 +4,10 @@
 
 Версии на GitHub, в Telegram и на itch.io обновляются одновременно. Сохранения переносятся между версиями автоматически.
 
+## 1.21.1 — 14 ноября 2026
+- Исправлено: после клика мышью по кнопке (например, «Приобрести») пробел снова нажимал эту кнопку вместо «Подписать вручную». Теперь Enter и пробел нажимают кнопку, только если до неё дошли клавишей Tab.
+- Если другая вкладка браузера забирает игру, пока назначается клавиша, ожидание отменяется.
+
 ## 1.21 — 14 ноября 2026
 - **Смахивание документов** (на телефоне): во входящих документ можно смахнуть в сторону кнопки — к «Одобрить» или «Отказать». Пока тянете, на листе проступает штамп; не дотянули — лист возвращается. Прокрутка вверх-вниз работает как обычно.
 - **«Одобрить» слева:** кнопки решений можно поменять местами, смахивание тоже меняет стороны.
@@ -176,6 +180,10 @@
 # 🇬🇧 English
 
 The GitHub, Telegram and itch.io versions are updated together. Saves carry over between versions automatically.
+
+## 1.21.1 — 14 Nov 2026
+- Fixed: after clicking a button with the mouse (for example, Acquire), Space pressed that button again instead of signing manually. Enter and Space now press a button only if you reached it with the Tab key.
+- If another browser tab takes over while a key is being assigned, the assignment is cancelled.
 
 ## 1.21 — 14 Nov 2026
 - **Swipe documents** (on phones): in the in-tray, swipe a document toward a button — Approve or Deny. A stamp shows through while you drag; let go early and the sheet slides back. Scrolling up and down works as usual.
