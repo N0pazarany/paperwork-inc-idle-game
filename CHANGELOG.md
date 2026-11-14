@@ -4,6 +4,15 @@
 
 Версии на GitHub, в Telegram и на itch.io обновляются одновременно. Сохранения переносятся между версиями автоматически.
 
+## 1.20 — 14 ноября 2026
+- **Горячие клавиши:** пробел — подписать вручную, 1/2/3 — вкладки, ↑↓ — выбрать карточку, Enter — купить (удерживать — подряд), X — количество в заявке, I — входящие, H/P/T/, — справочник, личное дело, благодарности, настройки.
+- **Во входящих:** A или → — одобрить, D или ← — отказать, R или ↓ — вернуть, Enter или пробел — следующий документ. Зажатая клавиша не разбирает всю стопку.
+- Буквы работают в любой раскладке, в том числе в русской. Реорганизация клавишей не делается — только кнопкой.
+- На компьютере на кнопках видны подсказки клавиш; полный список — в настройках, в новом разделе «Управление». Там же клавиши и подсказки можно выключить.
+- **Кнопки решений внизу:** во входящих «Одобрить», «Отказать» и «Следующий документ» всегда внизу экрана, докручивать до них не нужно. Выключается в настройках.
+- Пока открыто окно, уведомления показываются сверху и не закрывают кнопки.
+- Случайный двойной тап по штампу больше не пролистывает результат: «Следующий документ» срабатывает не раньше чем через полсекунды.
+
 ## 1.19.1 — 14 ноября 2026
 - Исправлено: на компьютере повторное нажатие Enter или пробела, пока возвращённый документ летел в корзину, возвращало и следующий, ещё не показанный документ.
 - Если игру забирает другая вкладка браузера, пока лист летит, её кнопка «Играть здесь» сразу нажимается.
@@ -160,6 +169,15 @@
 # 🇬🇧 English
 
 The GitHub, Telegram and itch.io versions are updated together. Saves carry over between versions automatically.
+
+## 1.20 — 14 Nov 2026
+- **Keyboard shortcuts:** Space signs manually, 1/2/3 switch tabs, ↑↓ select a card, Enter buys (hold to repeat), X cycles the purchase quantity, I opens the in-tray, H/P/T/, open the handbook, personnel file, commendations and settings.
+- **In the in-tray:** A or → approves, D or ← denies, R or ↓ returns, Enter or Space brings the next document. Holding a key never clears the whole pile.
+- Letters work in any keyboard layout. Restructuring has no shortcut: it is button-only.
+- On computers, buttons show key hints; the full list is in settings under the new Controls section, where shortcuts and hints can be turned off.
+- **Decision buttons at the bottom:** in the in-tray, Approve, Deny and Next document stay at the bottom of the screen, no scrolling needed. Can be turned off in settings.
+- While a window is open, notifications appear at the top so they don't cover buttons.
+- An accidental double tap on a stamp no longer skips the result: Next document works only after half a second.
 
 ## 1.19.1 — 14 Nov 2026
 - Fixed: on computers, pressing Enter or Space again while a returned document was flying into the wastebasket also returned the next document before it was shown.

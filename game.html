@@ -412,6 +412,20 @@ html.scheme-dark{ --good:#4fb57a; }
 .doc.to-trash{animation:docTrash .42s cubic-bezier(.5,0,.8,.4) forwards;transform-origin:50% 0}
 @keyframes docTrash{40%{transform:scale(.92,.86) rotate(-4deg)}to{transform:translateY(-58px) scale(.08) rotate(-40deg);opacity:0}}
 .ib-busy .ib-actions,.ib-busy .m-btns{pointer-events:none}
+/* Кнопки решений прилипают к низу окна (настройка «Кнопки решений внизу») */
+html.sticky-act .ib-actions,html.sticky-act .ib-next{position:sticky;bottom:calc(-16px - env(safe-area-inset-bottom));z-index:2;background:var(--card);
+  padding:10px 0 calc(12px + env(safe-area-inset-bottom));margin-top:4px}
+html.sticky-act .ib-next{margin-top:6px}
+/* Подсказки клавиш: только с мышью/тачпадом и включённой настройкой */
+kbd.kh{display:none;font:600 10px/1 var(--mono);padding:2px 4px 3px;border-radius:3px;border:1px solid currentColor;opacity:.55;margin-left:6px;
+  vertical-align:1px;letter-spacing:0;white-space:nowrap}
+html.kh-on kbd.kh{display:inline-block}
+.tab kbd.kh{margin-left:5px;font-size:9px;padding:1px 3px 2px}
+.card.kbd-sel{box-shadow:0 0 0 2px var(--link),0 1px 0 var(--edge)}
+.keys-list{font-size:13px;margin:4px 0 8px}
+.keys-list .set-sub{font:600 11px var(--mono);color:var(--hint);text-transform:uppercase;letter-spacing:.06em;margin:10px 0 2px}
+.keys-list .kv{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px dashed var(--line)}
+.keys-list kbd{font:600 11px var(--mono);padding:2px 5px;border:1px solid var(--line-strong);border-radius:3px;margin-left:3px;white-space:nowrap}
 @media (prefers-reduced-motion: reduce){ .doc.from-pile{animation:none} }
 .verdict.no{color:#b5312a;border-color:#b5312a} .verdict.yes{color:#2c4a8a;border-color:#2c4a8a}
 .ib-actions{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;margin-top:14px}
@@ -450,6 +464,9 @@ html.scheme-dark{ --good:#4fb57a; }
   font-size:13.5px; max-width:92vw; width:max-content; box-shadow:0 6px 20px rgba(0,0,0,.25); pointer-events:none;
 }
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* пока открыто окно (оно прижато к низу), уведомления — сверху, чтобы не закрывать кнопки */
+.overlay.show + .toast{top:calc(max(var(--safe-top), env(safe-area-inset-top)) + 12px);bottom:auto;transform:translateX(-50%) translateY(-20px)}
+.overlay.show + .toast.show{transform:translateX(-50%) translateY(0)}
 /* совсем узко (крупный масштаб на маленьком телефоне) */
 @media (max-width:300px){
   .icons{gap:3px}
@@ -488,7 +505,7 @@ html.scheme-dark{ --good:#4fb57a; }
       <span id="meritsLine" hidden>📜 <b id="meritsTop">0</b> <span data-i18n="meritsShort"></span></span>
       <span id="senLine" hidden>🎖️ <span data-i18n="seniority"></span> <b id="sen">0</b> <span class="mono hint" id="senBonus"></span></span>
     </div>
-    <button class="sign" id="signBtn" data-act="sign">✍️ <span data-i18n="sign"></span> <span class="mono">+1</span></button>
+    <button class="sign" id="signBtn" data-act="sign">✍️ <span data-i18n="sign"></span> <span class="mono">+1</span><kbd class="kh" data-k="sign"></kbd></button>
   </header>
 
   <div class="memo" id="memo"></div>
@@ -496,19 +513,19 @@ html.scheme-dark{ --good:#4fb57a; }
   <!-- Стол: директива дня и входящие (открываются с Отделом согласований) -->
   <div class="desk" id="desk" hidden>
     <div class="directive" id="directive"></div>
-    <button class="inbox-btn" id="inboxBtn" data-act="inbox"><span>📥</span><span data-f="label"></span><span class="cnt" data-f="cnt"></span><span class="go" data-f="go"></span></button>
+    <button class="inbox-btn" id="inboxBtn" data-act="inbox"><span>📥</span><span data-f="label"></span><span class="cnt" data-f="cnt"></span><span class="go" data-f="go"></span><kbd class="kh" data-k="inbox"></kbd></button>
   </div>
 
   <!-- Вкладки-папка -->
   <nav class="tabs" id="tabs">
-    <button class="tab active" data-act="tab" data-id="depts"><span class="t-ico"></span><span data-i18n="tabDepts"></span></button>
-    <button class="tab" data-act="tab" data-id="upgs"><span class="t-ico"></span><span data-i18n="tabUpgs"></span><span class="badge" id="upgBadge" hidden></span></button>
-    <button class="tab" data-act="tab" data-id="restr"><span class="t-ico"></span><span data-i18n="tabRestr"></span></button>
+    <button class="tab active" data-act="tab" data-id="depts"><span class="t-ico"></span><span data-i18n="tabDepts"></span><kbd class="kh" data-k="tab1"></kbd></button>
+    <button class="tab" data-act="tab" data-id="upgs"><span class="t-ico"></span><span data-i18n="tabUpgs"></span><span class="badge" id="upgBadge" hidden></span><kbd class="kh" data-k="tab2"></kbd></button>
+    <button class="tab" data-act="tab" data-id="restr"><span class="t-ico"></span><span data-i18n="tabRestr"></span><kbd class="kh" data-k="tab3"></kbd></button>
   </nav>
 
   <!-- Отделы -->
   <section class="panel active" id="p-depts">
-    <div class="po"><span data-i18n="purchaseOrder"></span><span class="sp"></span>
+    <div class="po"><span data-i18n="purchaseOrder"></span><kbd class="kh" data-k="mode"></kbd><span class="sp"></span>
       <button data-act="mode" data-id="1">×1</button>
       <button data-act="mode" data-id="10">×10</button>
       <button data-act="mode" data-id="next" data-i18n="modeNext"></button>
@@ -593,7 +610,7 @@ html.scheme-dark{ --good:#4fb57a; }
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.19.1',              // версия игры (показывается в настройках)
+  version: '1.20',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   itchUrl: 'https://adomant.itch.io/paperwork-inc',   // страница на itch.io — появится в настройках
   botUrl: 'https://t.me/paperwork_inc_bot',            // бот в Telegram — ссылка, которой делятся из Telegram
@@ -1221,6 +1238,12 @@ const I18N = {
       secSound: 'Sound & feedback', sound: 'Sound effects', volume: 'Volume',
       ambience: 'Office ambience', ambienceHint: 'A quiet office hum',
       haptics: 'Vibration', hapticsHint: 'Works in Telegram only',
+      secControls: 'Controls', hotkeys: 'Keyboard shortcuts', hotkeysHint: 'Letters work in any keyboard layout',
+      keyHints: 'Key hints on buttons', stickyActions: 'Decision buttons at the bottom', stickyActionsHint: 'In the in-tray, Approve and Deny stay at the bottom of the screen',
+      keysMain: 'Office', keysInbox: 'In-tray', keySpace: 'Space',
+      kSign: 'Sign manually', kTabs: 'Tabs', kSelect: 'Select a card', kBuy: 'Buy the selected card (hold to repeat)', kMode: 'Purchase quantity',
+      kInbox: 'In-tray', kMenus: 'Handbook · File · Commendations · Settings', kClose: 'Close a window',
+      kApprove: 'Approve', kDeny: 'Deny', kReturn: 'Return', kNext: 'Next document',
       secDisplay: 'Display', memos: 'Office memos', animations: 'Stamp animations',
       fullscreen: 'Full screen', tFsFail: '⚠️ Full screen is not available here',
       theme: 'Theme', themeAuto: 'Auto', themeLight: 'Light', themeDark: 'Dark',
@@ -1667,6 +1690,12 @@ const I18N = {
       secSound: 'Звук и отклик', sound: 'Звуковые эффекты', volume: 'Громкость',
       ambience: 'Шум офиса', ambienceHint: 'Тихий гул офиса',
       haptics: 'Вибрация', hapticsHint: 'Работает только в Telegram',
+      secControls: 'Управление', hotkeys: 'Горячие клавиши', hotkeysHint: 'Буквы работают в любой раскладке',
+      keyHints: 'Подсказки клавиш на кнопках', stickyActions: 'Кнопки решений внизу', stickyActionsHint: 'Во входящих «Одобрить» и «Отказать» всегда внизу экрана',
+      keysMain: 'Офис', keysInbox: 'Входящие', keySpace: 'Пробел',
+      kSign: 'Подписать вручную', kTabs: 'Вкладки', kSelect: 'Выбрать карточку', kBuy: 'Купить выбранное (удерживать — подряд)', kMode: 'Количество в заявке',
+      kInbox: 'Входящие', kMenus: 'Справочник · Личное дело · Благодарности · Настройки', kClose: 'Закрыть окно',
+      kApprove: 'Одобрить', kDeny: 'Отказать', kReturn: 'Вернуть', kNext: 'Следующий документ',
       secDisplay: 'Отображение', memos: 'Служебные записки', animations: 'Анимации печатей',
       fullscreen: 'Полный экран', tFsFail: '⚠️ Полноэкранный режим здесь недоступен',
       theme: 'Тема', themeAuto: 'Авто', themeLight: 'Светлая', themeDark: 'Тёмная',
@@ -2114,6 +2143,9 @@ const DEFAULT_SETTINGS = {
   fullscreen: false,     // полный экран (в Telegram включается сам при следующем запуске)
   awayReport: 'always',  // окно возвращения: 'always' | 'long' (от 30 мин) | 'never'
   theme: 'auto',         // 'auto' — как в Telegram или системе, 'light', 'dark'
+  hotkeys: true,         // управление с клавиатуры
+  keyHints: true,        // подсказки клавиш на кнопках (только с мышью)
+  stickyActions: true,   // во входящих кнопки решений прилипают к низу окна
 };
 const DEFAULT_STATS = { signs: 0, playSec: 0, bought: 0, maxAway: 0, inboxOk: 0, inboxBad: 0, bestStreak: 0,
   // v1.14 — считаются с момента обновления
@@ -2782,6 +2814,8 @@ function applySettings() {
   const langChanged = LANG !== st.lang;
   LANG = st.lang; NUMFMT = st.numFormat;
   document.documentElement.classList.toggle('no-anim', !st.animations);
+  document.documentElement.classList.toggle('sticky-act', !!st.stickyActions);
+  Keys.apply();
   applyTheme();
   $('memo').hidden = !st.memos;
   if (langChanged) $('memo').textContent = nextMemo();
@@ -2823,7 +2857,11 @@ function showModal({ form, title, stamp, body, buttons }) {
   sheet.scrollTop = 0;
   $('overlay').classList.add('show'); modalKind = 'modal';
 }
-function closeModal() { $('overlay').classList.remove('show'); modalKind = null; deskCancel(); }
+function closeModal() {
+  $('overlay').classList.remove('show'); modalKind = null; deskCancel();
+  // фокус (например, в поле импорта) не должен остаться в скрытом окне — иначе молчат горячие клавиши
+  const ae = document.activeElement; if (ae && $('sheet').contains(ae)) ae.blur();
+}
 
 /* ---------- Окно настроек ---------- */
 function showSettings() {
@@ -2852,6 +2890,9 @@ function showSettings() {
     ${Fullscreen.available() ? row(t('fullscreen'), `<button class="switch ${Fullscreen.active() ? 'on' : ''}" data-set-act="fullscreen" aria-pressed="${Fullscreen.active()}"></button>`) : ''}
     ${row(t('numFormat'), seg('numFormat', [['short', '1.2M'], ['sci', '1.20e6']]))}
     ${row(t('awayReport'), seg('awayReport', [['always', t('awayAlways')], ['long', t('awayLong')], ['never', t('awayNever')]]))}
+    <div class="set-sec">${t('secControls')}</div>
+    ${row(t('stickyActions'), sw('stickyActions'), t('stickyActionsHint'))}
+    ${Keys.hasKeyboard() ? row(t('hotkeys'), sw('hotkeys'), t('hotkeysHint')) + (st.hotkeys ? row(t('keyHints'), sw('keyHints')) + Keys.listHTML() : '') : ''}
     <div class="set-sec">${t('secRecords')}</div>
     <p class="hint" style="font-size:12px;margin:6px 0 8px">${t('saveHint')} ${Store.cloud ? t('storageCloud') : t('storageLocal')}</p>
     <div class="btn-row">
@@ -3239,6 +3280,7 @@ function buildDepts() {
   $('deptList').innerHTML = html;
   refs.depts.clear();
   vis.forEach(d => refs.depts.set(d.id, collectRefs($('d-' + d.id))));
+  Keys.paint();
 }
 
 function renderDepts(m, rate) {
@@ -3288,6 +3330,7 @@ function renderUpgrades(avail, rate, sRate) {
       </div>`).join('') : `<div class="empty">${t('noUpgrades')}</div>`;
     refs.upgs.clear();
     avail.forEach(u => refs.upgs.set(u.id, collectRefs($('u-' + u.id))));
+    Keys.paint();
   }
   for (const u of avail) {
     const f = refs.upgs.get(u.id); if (!f) continue;
@@ -3685,6 +3728,7 @@ function renderDesk() {
 }
 
 /* ---------- Окно входящих ---------- */
+let decidedAt = 0;        // когда поставлен штамп: «Следующий» сразу после него не срабатывает (двойной тап)
 let inboxResult = null;   // результат последнего решения (показывается до «Следующий документ»)
 function inkWord(ink) { return t('ink' + ink[0].toUpperCase() + ink.slice(1)); }
 function docHTML(d, verdict) {
@@ -3732,19 +3776,19 @@ function showInbox() {
     const money = r.correct ? ` <b>+${fmt(r.amount)}</b>` : (r.amount > 0 ? ` <b>−${fmt(r.amount)}</b>` : ` ${t('ibNoFine')}`);
     body = regsHTML() + deskHTML(ib.count, -1) + docHTML(r.doc, r.timeout ? 'late' : r.approve ? 'yes' : 'no') +
       `<div class="ib-result ${r.correct ? '' : 'bad'}">${r.correct ? '✓ <b>' + t('ibOk') + '</b>' : '✗ <b>' + t('ibBad') + '</b>'} ${reason}${money}</div>` +
-      `<div class="m-btns"><button class="btn${ib.count ? '' : ' ghost'}" data-ib="next">${ib.count ? t('ibNext') : t('close')}</button></div>`;
+      `<div class="m-btns ib-next"><button class="btn${ib.count ? '' : ' ghost'}" data-ib="next">${ib.count ? t('ibNext') : t('close')}${kh('next')}</button></div>`;
   } else if (!ib.count) {
     const day = ib.day || { ok: 0, bad: 0, earned: 0 };
     body = `<div class="empty-desk"><div class="big">🗂️</div><p>${t('ibEmptyText')}</p>
       <p class="mono" style="font-size:13px">${t('ibEta', { t: fmtTime(inboxEta()), max: CONFIG.inbox.max })}</p>
       ${day.ok + day.bad ? `<p style="font-size:13px">${t('ibToday', { ok: day.ok, bad: day.bad, sum: (day.earned >= 0 ? '+' : '−') + fmt(Math.abs(day.earned)) })}</p>` : ''}</div>
-      <div class="m-btns"><button class="btn ghost" data-ib="close">${t('close')}</button></div>`;
+      <div class="m-btns"><button class="btn ghost" data-ib="close">${t('close')}${kh('next')}</button></div>`;
   } else {
     if (!isDoc(ib.current)) ib.current = makeDoc();
     if (!(ib.current.left > 0)) ib.current.left = inboxSeconds();
     const penalty = inboxPenaltyMin() > 0 ? fmt(inboxPenalty()) : null;
     body = `<div class="ib-timer" id="ibTimer"><div class="bar"><i></i></div><span class="mono"></span></div>` + regsHTML() + deskHTML(ib.count - 1) + docHTML(ib.current) +
-      `<div class="ib-actions"><button class="btn danger" data-ib="deny">${t('ibDeny')}</button><button class="btn ghost" data-ib="return">${t('ibReturn')}</button><button class="btn" data-ib="approve">${t('ibApprove')}</button></div>
+      `<div class="ib-actions"><button class="btn danger" data-ib="deny">${t('ibDeny')}${kh('deny')}</button><button class="btn ghost" data-ib="return">${t('ibReturn')}${kh('ret')}</button><button class="btn" data-ib="approve">${t('ibApprove')}${kh('approve')}</button></div>
       <div class="ib-note">${penalty ? t('ibNote', { r: fmt(inboxReward()), p: penalty }) : t('ibNoteFree', { r: fmt(inboxReward()) })}</div>`;
   }
   deskCancel();
@@ -3836,6 +3880,7 @@ function decideDoc(approve, timeout) {
   if (!timeout && new Date().getHours() < 5) grantAch('night');
   ib.count = Math.max(0, ib.count - 1);
   ib.current = null;
+  decidedAt = Date.now();
   inboxResult = { doc: d, approve, correct, amount, timeout: !!timeout, rule: broken[0] ? broken[0].id : null, ruleNo: broken[0] ? rules.indexOf(broken[0]) + 1 : 0 };
   haptic.light(); Sound.play('stamp');
   setTimeout(() => { if (correct) Sound.play('upgrade'); else { Sound.play('error'); haptic.success(); } }, 220);
@@ -3856,6 +3901,7 @@ $('sheet').addEventListener('click', e => {
       Sound.play('shredder'); render(); save();
       deskLeave('trash', () => { if (modalKind === 'inbox') showInbox(); }); break;
     case 'next':
+      if (Date.now() - decidedAt < 400) break;
       deskLeave('out', () => { inboxResult = null; if (modalKind !== 'inbox') return; if (S.inbox.count) showInbox(); else closeModal(); }); break;
     case 'close': inboxResult = null; closeModal(); break;
   }
@@ -4033,7 +4079,7 @@ document.addEventListener('click', e => {
         document.querySelectorAll('details.filed[open]').forEach(d => { d.open = false; });
         filedOpen = perkFiledOpen = false;
       }
-      activeTab = id; $('scroller').scrollTo({ top: 0 }); render(); break;
+      activeTab = id; $('scroller').scrollTo({ top: 0 }); render(); Keys.paint(); break;
     case 'mode': S.buyMode = id === 'max' || id === 'next' ? id : +id; syncBuyMode(); haptic.light(); Sound.play('click'); render(); break;
     case 'restructure': onRestructure(); break;
     case 'settings': Sound.play('click'); showSettings(); break;
@@ -4058,6 +4104,141 @@ $('overlay').addEventListener('click', e => {
   if (e.target === $('overlay') && modalKind === 'locked') return;
   if (e.target === $('overlay')) { const wasSettings = modalKind === 'settings'; closeModal(); if (wasSettings) save(); }
 });
+/* ---------- Клавиатура ----------
+   Клавиши — по физическому месту (e.code), поэтому A работает и в русской раскладке («Ф»).
+   Решения во входящих не повторяются при удержании клавиши, повторяется только покупка отдела.
+   Реорганизация клавишей не делается — только кнопкой и с подтверждением. */
+const KEYS_DEFAULT = {
+  sign: ['Space'], tab1: ['Digit1', 'Numpad1'], tab2: ['Digit2', 'Numpad2'], tab3: ['Digit3', 'Numpad3'],
+  up: ['ArrowUp'], down: ['ArrowDown'], buy: ['Enter', 'NumpadEnter'], mode: ['KeyX'], inbox: ['KeyI'],
+  handbook: ['KeyH'], stats: ['KeyP'], achievements: ['KeyT'], settings: ['Comma'],
+  approve: ['KeyA', 'ArrowRight'], deny: ['KeyD', 'ArrowLeft'], ret: ['KeyR', 'ArrowDown'], next: ['Enter', 'NumpadEnter', 'Space'],
+};
+const MAIN_ACTS = ['sign', 'tab1', 'tab2', 'tab3', 'up', 'down', 'buy', 'mode', 'inbox', 'handbook', 'stats', 'achievements', 'settings'];
+const INBOX_ACTS = ['approve', 'deny', 'ret', 'next'];
+// Подпись клавиши для подсказок
+function keyLabel(code) {
+  if (!code) return '';
+  if (/^Key[A-Z]$/.test(code)) return code.slice(3);
+  if (/^(Digit|Numpad)\d$/.test(code)) return code.slice(-1);
+  const named = { Space: t('keySpace'), Enter: 'Enter', NumpadEnter: 'Enter', ArrowUp: '↑', ArrowDown: '↓', ArrowLeft: '←', ArrowRight: '→',
+    Comma: ',', Period: '.', Slash: '/', Semicolon: ';', Quote: "'", BracketLeft: '[', BracketRight: ']', Minus: '−', Equal: '=', Backquote: '`', Backslash: '\\', Tab: 'Tab' };
+  return named[code] || code.replace(/^Numpad/, 'Num ');
+}
+// Подсказка клавиши для кнопки (в разметке окон)
+function kh(act) { return `<kbd class="kh">${esc(keyLabel(Keys.map[act][0]))}</kbd>`; }
+const Keys = {
+  map: KEYS_DEFAULT,
+  sel: { depts: null, upgs: null },          // выбранная карточка: { id, i }
+  lastBuy: 0,
+  hasKeyboard() { return !!(window.matchMedia && matchMedia('(any-hover: hover) and (any-pointer: fine)').matches); },
+  on() { return !!(S && S.settings.hotkeys); },
+  apply() {
+    const show = !!(S && S.settings.hotkeys && S.settings.keyHints && this.hasKeyboard());
+    document.documentElement.classList.toggle('kh-on', show);
+    document.querySelectorAll('kbd.kh[data-k]').forEach(k => { k.textContent = keyLabel(this.map[k.dataset.k][0]); });
+    const titles = { handbook: t('hbTitle'), stats: t('stTitle'), achievements: t('achTitle'), settings: t('settingsTitle') };
+    document.querySelectorAll('.icon-btn[data-act]').forEach(b => {
+      const a = b.dataset.act; if (!titles[a]) return;
+      b.title = this.on() ? `${titles[a]} (${keyLabel(this.map[a][0])})` : titles[a];
+    });
+    if (!this.on()) this.clearSel();
+  },
+  of(code, acts) { return acts.find(a => this.map[a].includes(code)); },
+  // Карточки, по которым ходят стрелки, на открытой вкладке
+  cards() {
+    if (activeTab === 'depts') return [...document.querySelectorAll('#deptList .card.dept')];
+    if (activeTab === 'upgs') return [...document.querySelectorAll('#upgList .card.upg')];
+    return [];
+  },
+  current() {
+    const sel = this.sel[activeTab]; if (!sel) return null;
+    const list = this.cards(); if (!list.length) return null;
+    let el = list.find(c => c.id === sel.id);
+    if (!el) { el = list[Math.min(sel.i, list.length - 1)]; sel.id = el.id; }   // карточку купили — встаём на соседнюю
+    sel.i = list.indexOf(el);
+    return el;
+  },
+  move(dir) {
+    const list = this.cards(); if (!list.length) return;
+    const cur = this.current();
+    let i = cur ? list.indexOf(cur) + dir : (dir > 0 ? 0 : list.length - 1);
+    i = Math.max(0, Math.min(list.length - 1, i));
+    this.sel[activeTab] = { id: list[i].id, i };
+    this.paint();
+    list[i].scrollIntoView({ block: 'nearest', behavior: S.settings.animations ? 'smooth' : 'auto' });
+  },
+  // Подсветка выбранной карточки (после перерисовки списка — заново)
+  paint() {
+    document.querySelectorAll('.card.kbd-sel').forEach(c => c.classList.remove('kbd-sel'));
+    const el = this.on() ? this.current() : null;
+    if (el) el.classList.add('kbd-sel');
+  },
+  clearSel() { this.sel = { depts: null, upgs: null }; this.paint(); },
+  buy(repeat) {
+    const el = this.current(); if (!el) return;
+    const btn = el.querySelector('.btn[data-act]'); if (!btn || btn.disabled) return;
+    if (btn.dataset.act === 'buyDept') {
+      const now = Date.now(); if (repeat && now - this.lastBuy < HOLD.min) return;
+      this.lastBuy = now; onBuyDept(btn.dataset.id);
+    } else if (!repeat) onBuyUpg(btn.dataset.id);
+    this.paint();
+  },
+  click(sel) { const b = document.querySelector(sel); if (b && !b.disabled && !b.hidden) b.click(); },
+  onKey(e) {
+    if (!this.on() || e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey || Tabs.asleep) return;
+    const tg = e.target;
+    if (tg && (tg.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName))) return;
+    // Enter/пробел на кнопке, выбранной клавишей Tab, нажимают её саму
+    const ae = document.activeElement;
+    if ((e.code === 'Enter' || e.code === 'Space') && ae && ae !== document.body && ae.matches(':focus-visible')) return;
+    if (modalKind === 'inbox') {
+      const act = this.of(e.code, INBOX_ACTS); if (!act) return;
+      e.preventDefault();
+      if (e.repeat) return;                       // зажатая клавиша не разбирает всю стопку
+      if (act === 'next') this.click('#sheet [data-ib="next"], #sheet [data-ib="close"]');
+      else this.click(`#sheet [data-ib="${act === 'ret' ? 'return' : act}"]`);
+      return;
+    }
+    if (modalKind) return;                        // в остальных окнах — только Esc и обычная клавиатура
+    const act = this.of(e.code, MAIN_ACTS); if (!act) return;
+    e.preventDefault();
+    if (e.repeat && act !== 'buy' && act !== 'up' && act !== 'down') return;
+    switch (act) {
+      case 'sign': onSign($('signBtn')); break;
+      case 'tab1': case 'tab2': case 'tab3': this.click(`.tab[data-id="${['depts', 'upgs', 'restr'][+act.slice(3) - 1]}"]`); this.paint(); break;
+      case 'up': this.move(-1); break;
+      case 'down': this.move(1); break;
+      case 'buy': this.buy(e.repeat); break;
+      case 'mode': {
+        const order = ['1', '10', 'next', 'max'], i = order.indexOf(String(S.buyMode));
+        this.click(`.po [data-act="mode"][data-id="${order[(i + 1) % order.length]}"]`); break;
+      }
+      case 'inbox': if (!$('desk').hidden) this.click('#inboxBtn'); break;
+      default: this.click(`.icons [data-act="${act}"]`);
+    }
+  },
+  // Список клавиш для настроек
+  listHTML() {
+    const k = acts => [...new Set(acts.flatMap(a => this.map[a].map(keyLabel)))].map(l => `<kbd>${esc(l)}</kbd>`).join('');
+    const r = (label, html) => `<div class="kv"><span>${label}</span><span>${html}</span></div>`;
+    return `<div class="keys-list">
+      <div class="set-sub">${t('keysMain')}</div>
+      ${r(t('kSign'), k(['sign']))}${r(t('kTabs'), k(['tab1', 'tab2', 'tab3']))}
+      ${r(t('kSelect'), k(['up', 'down']))}${r(t('kBuy'), k(['buy']))}${r(t('kMode'), k(['mode']))}
+      ${r(t('kInbox'), k(['inbox']))}${r(t('kMenus'), k(['handbook', 'stats', 'achievements', 'settings']))}${r(t('kClose'), '<kbd>Esc</kbd>')}
+      <div class="set-sub">${t('keysInbox')}</div>
+      ${r(t('kApprove'), k(['approve']))}${r(t('kDeny'), k(['deny']))}${r(t('kReturn'), k(['ret']))}${r(t('kNext'), k(['next']))}
+    </div>`;
+  },
+};
+document.addEventListener('keydown', e => Keys.onKey(e));
+// Клик мышью по карточке переносит выбор на неё — стрелки продолжают с этого места
+document.addEventListener('pointerdown', e => {
+  const c = e.target.closest('#deptList .card.dept, #upgList .card.upg');
+  if (c && Keys.sel[activeTab]) { Keys.sel[activeTab] = { id: c.id, i: Keys.cards().indexOf(c) }; Keys.paint(); }
+}, { passive: true });
+
 // Звук разблокируется первым касанием
 document.addEventListener('pointerdown', () => Sound.unlock(), { passive: true });
 

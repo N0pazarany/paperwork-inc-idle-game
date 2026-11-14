@@ -52,7 +52,8 @@
 - **Два языка:** английский и русский. При первом запуске язык выбирается по профилю Telegram, сменить его можно в настройках.
 - **Звуки:** синтезируются прямо в браузере, без файлов. Удар печати, звонок, кассовый аппарат, шредер; по желанию — тихий фоновый гул офиса.
 - **Удержание кнопки покупки:** держите кнопку отдела, и он будет покупаться подряд, пока хватает документов.
-- **Настройки ⚙️:** язык, звук и громкость, шум офиса, вибрация, служебные записки, тема (авто, светлая, тёмная), анимации, полный экран, формат чисел, окно возвращения, экспорт и импорт сохранения, удаление сохранения.
+- **Горячие клавиши** ⌨️: пробел — подписать, 1/2/3 — вкладки, ↑↓ и Enter — выбрать и купить, X — количество, I — входящие; во входящих A/D/R — одобрить, отказать, вернуть, Enter — следующий. Работают в любой раскладке, полный список — в настройках.
+- **Настройки ⚙️:** язык, звук и громкость, шум офиса, вибрация, служебные записки, тема (авто, светлая, тёмная), анимации, полный экран, формат чисел, окно возвращения, управление (горячие клавиши, подсказки клавиш, кнопки решений внизу экрана), экспорт и импорт сохранения, удаление сохранения.
 
 ---
 
@@ -206,7 +207,8 @@ It's an idle game, not a clicker. Income accrues on its own, even while the game
 - **Two languages:** English and Russian. Picked from the Telegram profile on first launch, switchable in settings.
 - **Sound:** synthesized in the browser, no audio files. Stamp thud, desk bell, cash register, shredder, and an optional quiet office hum.
 - **Hold to buy:** hold a department's buy button to keep buying while you can afford it.
-- **Settings ⚙️:** language, sound and volume, office ambience, vibration, memos, theme (auto, light, dark), animations, full screen, number format, absence report, save export/import, delete save.
+- **Keyboard shortcuts** ⌨️: Space signs, 1/2/3 switch tabs, ↑↓ and Enter select and buy, X sets the quantity, I opens the in-tray; in the in-tray A/D/R approve, deny, return and Enter moves on. They work in any layout; the full list is in settings.
+- **Settings ⚙️:** language, sound and volume, office ambience, vibration, memos, theme (auto, light, dark), animations, full screen, number format, absence report, controls (keyboard shortcuts, key hints, decision buttons at the bottom), save export/import, delete save.
 
 ## Deployment
 
