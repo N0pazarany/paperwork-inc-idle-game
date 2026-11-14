@@ -4,6 +4,12 @@
 
 Версии на GitHub, в Telegram и на itch.io обновляются одновременно. Сохранения переносятся между версиями автоматически.
 
+## 1.19 — 14 ноября 2026
+- **Рабочий стол во входящих:** над документом лежат стопка «Входящие», корзина и стопка «Подшито» с числом разобранных за сегодня.
+- Документ берётся из стопки и ложится на стол; после штампа и «Следующего документа» уходит в «Подшито», а возвращённый сминается и летит в корзину под звук шредера.
+- Таймер нового документа стартует, когда тот лёг на стол, а пока лист в полёте, кнопки не нажимаются — случайный двойной тап ничего не собьёт.
+- С выключенными анимациями (или системной настройкой «уменьшить движение») всё происходит мгновенно, как раньше.
+
 ## 1.18 — 12 ноября 2026
 - Игра меньше нагружает телефон: счётчики и таймер обновляются 20 раз в секунду вместо 60. Цифры бегут так же плавно, а нагрузка на процессор примерно вдвое меньше — меньше нагрев и расход батареи.
 
@@ -150,6 +156,12 @@
 # 🇬🇧 English
 
 The GitHub, Telegram and itch.io versions are updated together. Saves carry over between versions automatically.
+
+## 1.19 — 14 Nov 2026
+- **In-tray desk:** above the document sit an “In” pile, a wastebasket and a “Filed” pile with today's count.
+- Documents are taken from the pile and land on the desk; after the stamp and “Next document” they go to “Filed”, while a returned one is crumpled into the wastebasket to the sound of the shredder.
+- A new document's timer starts once it has landed, and buttons are locked while a sheet is in flight, so an accidental double tap changes nothing.
+- With animations off (or the system's reduced motion setting) everything happens instantly, as before.
 
 ## 1.18 — 12 Nov 2026
 - Lighter on phones: counters and the timer update 20 times a second instead of 60. The numbers roll just as smoothly, while CPU load is roughly halved, meaning less heat and battery drain.
