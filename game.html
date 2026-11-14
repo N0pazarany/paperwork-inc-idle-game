@@ -593,7 +593,7 @@ html.scheme-dark{ --good:#4fb57a; }
 
 /* ---------- Основные настройки баланса ---------- */
 const CONFIG = {
-  version: '1.19',              // версия игры (показывается в настройках)
+  version: '1.19.1',              // версия игры (показывается в настройках)
   repoUrl: 'https://github.com/N0pazarany/paperwork-inc-idle-game',                 // ссылка на GitHub (https://github.com/логин/репа) — появится в настройках
   itchUrl: 'https://adomant.itch.io/paperwork-inc',   // страница на itch.io — появится в настройках
   botUrl: 'https://t.me/paperwork_inc_bot',            // бот в Telegram — ссылка, которой делятся из Telegram
@@ -2750,6 +2750,7 @@ let activeTab = 'depts';
 let lastTick = Date.now();
 let deptKey = '', upgKey = '', filedKey = '', perkKey = '', filedOpen = false, perkFiledKey = '', perkFiledOpen = false;
 let autoTimer = 0;
+let deskTimer = 0;            // лист на столе входящих в полёте (см. deskLeave)
 let modalKind = null;         // null | 'modal' | 'settings'
 
 /* ---------- Точечные обновления DOM ----------
@@ -2809,6 +2810,7 @@ function nextToast() {
 /* ---------- Модальное окно ---------- */
 // buttons: [{ label, ghost, danger, keepOpen, onClick }]
 function showModal({ form, title, stamp, body, buttons }) {
+  deskCancel();
   const sheet = $('sheet');
   sheet.classList.toggle('stamped', !!stamp);
   sheet.innerHTML =
@@ -2827,6 +2829,7 @@ function closeModal() { $('overlay').classList.remove('show'); modalKind = null;
 function showSettings() {
   const st = S.settings, sheet = $('sheet');
   const keepScroll = modalKind === 'settings' ? sheet.scrollTop : 0;
+  deskCancel();
   sheet.classList.remove('stamped');
   const sw = key => `<button class="switch ${st[key] ? 'on' : ''}" data-set="${key}" aria-pressed="${!!st[key]}"></button>`;
   const seg = (key, opts) => `<div class="seg">${opts.map(([v, l]) => `<button class="${st[key] === v ? 'on' : ''}" data-set="${key}" data-val="${v}">${l}</button>`).join('')}</div>`;
@@ -3760,7 +3763,7 @@ function showInbox() {
   updateInboxTimer(0);
 }
 // Стол: стопка входящих (без документа, который сейчас в руках), корзина, подшитые за сегодня
-let deskDoc = null, deskLandAt = 0, deskTimer = 0;
+let deskDoc = null, deskLandAt = 0;
 function deskHTML(waiting, filedAdj = 0) {
   const day = S.inbox.day || {}, done = Math.max(0, (day.ok || 0) + (day.bad || 0) + filedAdj);
   const pile = (n, cls, label) => `<div class="desk-side"><div class="pile ${cls}">${'<i></i>'.repeat(Math.min(4, Math.max(n > 0 ? 1 : 0, Math.ceil(n / 2))))
@@ -3841,7 +3844,7 @@ function decideDoc(approve, timeout) {
   showInbox();
 }
 $('sheet').addEventListener('click', e => {
-  if (modalKind !== 'inbox') return;
+  if (modalKind !== 'inbox' || deskTimer) return;
   const b = e.target.closest('[data-ib]');
   if (!b) return;
   switch (b.dataset.ib) {

@@ -4,6 +4,10 @@
 
 Версии на GitHub, в Telegram и на itch.io обновляются одновременно. Сохранения переносятся между версиями автоматически.
 
+## 1.19.1 — 14 ноября 2026
+- Исправлено: на компьютере повторное нажатие Enter или пробела, пока возвращённый документ летел в корзину, возвращало и следующий, ещё не показанный документ.
+- Если игру забирает другая вкладка браузера, пока лист летит, её кнопка «Играть здесь» сразу нажимается.
+
 ## 1.19 — 14 ноября 2026
 - **Рабочий стол во входящих:** над документом лежат стопка «Входящие», корзина и стопка «Подшито» с числом разобранных за сегодня.
 - Документ берётся из стопки и ложится на стол; после штампа и «Следующего документа» уходит в «Подшито», а возвращённый сминается и летит в корзину под звук шредера.
@@ -156,6 +160,10 @@
 # 🇬🇧 English
 
 The GitHub, Telegram and itch.io versions are updated together. Saves carry over between versions automatically.
+
+## 1.19.1 — 14 Nov 2026
+- Fixed: on computers, pressing Enter or Space again while a returned document was flying into the wastebasket also returned the next document before it was shown.
+- If another browser tab takes over while a sheet is in flight, its “Play here” button works right away.
 
 ## 1.19 — 14 Nov 2026
 - **In-tray desk:** above the document sit an “In” pile, a wastebasket and a “Filed” pile with today's count.
